@@ -7,9 +7,10 @@ repos and the colleagues) follow, top to bottom, on the course day.
 > Status: 🟡 **In progress — steps 1–5 done 2026-11-04** (work iMac, starting commit
 > `d8008f8`); **steps 6–7 done 2026-11-05** (work iMac, course repos from `c2e6cbe`): three
 > course repos, their rules read back, one team each, the authors invited; **2026-11-06**: the authors accepted, each team holds its author alone,
-> and the update to template `7bfb378` was pushed to all three courses as `sync-template`. Next:
-> the authors open those update pull requests (Spanish's is pilot R13), then the rest of the rules pilot. A fourth course, `lc-russian-basic-vocabulary`,
-> was set up the same way on 2026-11-06 from `bfa98f5` and needs no update.
+> and the update to template `7bfb378` was pushed to all three courses as `sync-template`. A fourth course, `lc-russian-basic-vocabulary`,
+> was set up the same way on 2026-11-06 from `bfa98f5`. **2026-11-09**: template `2687c8f` (tests follow the
+> course's language) was merged into `sync-template` on all four courses (TODO, update of that day). Next:
+> the authors open those update pull requests (Spanish's is pilot R13), then the rest of the rules pilot.
 >
 > **Decided 2026-10-12:** the template stayed under `pedbad` until the remaining template
 > work was finished. Tick to ✅ once the first course repo is working.
