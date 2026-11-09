@@ -539,10 +539,15 @@ When the template changes, each course repo pulls it in:
 **When:** whenever the template has something to share (decided 2026-11-02): the
 maintainer merges it in the template, prepares each course's update branch, then opens
 an issue in each course repo, "Template update ready", assigned to its author (GitHub
-emails them). The issue gives the steps and the pull request link
-`https://github.com/lc-elearn/<course>/compare/main...sync-template?expand=1&body=Closes%20%23<N>`,
+emails them), titled with the date, as in "Template update ready (9 Nov 2026)". The issue
+gives the steps and the pull request link
+`https://github.com/lc-elearn/<course>/compare/main...sync-template?expand=1&title=Template%20update%20(<date>)&body=Closes%20%23<N>`,
 where N is that issue's number, so merging the update closes it, and the course's
-issues show which updates are still waiting. Issues are public like the repo: no
+issues show which updates are still waiting. `<date>` is the issue's date with each
+space as `%20` (`9%20Nov%202026`), so each update's pull request is named
+"Template update (9 Nov 2026)" instead of the branch's "Sync template", and a course's
+pull requests tell its updates apart. Decided 2026-11-09, after the first ones were
+all "Sync template". Issues are public like the repo: no
 unpublished lesson text, images or audio. First used 2026-11-09 (issue 1 in each course).
 
 **The procedure: an update branch inside the course repo.** Not a pull request from the
