@@ -200,7 +200,8 @@ option`: each message and its fix are in
   message and its fix are in
   [`CONTRIBUTING.md` → "Answers in their own fields"](CONTRIBUTING.md#answers-in-their-own-fields).
 - **It fails anywhere else**, or the message does not make sense: do not change files
-  outside your folders. Open an issue on the template (its **Issues** → **New issue** →
-  **Blank issue**): what you did, what you expected, what happened, and the error. It is
-  public, so a made-up example, never your unpublished lesson text.
+  outside your folders. Report it on the template: its **Issues** → **New issue** →
+  **Bug report**
+  ([the form](https://github.com/lc-elearn/lc-base-template/issues/new?template=bug-report.yml)).
+  The form asks for what the maintainer needs, and reminds you that issues are public.
 - **What a folder is for:** [`STRUCTURE.md`](STRUCTURE.md).
