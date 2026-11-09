@@ -10,7 +10,7 @@ session, on either machine.
 | `2026-08-06-post-phase-d-handover.md` | state snapshot at end of Phase D, plus the §5 decision log |
 | [`../ROADMAP.md`](../ROADMAP.md)      | larger work beyond this queue, each with its trigger       |
 
-**Last updated:** 2026-11-06 · **HEAD:** see `git log` · **Suite:** 203 files · 2377 tests green
+**Last updated:** 2026-11-09 · **HEAD:** see `git log` · **Suite:** 203 files · 2382 tests green
 (Vitest) · 108 Playwright tests (36 × 3 browsers, `bun run test:e2e`) plus 99 on a `DEBUG=1` build (33 × 3, `e2e/debug/`) · CI green · `main` protected since 2026-10-21 (job E1).
 
 Non-negotiable constraints for every job below live in
@@ -2848,6 +2848,21 @@ rather than the Language Centre's course factory; the maintainer took three smal
   do, and a deliberate, recorded ruleset change as the only exception (untested).
   Display name **LC eLearning** (corrected 2026-11-03: LC means Language Centre;
   the `lc-elearn` handle is unchanged). **Not tested:** all of it; no organisation exists.
+- **E52 — the CULP programme specifications out, the CEFR grid in. DONE 2026-11-09**
+  (maintainer's request, branch `refactor/culp-cefr-grid`). The 21 programme
+  specifications (the `*_PS.pdf` sources, 2011–2012, `*-programme-spec.md` here) were
+  out of date and are deleted, with every link to them: the `programme_spec` line in 28
+  syllabi, the "Programme specifications" table in seven language hubs (their document
+  counts with it) and the index's column. The maintainer supplied the Council of
+  Europe's CEFR self-assessment grid, now
+  [`docs/culp-syllabi/european-framework-assessment.md`](../culp-syllabi/european-framework-assessment.md):
+  its body byte-identical to the file supplied, with a three-line frontmatter added
+  (`doc_type: cefr-grid`) so the index can link it and the test can read it. The README,
+  the `culp-syllabus` skill and the design spec (a dated "since" note) now read a
+  level's meaning from the grid's rows for the note's `cefr`, never inferred. The
+  test lost the programme-spec checks and gained `checkCefrGrid` (the grid has all six
+  levels in all five skill tables, the index lists it, every `cefr` value is A1–C2),
+  written failing first. 103 documents remain.
 - **E16 — after the organisation move, file `ORGANIZATION.md` under `docs/process/`.**
   Once steps 1–9 are done it is a record, not a guide; course repos inherit the file,
   so moving it keeps their top-level docs to what a course needs. Fix the links that
