@@ -110,8 +110,8 @@ in the template for every course. The full rule:
 
 The maintainer improves the template (a new exercise type, a fix) and opens an issue,
 "Template update ready", in your course repo, assigned to you; GitHub emails you. The
-issue has the steps and the pull request link, which fills in `Closes #N`, so the issue
-closes when you merge. Issues are public, like the repo: no unpublished lesson text,
+issue has the steps and the pull request link, which fills in the title ("Template
+update" and the date) and `Closes #N`, so the issue closes when you merge. Issues are public, like the repo: no unpublished lesson text,
 images or audio in a comment. The
 update reaches your course through a pull request **from an update branch inside your
 course repo**, never from the template's `main` and never through the **Sync fork**
