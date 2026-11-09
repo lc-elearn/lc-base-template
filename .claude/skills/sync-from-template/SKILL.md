@@ -38,6 +38,9 @@ How a fork and a linked copy each take an update:
    commit**, never squash or rebase
    (ORGANIZATION.md step 9 says why), once the code owner has approved it by the path
    ORGANIZATION.md step 6 records. If `main` moved meanwhile, merge it into the sync
-   branch; never rebase it. Then tell the user to let colleagues know. Their side is
+   branch; never rebase it. Then, with the user's agreement, open an issue in the course
+   repo, "Template update ready", assigned to its author, with the steps and the link
+   `https://github.com/lc-elearn/<course>/compare/main...sync-template?expand=1&body=Closes%20%23<N>`
+   (N is that issue's number), so merging closes it (ORGANIZATION.md step 9). Their side is
    `main` and then each open branch
    ([`COURSE_GUIDE.md` → "When the template changes"](../../../COURSE_GUIDE.md#when-the-template-changes)).
