@@ -7,6 +7,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, test } from 'vitest';
 import { AnswerFeedback } from './AnswerFeedback';
+import type { AnswerFeedback as Feedback } from './answer-feedback';
 
 describe('AnswerFeedback', () => {
   test.each([
@@ -100,5 +101,40 @@ describe('AnswerFeedback', () => {
       />,
     );
     expect(html).toContain('Try once more.');
+  });
+
+  // TODO §E54: a typed answer may accept more than one form.
+  const revealOf = (alsoAccepted: readonly string[]): Feedback => ({
+    kind: 'reveal',
+    answer: 'profesor',
+    segments: [{ text: 'profesor', differs: false }],
+    alsoAccepted,
+  });
+
+  test('a reveal lists the other accepted answers in the course language, after the answer', () => {
+    const html = renderToStaticMarkup(
+      <AnswerFeedback feedback={revealOf(['maestro', 'docente'])} contentLang="es" />,
+    );
+
+    expect(html).toContain('Also accepted:');
+    expect(html).toMatch(/<span lang="es"[^>]*>maestro · docente<\/span>/);
+    expect(html.indexOf('Also accepted:')).toBeGreaterThan(html.indexOf('profesor'));
+  });
+
+  test('one accepted answer: no "Also accepted" line', () => {
+    const html = renderToStaticMarkup(<AnswerFeedback feedback={revealOf([])} contentLang="es" />);
+    expect(html).not.toContain('Also accepted');
+  });
+
+  test('an exercise can reword the label', () => {
+    const html = renderToStaticMarkup(
+      <AnswerFeedback
+        feedback={revealOf(['maestro'])}
+        contentLang="es"
+        labels={{ alsoAccepted: 'Or:' }}
+      />,
+    );
+    expect(html).toContain('Or:');
+    expect(html).not.toContain('Also accepted');
   });
 });
