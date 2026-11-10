@@ -36,6 +36,7 @@ describe('AnswerFeedback', () => {
             { text: 'o', differs: true },
             { text: 's', differs: false },
           ],
+          alsoAccepted: [],
         }}
         contentLang="es"
       />,
@@ -59,6 +60,7 @@ describe('AnswerFeedback', () => {
         { text: 'o', differs: true },
         { text: 's', differs: false },
       ],
+      alsoAccepted: [],
     } as const;
     const withKey = renderToStaticMarkup(
       <AnswerFeedback feedback={feedback} contentLang="es" showKey />,
@@ -78,6 +80,7 @@ describe('AnswerFeedback', () => {
           kind: 'reveal',
           answer: 'los gatos',
           segments: [{ text: 'los gatos', differs: false }],
+          alsoAccepted: [],
         }}
         contentLang="es"
         showKey
