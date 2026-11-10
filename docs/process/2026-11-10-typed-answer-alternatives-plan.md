@@ -85,6 +85,13 @@ expected`). Show answers in inline-gap therefore needs no code change.
    `src/exercises/answer-validation.test.ts`, beside their existing "has no answer"
    tests, rather than in each engine's schema test (spec §8 says "each engine's schema
    test"); inline-gap's go in `inline-gap-schema.test.ts`.
+6. **Repeats are named as written.** The "accepts … twice" message quotes the later,
+   repeated alternative after the engine's normalizing, capitals kept (`[soy|Soy]` →
+   `accepts "Soy" twice`). Task 5's plan text expected "soy"; its test now expects "Soy"
+   (decided while implementing, commit `bb33721`).
+7. **Show answers in typed-transform and dictation fills the first alternative
+   trimmed** (`splitAlternatives` trims), so a table answer with surrounding spaces is no
+   longer filled byte-for-byte; the test name says so (commit `f338724`).
 
 ## File structure
 
