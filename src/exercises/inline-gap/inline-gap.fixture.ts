@@ -23,7 +23,8 @@ export const inlineGapFixtures: ShowcaseFixture[] = [
       content: {
         // Typed blanks: `[expected::placeholder]`. The text before `::` is graded
         // (accent-strict via normalizeAnswer); the optional hint after `::` becomes
-        // the input's placeholder. A wrong Check shows a character diff under the box.
+        // the input's placeholder. A wrong Check shows a hint, then the answer under
+        // the box; `|` separates answers that are all right.
         items: [
           {
             prompt: 'Conjuga «ser» y «llamarse» en presente.',
@@ -31,6 +32,9 @@ export const inlineGapFixtures: ShowcaseFixture[] = [
           },
           { text: 'Nosotros [vivimos::vivir] en Barcelona desde 2020.' },
           { text: 'Mi hermana [tiene::tener] veinte años y [estudia::estudiar] medicina.' },
+          // Three accepted answers (TODO §E54): `|` means "or", the first preferred.
+          // Show answers fills `profesor`; a revealed miss lists the others.
+          { text: 'Mi padre es [profesor|maestro|docente::su trabajo] en un colegio.' },
         ],
         footnote: 'Demo hint line — press Enter to jump to the next gap; accents count.',
       },
