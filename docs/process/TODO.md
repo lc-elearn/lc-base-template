@@ -2881,8 +2881,8 @@ rather than the Language Centre's course factory; the maintainer took three smal
   214 guards; here, the full gate on macOS. **Not tested:** this branch on Windows. Until
   a course takes it (step 9), authors on Windows use WSL. A Windows CI job, which would
   catch a removed `toPosixPath()` call, is ROADMAP item 8.
-- **E54 — typed answers accept more than one form. OPEN** (branch
-  `feat/typed-answer-alternatives`; spec
+- **E54 — typed answers accept more than one form. DONE 2026-11-10** (PR 90, merged
+  as `5662951`; spec
   [`2026-11-10-typed-answer-alternatives-design.md`](../specs/2026-11-10-typed-answer-alternatives-design.md),
   plan [`2026-11-10-typed-answer-alternatives-plan.md`](2026-11-10-typed-answer-alternatives-plan.md)).
   `|` means "or" in any typed answer, in inline-gap, typed-transform, dictation and
@@ -2894,9 +2894,9 @@ rather than the Language Centre's course factory; the maintainer took three smal
   Russian course: lessons 3 and 4 dropped seven alternatives the 2015 units accepted;
   course PR 8 (lesson 4) waits for this. **Verify:** the gate in AGENTS.md, and
   `DEBUG=1 bun run build && DEBUG=1 bun run test:e2e`
-  (`e2e/debug/typed-answer-alternatives.spec.ts`). **Next, after merge:** a "Done
-  recently" row with the merge SHA, this item marked DONE, and each course takes it with
-  its next update.
+  (`e2e/debug/typed-answer-alternatives.spec.ts`). **Next:** each course takes it with
+  its next update; the Russian course then restores the dropped alternatives in lessons
+  3 and 4, checks lessons 1 and 2 against the 2015 units, and merges PR 8.
 - **E16 — after the organisation move, file `ORGANIZATION.md` under `docs/process/`.**
   Once steps 1–9 are done it is a record, not a guide; course repos inherit the file,
   so moving it keeps their top-level docs to what a course needs. Fix the links that
@@ -3164,3 +3164,4 @@ build, so it cannot return. Two remain:
 | 2026-10-21 | `f56d9d0` | **Code style debug page** — `code-style.html` renders `docs/STYLE.md`, with real examples from `src/` (E26)                                                         |
 | 2026-10-21 | `e573fdd` | **kebab-case module names** — eleven camelCase modules renamed; `file-names.test.ts` enforces the shapes (E27)                                                      |
 | 2026-10-21 | `35b36d6` | **third review's defects** — exercises checked at load, reserved page names, the playlist's gap; PR 31 (E28)                                                        |
+| 2026-11-10 | `5662951` | **typed answers accept more than one form** — `\|` means "or" in the four typed engines, the first preferred, the rest "Also accepted"; PR 90 (E54)                 |
