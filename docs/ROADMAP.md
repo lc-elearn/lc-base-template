@@ -150,9 +150,10 @@ imported by 17 source files). Content in any variety can already be written and
 recorded, and a title can say which variety it is, but all of it carries the course's
 code. Modals and hover cards take their own `lang`
 ([`src/config/lo-schema.ts`](../src/config/lo-schema.ts)); exercises and blocks do not.
-A typed answer has one expected form (`answer` in
-[`text-entry-schema.ts`](../src/exercises/text-entry/text-entry-schema.ts),
-`[expected::hint]` in the typed gap), so `fato` and `facto` cannot both be right. Region
+A typed answer can accept more than one form, split by `|`, the preferred first
+(`[fato|facto::hint]` in the typed gap, `"answer": "fato|facto"` in
+[`text-entry-schema.ts`](../src/exercises/text-entry/text-entry-schema.ts); TODO §E54), but
+every learner is offered the same forms, whatever their variety. Region
 codes already read well: the flashcards name the language with `Intl.DisplayNames`,
 which gives "Brazilian Portuguese" for `pt-BR`, "European Portuguese" for `pt-PT` and
 "Arabic (Syria)" for `ar-SY`.
@@ -176,7 +177,7 @@ which gives "Brazilian Portuguese" for `pt-BR`, "European Portuguese" for `pt-PT
   choice applies after hydration. The spec decides whether that swap is acceptable or
   the choice is applied before the first paint.
 - **Typed answers that accept more than one form** (`fato` or `facto`): taken out of this
-  item and built on its own with `|` as the separator (`[fato|facto]`, TODO §E54,
+  item and shipped on its own with `|` as the separator (`[fato|facto]`, TODO §E54,
   [`docs/specs/2026-11-10-typed-answer-alternatives-design.md`](specs/2026-11-10-typed-answer-alternatives-design.md)).
   Each exercise type reads its own blanks, so choice blanks keep `|` too.
 - **Budget.** The headroom is 2.82 kB of JS and 1.04 kB of CSS
