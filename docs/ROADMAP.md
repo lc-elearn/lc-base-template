@@ -175,8 +175,10 @@ which gives "Brazilian Portuguese" for `pt-BR`, "European Portuguese" for `pt-PT
 - **The prerender.** Pages are built with the first variety, so a remembered other
   choice applies after hydration. The spec decides whether that swap is acceptable or
   the choice is applied before the first paint.
-- **Typed answers that accept more than one form** (`fato` or `facto`), useful with or
-  without the switch. The separator cannot be `|`: choice blanks already use it.
+- **Typed answers that accept more than one form** (`fato` or `facto`): taken out of this
+  item and built on its own with `|` as the separator (`[fato|facto]`, TODO §E54,
+  [`docs/specs/2026-11-10-typed-answer-alternatives-design.md`](specs/2026-11-10-typed-answer-alternatives-design.md)).
+  Each exercise type reads its own blanks, so choice blanks keep `|` too.
 - **Budget.** The headroom is 2.82 kB of JS and 1.04 kB of CSS
   ([`docs/TOOLING.md`](TOOLING.md), "Bundle budget"), so the switch loads only in a
   course that lists varieties.
