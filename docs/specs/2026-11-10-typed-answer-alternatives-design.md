@@ -1,6 +1,6 @@
 # Typed answers — more than one correct answer (E54)
 
-**Date:** 2026-11-10 · **Status:** designed, not built
+**Date:** 2026-11-10 · **Status:** built 2026-11-10 (TODO §E54)
 **TODO:** §E54 · **Takes over:** the "typed answers that accept more than one form" bullet of
 [ROADMAP item 7](../ROADMAP.md) (language varieties), which now ships on its own
 
@@ -78,12 +78,12 @@ the three engine wrappers (`inline-gap-grading.ts`, `text-entry-grading.ts`,
 The schemas refuse an answer no learner could match, with a plain message, before any
 page is written (TODO §E34, §E35, §E42).
 
-| Fault                                                 | Message                                               |
-| ----------------------------------------------------- | ----------------------------------------------------- |
-| an empty alternative: `[a\|\|b]`, `[a\|]`, `"a\|"`    | `has an empty answer: remove the extra \|`            |
-| the same alternative twice, compared as grading does  | `accepts "x" twice: each answer must differ`          |
-| a `*` in an inline-gap answer (a pasted choice blank) | `is written as a choice` (as today, now on `*` only)  |
-| dictation: an alternative that is only punctuation    | the existing "has no answer" wording, per alternative |
+| Fault                                                 | Message                                                  |
+| ----------------------------------------------------- | -------------------------------------------------------- |
+| an empty alternative: `[a\|\|b]`, `[a\|]`, `"a\|"`    | `has an empty answer: remove the extra \|`               |
+| the same alternative twice, compared as grading does  | `accepts "x" twice: each answer must differ`             |
+| a `*` in an inline-gap answer (a pasted choice blank) | `is written as a choice` (as today, now on `*` only)     |
+| dictation: an alternative that is only punctuation    | `has nothing to type` (the E42 message), per alternative |
 
 - **Inline-gap** (`inputBlankProblems` in `parsing.ts`) judges each alternative decoded,
   as the learner's answer is graded (§E35). Today's `|` test becomes the empty-answer and
