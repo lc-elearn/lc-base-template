@@ -2879,7 +2879,8 @@ rather than the Language Centre's course factory; the maintainer took three smal
   already accepts either separator, and five places already converted inline; later the
   same day those five call `toPosixPath()` too, a refactor with no change in behaviour). **Tested:** on Windows by the author, with this fix: 2377 of 2377 tests, 214 of
   214 guards; here, the full gate on macOS. **Not tested:** this branch on Windows. Until
-  a course takes it (step 9), authors on Windows use WSL.
+  a course takes it (step 9), authors on Windows use WSL. A Windows CI job, which would
+  catch a removed `toPosixPath()` call, is ROADMAP item 8.
 - **E16 — after the organisation move, file `ORGANIZATION.md` under `docs/process/`.**
   Once steps 1–9 are done it is a record, not a guide; course repos inherit the file,
   so moving it keeps their top-level docs to what a course needs. Fix the links that

@@ -192,3 +192,27 @@ side by side? That is a comparison view, more work than a switch.
 **Start when** the first course that needs a switch is planned (Portuguese, Spanish, or
 an Arabic course across dialects), after the organisation move (TODO §E2). An Arabic
 course needs item 1 first, so build the switch with text direction in mind.
+
+## 8. The checks on Windows in CI
+
+**Why.** CI runs on Linux only (`runs-on: ubuntu-latest` in
+[`.github/workflows/ci.yml`](../.github/workflows/ci.yml)), but authors also work on
+Windows. Template issue 85 showed the gap: on Windows, Node's `path.relative` and
+`path.join` return backslashes, so a path compared with a `/` string passes on Linux and
+fails there.
+
+**Today.** E53 added `toPosixPath()` ([`src/build/posix-path.ts`](../src/build/posix-path.ts)),
+and every place that compares such a path now goes through it. Its own test builds a
+Windows path with `path.win32`, so the helper is checked on any OS. The call sites are
+not. A removed `toPosixPath()` call, or a new comparison written without one, keeps
+Linux CI green and breaks `bun run guards`, and so the pre-push hook, on Windows only.
+
+**What it touches.** A `windows-latest` job in `ci.yml` that runs what the pre-push hook
+runs (`bun run guards`, `bun run test`). Browser tests stay on Linux. Ruleset A
+requires five named checks in every course (ORGANIZATION step 6), so the new job runs
+beside them, not required, until it has proved stable; making it required means
+changing ruleset A in every course too. It adds a Windows runner's minutes to every
+run.
+
+**Start when** another Windows-only failure reaches an author, or before more authors
+start on Windows.
