@@ -33,8 +33,9 @@ export const inlineGapFixtures: ShowcaseFixture[] = [
           { text: 'Nosotros [vivimos::vivir] en Barcelona desde 2020.' },
           { text: 'Mi hermana [tiene::tener] veinte años y [estudia::estudiar] medicina.' },
           // Three accepted answers (TODO §E54): `|` means "or", the first preferred.
-          // Show answers fills `profesor`; a revealed miss lists the others.
-          { text: 'Mi padre es [profesor|maestro|docente::su trabajo] en un colegio.' },
+          // Each is the present of «ducharse»; Show answers fills `se está duchando`, and
+          // a revealed miss lists the others.
+          { text: 'Ahora mismo Ana [se está duchando|está duchándose|se ducha::ducharse].' },
         ],
         footnote: 'Demo hint line — press Enter to jump to the next gap; accents count.',
       },
