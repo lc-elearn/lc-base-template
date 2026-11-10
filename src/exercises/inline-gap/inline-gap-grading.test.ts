@@ -63,3 +63,16 @@ test('gradeInlineGap: an encoded accented answer grades its decoded form', () =>
   expect(gradeInlineGap(blanks, { 0: 'café' }, 1).checkedResults[0]).toBe(true);
   expect(gradeInlineGap(blanks, { 0: 'cafe' }, 1).checkedResults[0]).toBe(false);
 });
+
+// TODO §E54: `|` means "or"; the first answer is the preferred one.
+test('gradeInlineGap: any of a blank’s answers passes', () => {
+  const blanks = [parseInputBlank('profesor|maestro|docente', 0).meta];
+  expect(gradeInlineGap(blanks, { 0: 'maestro' }, 1).checkedResults[0]).toBe(true);
+  expect(gradeInlineGap(blanks, { 0: 'docente' }, 1).checkedResults[0]).toBe(true);
+  expect(gradeInlineGap(blanks, { 0: 'pintor' }, 1).checkedResults[0]).toBe(false);
+});
+
+test('fillInlineGapAnswers: fills each blank with its preferred (first) answer', () => {
+  const blanks = [parseInputBlank('profesor|maestro|docente', 0).meta];
+  expect(fillInlineGapAnswers(blanks, 1).values).toEqual({ 0: 'profesor' });
+});
