@@ -3,7 +3,12 @@ import { test, expect } from 'vitest';
 import { parseInputBlank, type InputMeta } from '@/exercises/lib/parsing';
 import { gradeInlineGap, fillInlineGapAnswers } from './inline-gap-grading';
 
-const meta = (expected: string): InputMeta => ({ expected, placeholder: '', widthCh: 8 });
+const meta = (expected: string): InputMeta => ({
+  expected,
+  accepted: [expected],
+  placeholder: '',
+  widthCh: 8,
+});
 
 test('gradeInlineGap: correct typed answer passes', () => {
   expect(gradeInlineGap([meta('chat')], { 0: 'chat' }, 1).checkedResults[0]).toBe(true);

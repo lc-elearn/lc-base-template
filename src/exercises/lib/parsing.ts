@@ -5,6 +5,7 @@
  * Authored text embeds blanks inside square brackets:
  *   "Yo [soy|*es|eres] aquí."          choice blank — `*` marks the correct option
  *   "Je [mange::type here] du pain."   typed-answer blank — `expected::placeholder`
+ *   "Il est [prof|enseignant::métier]." several answers split by `|`, the first preferred
  *
  * `parseSentence` walks the string once and yields an ordered segment list:
  *   - text segments  → { key, type: 'text', value }   (HTML entities decoded)
@@ -20,6 +21,7 @@
  * Spec: docs/specs/2026-06-19-exercise-engines-design.md §8.
  */
 import { normalizeAnswer } from './answers';
+import { splitAlternatives } from './answer-alternatives';
 import { decodeHtmlEntities } from './html';
 
 /** A run of literal text between blanks (entities already decoded). */
@@ -148,11 +150,14 @@ export function parseChoiceBlank(
   };
 }
 
-/** Metadata for a typed-answer blank: the expected text, an optional hint, a width. */
+/** Metadata for a typed-answer blank: the answers it accepts, an optional hint, a width. */
 export interface InputMeta {
+  /** The preferred answer, decoded: `accepted[0]`. Show answers fills it in. */
   expected: string;
+  /** Every answer the blank accepts, decoded, in authored order (TODO §E54). */
+  accepted: string[];
   placeholder: string;
-  /** Suggested input width in `ch` (expected length, floored at 6, plus 2 padding). */
+  /** Suggested input width in `ch`: the longest answer, floored at 6, plus 2 padding. */
   widthCh: number;
 }
 
@@ -172,20 +177,23 @@ function splitInputBlank(rawInner: string): { answer: string; hint: string } {
 
 /**
  * Blank handler for typed-answer blanks: `[expected::placeholder]`. The token is split
- * on `::` into the expected answer and an optional placeholder hint, each then
- * entity-decoded and trimmed. `widthCh` sizes the input to the expected answer
- * (min 6 chars) so short and long blanks each get a sensible default width.
+ * on `::` into the answer and an optional placeholder hint; the answer is split on `|`
+ * into the answers the blank accepts (TODO §E54), and only then is each entity-decoded
+ * and trimmed, so `&#124;` is a `|` the learner types. `expected` is the first, preferred
+ * answer. `widthCh` sizes the input to the LONGEST answer (min 6 chars), so the width
+ * does not give the preferred one away.
  */
 export function parseInputBlank(
   rawInner: string,
   blankIndex: number,
 ): BlankParseResult<InputMeta, InputSegment> {
   const { answer, hint } = splitInputBlank(rawInner);
-  const expected = decodeHtmlEntities(answer).trim();
+  const accepted = splitAlternatives(answer).map((written) => decodeHtmlEntities(written).trim());
   const placeholder = decodeHtmlEntities(hint).trim();
+  const longest = Math.max(...accepted.map((alternative) => alternative.length));
 
   return {
-    meta: { expected, placeholder, widthCh: Math.max(expected.length, 6) + 2 },
+    meta: { expected: accepted[0], accepted, placeholder, widthCh: Math.max(longest, 6) + 2 },
     segment: { blankIndex, key: `input-${blankIndex}`, type: 'input' },
   };
 }
