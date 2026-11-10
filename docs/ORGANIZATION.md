@@ -12,7 +12,7 @@ repos and the colleagues) follow, top to bottom, on the course day.
 > course's language) was merged into `sync-template` on all four courses (TODO, update of that day), and French and
 > Russian merged it (PR 2 in each). **2026-11-10**: template `0ca46ea` (the CEFR grid) went onto `sync-template`
 > in all four courses, a fresh one in French and Russian, whose author opened PR 4 in each; the Windows fix
-> (template issue 85, `0409ff9`) follows on the same branches (TODO, update of that day). Next: the authors
+> (template issue 85, `0409ff9`) went onto the same branches later that day (TODO, update of that day). Next: the authors
 > open and merge those update pull requests (Spanish's is pilot R13), then the rest of the rules pilot.
 >
 > **Decided 2026-10-12:** the template stayed under `pedbad` until the remaining template
