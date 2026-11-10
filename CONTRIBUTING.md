@@ -297,16 +297,27 @@ something is still wrong. Each type's `content` shape is its
 Design: [`docs/specs/2026-06-19-exercise-engines-design.md`](docs/specs/2026-06-19-exercise-engines-design.md)
 §5–6; the schema is `ExerciseOptionsSchema` in `src/config/lo-schema.ts`.
 
+### More than one right answer
+
+In a typed answer (inline-gap, typed-transform, dictation, conjugation), `|` means "or":
+`[в семейном кругу|в кругу семьи|в семье::in the family circle]` in a sentence,
+`"answer": "обеспеченные|состоятельные|богатые"` in its own field. Any number of answers
+may be given, and any of them is marked right; the first is the preferred one. Show
+answers fills in the first, and a wrong answer, once revealed, is shown as the one
+closest to what the learner typed, with the others under "Also accepted:". None may be
+empty, and no two may grade the same: capitals count only with `caseSensitive`, and
+dictation also ignores punctuation (TODO §E54).
+
 ### Blanks in a sentence
 
 Three exercise types write their blanks inside the sentence, in square brackets. The
 build reads each blank the way the exercise will, and refuses one no learner could
 answer, before any page is written (TODO §E34).
 
-| Type                  | A blank                                             | Rules                                                                                                                                                                           |
-| --------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| select, inline-choice | `[*soy\|eres\|es]`                                  | Options split by `\|`. Exactly one is marked `*` as correct. No empty option, none twice.                                                                                       |
-| inline-gap            | `[llamo::llamarse]`, `[profesor\|maestro::trabajo]` | The answer, then optionally `::` and a hint shown in the empty box. The answer is needed. Several right answers are split by `\|`, the preferred first: none empty, none twice. |
+| Type                  | A blank                                             | Rules                                                                                                                                                                                      |
+| --------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| select, inline-choice | `[*soy\|eres\|es]`                                  | Options split by `\|`. Exactly one is marked `*` as correct. No empty option, none twice.                                                                                                  |
+| inline-gap            | `[llamo::llamarse]`, `[profesor\|maestro::trabajo]` | The answer, then optionally `::` and a hint shown in the empty box. The answer is needed. `\|` separates several right answers: [More than one right answer](#more-than-one-right-answer). |
 
 Brackets only make blanks: each `[` closes with a `]`, with no bracket inside. To show a
 bracket as text, write it as an HTML entity, `&#91;` or `&#93;`. A sentence
@@ -323,11 +334,9 @@ answers as the learner sees them, decoded: `[*é|&eacute;]` offers `é` twice, a
 an accent is encoded and the apostrophe's shape (`l'eau`, `l’eau`) do not make two options
 differ; a capital or an accent does (TODO §E35).
 
-In an inline-gap, `|` means "or": `[в семейном кругу|в кругу семьи|в семье::in the family
-circle]` accepts any of the three. Show answers fills in the first, and a revealed answer
-lists the others under "Also accepted:". The box is as wide as the longest. `&#124;` is a
-`|` the learner types, never an "or". Two answers are the same when grading would accept
-both the same way: capitals count only with `caseSensitive` (TODO §E54).
+In an inline-gap, `|` separates several right answers
+([More than one right answer](#more-than-one-right-answer)). The box is as wide as the longest
+of them, and `&#124;` is a `|` the learner types, never an "or".
 
 When a blank is wrong, the build stops and says where and what:
 
@@ -374,12 +383,9 @@ labels differ; a capital or an accent does.
 | drag-fill-gaps, word-spot               | `[word]` in `text`        | an empty `[ ]`                                                                                                        |
 | conjugation                             | `answerMode`              | `"choice"`: not built yet, so a learner would see only a notice                                                       |
 
-A typed answer may accept more than one form: `"answer": "обеспеченные|состоятельные|богатые"`.
-`|` means "or" and the first is the preferred one: Show answers fills it in, and a wrong
-answer, once revealed, is shown as the form closest to the learner's with the others under
-"Also accepted:". Two forms are the same when that exercise would grade them the same:
-capitals fold unless `caseSensitive`, and dictation also ignores punctuation. These fields
-are judged as written, so an answer here cannot hold a literal `|` (TODO §E54).
+A typed `answer` may hold several right answers split by `|`
+([More than one right answer](#more-than-one-right-answer)). These fields are judged as
+written, so an answer here cannot hold a literal `|`.
 
 Repeated words are fine where real sentences repeat them: in word-order, phrase-reorder
 and drag-fill-gaps a card or tile is marked right wherever it shows the right word, so
