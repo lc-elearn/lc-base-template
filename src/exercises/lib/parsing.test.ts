@@ -66,6 +66,29 @@ describe('parseInputBlank', () => {
     expect(parseInputBlank('anticonstitutionnel', 0).meta.widthCh).toBe(21); // 19+2
   });
 
+  // TODO §E54: `|` means "or" in a typed answer; the first is the preferred one.
+  test('reads every answer split by |, the preferred first', () => {
+    const { meta } = parseInputBlank(
+      ' в семейном кругу | в кругу семьи|в семье :: in the family circle',
+      0,
+    );
+    expect(meta.accepted).toEqual(['в семейном кругу', 'в кругу семьи', 'в семье']);
+    expect(meta.expected).toBe('в семейном кругу');
+    expect(meta.placeholder).toBe('in the family circle');
+  });
+
+  test('one answer is a list of one', () => {
+    expect(parseInputBlank('mange::manger', 0).meta.accepted).toEqual(['mange']);
+  });
+
+  test('widthCh fits the longest answer, so the width does not give the preferred one away', () => {
+    expect(parseInputBlank('va|anticonstitutionnel', 0).meta.widthCh).toBe(21); // 19+2
+  });
+
+  test('decodes each answer after the split: &#124; is text, never an "or"', () => {
+    expect(parseInputBlank('a&#124;b|caf&eacute;', 0).meta.accepted).toEqual(['a|b', 'café']);
+  });
+
   test('feeds parseSentence to produce input segments', () => {
     const blanksMeta: InputMeta[] = [];
     const { segments, nextBlankIndex } = parseSentence('Je [mange::indice] du pain.', {
@@ -74,7 +97,12 @@ describe('parseInputBlank', () => {
     });
     expect(segments.map((s) => s.type)).toEqual(['text', 'input', 'text']);
     expect(nextBlankIndex).toBe(1);
-    expect(blanksMeta[0]).toEqual({ expected: 'mange', placeholder: 'indice', widthCh: 8 });
+    expect(blanksMeta[0]).toEqual({
+      expected: 'mange',
+      accepted: ['mange'],
+      placeholder: 'indice',
+      widthCh: 8,
+    });
   });
 });
 
