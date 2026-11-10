@@ -2881,6 +2881,22 @@ rather than the Language Centre's course factory; the maintainer took three smal
   214 guards; here, the full gate on macOS. **Not tested:** this branch on Windows. Until
   a course takes it (step 9), authors on Windows use WSL. A Windows CI job, which would
   catch a removed `toPosixPath()` call, is ROADMAP item 8.
+- **E54 — typed answers accept more than one form. OPEN** (branch
+  `feat/typed-answer-alternatives`; spec
+  [`2026-11-10-typed-answer-alternatives-design.md`](../specs/2026-11-10-typed-answer-alternatives-design.md),
+  plan [`2026-11-10-typed-answer-alternatives-plan.md`](2026-11-10-typed-answer-alternatives-plan.md)).
+  `|` means "or" in any typed answer, in inline-gap, typed-transform, dictation and
+  conjugation; the first is preferred and Show answers fills it in. A wrong answer is
+  hinted at and revealed against the closest form, and the reveal lists the others under
+  "Also accepted:" (new UI string `alsoAccepted`). The build refuses an empty alternative
+  and one accepted twice, compared as grading compares them; "twice" is checked on the
+  exercise envelope, the only schema that sees `options.caseSensitive`. Found by the
+  Russian course: lessons 3 and 4 dropped seven alternatives the 2015 units accepted;
+  course PR 8 (lesson 4) waits for this. **Verify:** the gate in AGENTS.md, and
+  `DEBUG=1 bun run build && DEBUG=1 bun run test:e2e`
+  (`e2e/debug/typed-answer-alternatives.spec.ts`). **Next, after merge:** a "Done
+  recently" row with the merge SHA, this item marked DONE, and each course takes it with
+  its next update.
 - **E16 — after the organisation move, file `ORGANIZATION.md` under `docs/process/`.**
   Once steps 1–9 are done it is a record, not a guide; course repos inherit the file,
   so moving it keeps their top-level docs to what a course needs. Fix the links that
