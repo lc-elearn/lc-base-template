@@ -2876,8 +2876,8 @@ rather than the Language Centre's course factory; the maintainer took three smal
   still hands Vite native paths. Its colocated test builds the Windows path with
   `path.win32`, so the conversion is checked on any OS; written failing first. A sweep of
   `src/` for other native paths compared with `/` strings found none (`token-integrity`
-  already accepts either separator, and five places already convert inline, left as they
-  are). **Tested:** on Windows by the author, with this fix: 2377 of 2377 tests, 214 of
+  already accepts either separator, and five places already converted inline; later the
+  same day those five call `toPosixPath()` too, a refactor with no change in behaviour). **Tested:** on Windows by the author, with this fix: 2377 of 2377 tests, 214 of
   214 guards; here, the full gate on macOS. **Not tested:** this branch on Windows. Until
   a course takes it (step 9), authors on Windows use WSL.
 - **E16 — after the organisation move, file `ORGANIZATION.md` under `docs/process/`.**
