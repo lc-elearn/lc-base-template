@@ -9,6 +9,7 @@ import { isValidElement, type ReactElement, type ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { test, expect } from 'vitest';
 import { ExerciseHost } from '@/exercises/lib/ExerciseHost';
+import { assembleLo } from './assemble-lo';
 import { loadLo } from './load-lo-disk';
 import { toPageSections } from './lo-page-sections';
 import { ModalProvider } from './rich-text/modal/ModalProvider';
@@ -202,4 +203,32 @@ test('toPageSections: plain and card blocks sit in the same container, so edges 
   for (const id of ['introduction', 'grammar']) {
     expect(renderSection(id)).toContain('class="space-y-3"');
   }
+});
+
+test('an exercise set renders as one accordion holding its tabs (E57)', () => {
+  const lo = assembleLo('lo-01-x', {
+    manifest: {
+      title: 'X',
+      sections: [
+        {
+          id: 'exercises',
+          label: 'Exercises',
+          exercises: [
+            { title: 'Parts', tabs: [{ exercise: '03-select' }, { exercise: '04-select' }] },
+          ],
+        },
+      ],
+    },
+    blocks: {},
+    exercises: {
+      '03-select': { type: 'select', title: 'Part 1', content: { items: [{ text: 'a [*b|c]' }] } },
+      '04-select': { type: 'select', title: 'Part 2', content: { items: [{ text: 'd [*e|f]' }] } },
+    },
+  });
+  const html = renderToStaticMarkup(<>{toPageSections(lo)[0]?.content}</>);
+
+  expect(html).toContain('id="exercise-set-03-select-heading"');
+  expect(html).toContain('>Parts<');
+  expect(html).toContain('aria-label="Parts"');
+  expect(html.split('role="tabpanel"').length - 1).toBe(2);
 });

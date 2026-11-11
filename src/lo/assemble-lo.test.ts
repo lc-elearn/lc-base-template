@@ -5,7 +5,8 @@
  */
 import { test, expect } from 'vitest';
 import { exerciseConfigSchema } from '@/exercises/exercise-schemas';
-import { assembleLo, type LoFileTree } from './assemble-lo';
+import { EXERCISE_INSTRUCTIONS } from '@/exercises/lib/instructions';
+import { assembleLo, isExerciseSet, type LoFileTree } from './assemble-lo';
 
 /** A valid two-section tree used as the base for the cases below. */
 function validTree(): LoFileTree {
@@ -44,10 +45,9 @@ test('assembleLo: returns sections and their items in declared order', () => {
   expect(lo.description).toBe('Greet people');
   expect(lo.sections.map((section) => section.id)).toEqual(['grammar', 'exercises']);
   expect(lo.sections[0].navLabel).toBe('Grammar');
-  expect(lo.sections[1].exercises.map((exercise) => exercise.ref)).toEqual([
-    '01-select',
-    '02-radio-quiz',
-  ]);
+  expect(
+    lo.sections[1].exercises.map((exercise) => !isExerciseSet(exercise) && exercise.ref),
+  ).toEqual(['01-select', '02-radio-quiz']);
 });
 
 test('assembleLo: carries the manifest card image through to the assembled LO', () => {
@@ -89,7 +89,8 @@ test('assembleLo: resolves each ref to its parsed config', () => {
   expect(lo.sections[0].blocks[0].config.type).toBe('grammar');
   // Schema defaults are applied, so renderers never re-derive them.
   expect(lo.sections[0].blocks[0].config.defaultOpen).toBe(false);
-  expect(lo.sections[1].exercises[0].config.type).toBe('select');
+  const first = lo.sections[1].exercises[0];
+  expect(first !== undefined && !isExerciseSet(first) && first.config.type).toBe('select');
 });
 
 test('assembleLo: a section with no exercises gets an empty list, not undefined', () => {
@@ -234,4 +235,106 @@ test('assembleLo: a popup may hold an <h3>, and credits is carried through (E56)
 
 test('assembleLo: omits credits entirely when the manifest declares none', () => {
   expect('credits' in assembleLo('lo-01-salutations', validTree())).toBe(false);
+});
+
+// --- Exercise sets (E57) ---------------------------------------------------------
+
+/** validTree's files plus three tab exercises, with `set` listed after 01-select. */
+function treeWithSet(set: object): LoFileTree {
+  const tree = validTree();
+  return {
+    ...tree,
+    manifest: {
+      title: 'Salutations',
+      sections: [{ id: 'exercises', label: 'Exercises', exercises: ['01-select', set] }],
+    },
+    exercises: {
+      ...tree.exercises,
+      '03-select': { type: 'select', title: 'Part 1', content: { items: [{ text: 'a [*b|c]' }] } },
+      '04-select': { type: 'select', title: 'Part 2', content: { items: [{ text: 'd [*e|f]' }] } },
+      '05-inline-choice': {
+        type: 'inline-choice',
+        title: 'Part 3',
+        content: { items: [{ text: 'g [*h|i]' }] },
+      },
+    },
+  };
+}
+
+test('assembleLo: a set resolves its tabs in order, with their media (E57)', () => {
+  const lo = assembleLo(
+    'lo-01-salutations',
+    treeWithSet({
+      title: 'Parts',
+      tabs: [
+        { exercise: '03-select' },
+        { exercise: '04-select', media: { audio: { src: 'audio/x.m4a' } } },
+      ],
+    }),
+    exerciseConfigSchema,
+  );
+  const set = lo.sections[0]?.exercises[1];
+  if (set === undefined || !isExerciseSet(set)) throw new Error('expected a set');
+
+  expect(set.id).toBe('exercise-set-03-select');
+  expect(set.title).toBe('Parts');
+  expect(set.instructions).toBe(EXERCISE_INSTRUCTIONS.select);
+  expect(set.tabs.map((tab) => [tab.ref, tab.config.title])).toEqual([
+    ['03-select', 'Part 1'],
+    ['04-select', 'Part 2'],
+  ]);
+  expect(set.tabs[1]?.media).toEqual({ audio: { src: 'audio/x.m4a' } });
+});
+
+test('assembleLo: a set of different engines must write its instructions (S2)', () => {
+  const tabs = [{ exercise: '03-select' }, { exercise: '05-inline-choice' }];
+
+  expect(() => assembleLo('lo-01-salutations', treeWithSet({ title: 'Mixed', tabs }))).toThrow(
+    /lo-config\/lo-01-salutations\/lo\.json[\s\S]*"Mixed"[\s\S]*write its instructions/,
+  );
+  const lo = assembleLo(
+    'lo-01-salutations',
+    treeWithSet({ title: 'Mixed', instructions: 'Do all three.', tabs }),
+  );
+  const set = lo.sections[0]?.exercises[1];
+  expect(set !== undefined && isExerciseSet(set) && set.instructions).toBe('Do all three.');
+});
+
+test('assembleLo: two tabs titled alike fail — the title is the tab label', () => {
+  const tree = treeWithSet({
+    title: 'Parts',
+    tabs: [{ exercise: '03-select' }, { exercise: '04-select' }],
+  });
+  const exercises = {
+    ...tree.exercises,
+    '04-select': { ...(tree.exercises['04-select'] as object), title: 'Part 1' },
+  };
+
+  expect(() => assembleLo('lo-01-salutations', { ...tree, exercises })).toThrow(
+    /two tabs titled "Part 1"/,
+  );
+});
+
+test('assembleLo: a tab naming a missing exercise names the file', () => {
+  expect(() =>
+    assembleLo(
+      'lo-01-salutations',
+      treeWithSet({ title: 'Parts', tabs: [{ exercise: '03-select' }, { exercise: '09-select' }] }),
+    ),
+  ).toThrow(/lo-config\/lo-01-salutations\/exercises\/09-select\/exercise\.json is missing/);
+});
+
+test("assembleLo: a tab's exercise is checked against its engine's schema", () => {
+  const tree = treeWithSet({
+    title: 'Parts',
+    tabs: [{ exercise: '03-select' }, { exercise: '04-select' }],
+  });
+  const exercises = {
+    ...tree.exercises,
+    '04-select': { type: 'select', title: 'Part 2', content: {} },
+  };
+
+  expect(() =>
+    assembleLo('lo-01-salutations', { ...tree, exercises }, exerciseConfigSchema),
+  ).toThrow(/exercises\/04-select\/exercise\.json is invalid/);
 });
