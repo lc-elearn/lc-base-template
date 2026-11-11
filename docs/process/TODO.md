@@ -2943,7 +2943,7 @@ rather than the Language Centre's course factory; the maintainer took three smal
   expressions") with its next update. Merged as `64b878f`. **Found while building, fixed by E58:** the LO
   envelope dropped engine-only options such as flashcards' `srs`, so a set of such decks
   could not say so in its box; it now does, and a loader test proves it.
-- **E58 — a lesson's flashcards keep their own options. DONE 2026-11-11** (branch
+- **E58 — a lesson's flashcards keep their own options. DONE 2026-11-11** (PR 100, branch
   `fix/lo-engine-options`; found while building E57). The LO envelope's `options` was a
   plain `z.object`, so Zod stripped every key it did not know, and what `assembleLo` hands
   the page is the envelope's parse: a lesson's flashcards deck lost `srs`, `direction` and
