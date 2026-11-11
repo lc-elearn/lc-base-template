@@ -24,10 +24,10 @@ test('loadLo (glob): loads the example LO with its sections in order', () => {
     'exercises',
     'sources',
   ]);
-  // The exercises section holds both exercises, in manifest order.
+  // The exercises section holds both exercises and, between them, an exercise set (E57).
   expect(
     lo.sections[3].exercises.map((entry) => (isExerciseSet(entry) ? entry.id : entry.ref)),
-  ).toEqual(['01-select', '02-radio-quiz']);
+  ).toEqual(['01-select', 'exercise-set-03-drag-fill-gaps', '02-radio-quiz']);
   // Parts are resolved, not left as refs.
   expect(lo.sections[0].blocks[0].config.type).toBe('intro');
   // The intro is the example's PLAIN block — no accordion, so no defaultOpen. It
