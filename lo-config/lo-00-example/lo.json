@@ -32,6 +32,7 @@
       "blocks": ["08-sources"]
     }
   ],
-  "modals": ["example-popup", "conjugation"],
-  "hovers": ["lo-json"]
+  "modals": ["example-popup", "conjugation", "credits"],
+  "hovers": ["lo-json"],
+  "credits": "credits"
 }
