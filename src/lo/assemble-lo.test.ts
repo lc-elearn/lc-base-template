@@ -217,3 +217,21 @@ test('assembleLo: passes a valid tree through the engine schemas unchanged', () 
     assembleLo('lo-01-salutations', validTree()),
   );
 });
+
+test('assembleLo: a popup may hold an <h3>, and credits is carried through (E56)', () => {
+  const tree = validTree();
+  const lo = assembleLo('lo-01-salutations', {
+    ...tree,
+    manifest: { ...(tree.manifest as object), modals: ['credits'], credits: 'credits' },
+    modals: { credits: { title: 'Credits', content: ['Made by us.', '<h3>Team</h3>'] } },
+  });
+  expect(lo.credits).toBe('credits');
+  expect(lo.modals.credits.content[1]).toEqual({
+    kind: 'heading',
+    children: [{ kind: 'text', value: 'Team' }],
+  });
+});
+
+test('assembleLo: omits credits entirely when the manifest declares none', () => {
+  expect('credits' in assembleLo('lo-01-salutations', validTree())).toBe(false);
+});

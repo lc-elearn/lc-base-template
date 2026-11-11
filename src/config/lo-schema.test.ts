@@ -390,3 +390,34 @@ test('lo-schema: hovers defaults to none and takes kebab-case ids', () => {
   expect(LoManifestSchema.parse({ ...base, hovers: ['lo-json'] }).hovers).toEqual(['lo-json']);
   expect(() => LoManifestSchema.parse({ ...base, hovers: ['Bad Id'] })).toThrow();
 });
+
+// The footer's Credits link (E56): optional, and only ever a declared modal.
+test('lo-schema: manifest without credits parses, leaving it undefined', () => {
+  expect(LoManifestSchema.parse({ title: 'T', sections: oneSection }).credits).toBeUndefined();
+});
+
+test('lo-schema: manifest accepts credits naming a declared modal', () => {
+  const parsed = LoManifestSchema.parse({
+    title: 'T',
+    sections: oneSection,
+    modals: ['credits'],
+    credits: 'credits',
+  });
+  expect(parsed.credits).toBe('credits');
+});
+
+test('lo-schema: manifest rejects credits naming an undeclared modal', () => {
+  const result = LoManifestSchema.safeParse({
+    title: 'T',
+    sections: oneSection,
+    modals: ['example-popup'],
+    credits: 'credits',
+  });
+  expect(result.success).toBe(false);
+  expect(result.error?.issues).toContainEqual(
+    expect.objectContaining({
+      path: ['credits'],
+      message: 'credits names modal "credits", which modals does not declare — add it to modals',
+    }),
+  );
+});

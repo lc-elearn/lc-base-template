@@ -335,6 +335,15 @@ export const LoManifestSchema = z
     hovers: z
       .array(z.string().regex(SECTION_ID_PATTERN, 'hover id must be url-safe kebab-case'))
       .default([]),
+    /**
+     * The modal the footer's Credits button opens (E56). Optional: absent, the footer
+     * has no Credits button. Must be one of `modals`, checked below.
+     * Spec: docs/specs/2026-11-11-footer-credits-design.md §3.
+     */
+    credits: z
+      .string()
+      .regex(SECTION_ID_PATTERN, 'credits must be a modal id (url-safe kebab-case)')
+      .optional(),
   })
   .superRefine((manifest, ctx) => {
     // Duplicate ids would collide as BOTH `#anchor` targets and `{id}-heading` ids.
@@ -362,5 +371,14 @@ export const LoManifestSchema = z
       }
       seenModals.add(id);
     });
+
+    // A Credits button that opens nothing would be a dead control in every page footer.
+    if (manifest.credits !== undefined && !manifest.modals.includes(manifest.credits)) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `credits names modal "${manifest.credits}", which modals does not declare — add it to modals`,
+        path: ['credits'],
+      });
+    }
   });
 export type LoManifest = z.infer<typeof LoManifestSchema>;
