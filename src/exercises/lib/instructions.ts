@@ -78,8 +78,9 @@ export const SAVED_PROGRESS_INSTRUCTIONS =
 /**
  * Whether an unknown exercise config saves progress: a flashcards deck with
  * `options.srs === true`. The type is checked too, because the LO envelope keeps options
- * it does not know (for the engine that owns them), so a stray `srs` may sit on any
- * exercise, and only a deck saves anything.
+ * it does not know (for the engine that owns them). The Node reader refuses a stray `srs`
+ * on any other exercise at load (TODO E59), but the browser reader checks no engine
+ * options, and only a deck saves anything.
  */
 export function savesProgress(config: unknown): boolean {
   if (typeof config !== 'object' || config === null) return false;

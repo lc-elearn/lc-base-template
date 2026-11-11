@@ -68,7 +68,7 @@ export interface LoFileTree {
 }
 
 /**
- * Which schema checks an exercise's content, by type: `exerciseConfigSchema` from
+ * Which schema checks an exercise's content and options, by type: `exerciseConfigSchema` from
  * `src/exercises/exercise-schemas.ts`. Passed in rather than imported, so the browser
  * reader can leave fifteen schemas out of the main bundle (see `assembleLo`).
  */
@@ -257,7 +257,8 @@ export function assembleLo(
     const raw = requireFile(tree.exercises, ref, filePath);
     const config = parseFile(LoExerciseConfigSchema, raw, filePath);
     // The envelope only says which engine; the engine's own schema checks the
-    // content, here at load, so a bad exercise fails the build and not the learner.
+    // content and the options, here at load, so a bad exercise fails the build and not
+    // the learner.
     if (exerciseSchema) parseFile(exerciseSchema(config.type), raw, filePath);
     return config;
   };

@@ -171,9 +171,11 @@ export type ExerciseConfig = z.infer<typeof ExerciseConfigSchema>;
  * load in the Node reader, at render in the engine). A closed object stripped them, and
  * what `assembleLo` hands the page is this parse, so a lesson's deck lost them before its
  * engine saw them. The browser reader has no engine schemas, so keeping them here is what
- * makes both readers agree. A key no engine knows is kept and ignored, as it was dropped
- * before. Only this envelope is loose: `ExerciseConfigSchema`, which every engine schema
- * extends, stays closed, so a fixture's typo still fails to compile.
+ * makes both readers agree. A key the exercise's engine does not know (a typo, or a deck's
+ * `srs` on a select) is refused at load by the Node reader, naming the file and the key
+ * (`exerciseConfigSchema`, TODO E59), so it never reaches a build. Only this envelope is
+ * loose: `ExerciseConfigSchema`, which every engine schema extends, stays closed, so a
+ * fixture's typo still fails to compile.
  */
 export const LoExerciseConfigSchema = ExerciseConfigSchema.extend({
   title: z.string().min(1),

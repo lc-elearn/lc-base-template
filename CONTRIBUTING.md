@@ -328,10 +328,13 @@ Plan and decisions:
 
 ### Exercise options
 
-Any `exercise.json` may add an `options` object beside `content`. It has one shape for
-every exercise type, every field is optional, and it is set per exercise, so two
-exercises of the same type can behave differently. An engine ignores a field it has no
-use for (`caseSensitive` on a choice exercise, say).
+Any `exercise.json` may add an `options` object beside `content`. Every exercise type
+shares the fields in the table below, every field is optional, and it is set per
+exercise, so two exercises of the same type can behave differently. An engine ignores a field it has no
+use for (`caseSensitive` on a choice exercise, say). A key that is not in this table
+fails the build, naming the file and the key, so a typo such as `shufle` cannot pass
+unnoticed. Flashcards adds three of its own (`direction`, `lockDirection`, `srs`), which
+are refused on any other exercise.
 
 ```json
 "options": { "shuffle": true, "showAnswersAfter": 2 }
