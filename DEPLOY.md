@@ -211,6 +211,8 @@ go through this list:
 - [ ] Headings are in Feijoa. To be sure: right-click a heading, **Inspect**, and under
       **Computed** the rendered font says Feijoa, not Open Sans.
 - [ ] Every lesson card opens its lesson, and the way back to the home page works.
+- [ ] With `"home": "lesson"`, the home page is the lesson itself: skip the two card
+      checks, and check that the course name in the header opens the same lesson.
 - [ ] In one lesson: open an exercise, answer it, press **Check**, then **Reset**.
 - [ ] An audio clip plays.
 - [ ] Pictures show.

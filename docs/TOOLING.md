@@ -224,7 +224,9 @@ is too low`, and the guard fails closed, so every Claude edit was blocked — an
   axe passes with every accordion open, each popup open, a select dropdown open and the
   hover card open, in light and dark (`axe-open-states.spec.ts`); an engine whose chunk
   fails to load shows a reload notice while the other exercise still works
-  (`exercise-failure.spec.ts`). Shared helpers:
+  (`exercise-failure.spec.ts`); `index.html` is the landing page or, with
+  `"home": "lesson"`, the one lesson (`home-page.spec.ts`); a normal build carries none
+  of the palette preview (`preset-preview.spec.ts`). Shared helpers:
   `e2e/support.ts`.
 - **The debug pages (E12c), a second suite in `e2e/debug/`:** only a `DEBUG=1` build
   has the showcases and the sandbox (AGENTS.md hard constraint 6), so these specs run
@@ -1205,6 +1207,10 @@ stays on).`eslint.config.js` is locked by the config-protection hook, so it was
   `index.html` is the template for **every** page it writes, so its script has to be
   able to render either. Hence `buildPrerenderedHtml` takes `loFolder` as optional
   rather than growing a second function to drift from.
+- **A course of one lesson (§E55):** with `"home": "lesson"` in `course.json`,
+  `dist/index.html` is that lesson's page (`renderLoPage`, stamped with its folder)
+  instead of `CourseHome`; `frontPageLesson()` in `src/lo/course-lessons.ts` picks it and
+  stops the build when there is more than one lesson.
 - **Write order matters:** the landing page overwrites the very file being used as the
   template, so it is written last, after every LO page has been rendered from the
   untouched original.
