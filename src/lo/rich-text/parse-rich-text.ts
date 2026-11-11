@@ -135,12 +135,19 @@ const BLOCK_ONLY_TAGS = new Set([
   'tr',
   'th',
   'td',
+  // Headings are block-level too (E56): a popup's `<h3>` is its own entry.
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
 ]);
 
 /** The guidance every misplaced block element gets. */
 const OWN_ENTRY =
-  'is a block — a list, table or audio player must be its own entry in the array, ' +
-  'not part of a paragraph';
+  'is a block — a list, table, heading or audio player must be its own entry in the ' +
+  'array, not part of a paragraph';
 
 /** Build the `fail` a parser threads through: throws, prefixed with the source path. */
 export function failWith(source: string | undefined): (message: string) => never {

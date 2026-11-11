@@ -215,3 +215,50 @@ describe('error messages', () => {
     );
   });
 });
+
+describe('headings (popups only, E56)', () => {
+  const POPUP = { headings: true } as const;
+
+  test('<h3> is a heading entry in a popup', () => {
+    expect(parseRichTextEntry('<h3>Team <em>2026</em></h3>', undefined, POPUP)).toEqual({
+      kind: 'heading',
+      children: [text('Team '), { kind: 'em', children: [text('2026')] }],
+    });
+  });
+
+  test('must be the whole entry', () => {
+    expect(() => parseRichTextEntry('<h3>Team</h3> and more', undefined, POPUP)).toThrow(
+      /must be the whole entry/,
+    );
+  });
+
+  test('takes no attributes', () => {
+    expect(() => parseRichTextEntry('<h3 id="t">Team</h3>', undefined, POPUP)).toThrow(
+      /takes no attributes/,
+    );
+  });
+
+  test('needs text', () => {
+    expect(() => parseRichTextEntry('<h3>  </h3>', undefined, POPUP)).toThrow(/needs text/);
+  });
+
+  test('rejects an unclosed heading', () => {
+    expect(() => parseRichTextEntry('<h3>Team', undefined, POPUP)).toThrow(/unclosed <h3>/);
+  });
+
+  test.each(['h1', 'h2', 'h4', 'h6'])('rejects <%s> in a popup, pointing at <h3>', (name) => {
+    expect(() => parseRichTextEntry(`<${name}>Team</${name}>`, undefined, POPUP)).toThrow(
+      /use <h3>/,
+    );
+  });
+
+  test('page prose (the default) refuses any heading, saying where they belong', () => {
+    expect(() => parseRichTextEntry('<h3>Team</h3>')).toThrow(
+      /headings are allowed only in popups \(modal\.json\)/,
+    );
+  });
+
+  test('a heading mid-paragraph gets the own-entry message', () => {
+    expect(() => parseRichTextEntry('Intro <h3>Team</h3>', undefined, POPUP)).toThrow(/own entry/);
+  });
+});
