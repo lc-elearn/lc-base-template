@@ -2923,7 +2923,7 @@ rather than the Language Centre's course factory; the maintainer took three smal
   `DEBUG=1 bun run build && DEBUG=1 bun run test:e2e`; `e2e/footer-credits.spec.ts` and
   the credits state in `e2e/axe-open-states.spec.ts`. **Next:** each course takes it with
   its next update; the Russian course sets `credits` per lesson from the 2015 units.
-- **E57 — exercises in tabs: the exercise set. DONE 2026-11-11** (branch
+- **E57 — exercises in tabs: the exercise set. DONE 2026-11-11** (PR 99, branch
   `feat/e57-tab-exercises`; spec
   [`2026-11-11-tab-exercises-design.md`](../specs/2026-11-11-tab-exercises-design.md),
   plan [`2026-11-11-tab-exercises-plan.md`](2026-11-11-tab-exercises-plan.md)). After the
