@@ -29,6 +29,39 @@ const emptyStructure = (folder = 'lo-00-example'): LoStructure => ({
 });
 
 describe('referencedRefs — what the manifest names', () => {
+  it('counts the exercises inside a set as referenced (E57)', () => {
+    const manifest = {
+      sections: [
+        {
+          id: 'a',
+          exercises: [
+            '01-select',
+            {
+              title: 'Set',
+              tabs: [{ exercise: '03-drag-fill-gaps' }, { exercise: '04-inline-choice' }],
+            },
+            '02-radio-quiz',
+          ],
+        },
+      ],
+    };
+
+    expect(referencedRefs(manifest).exercises).toEqual([
+      '01-select',
+      '03-drag-fill-gaps',
+      '04-inline-choice',
+      '02-radio-quiz',
+    ]);
+  });
+
+  it('reads a malformed set defensively, never throwing', () => {
+    const manifest = {
+      sections: [{ exercises: [{ tabs: 'nope' }, { tabs: [{ exercise: 4 }, null] }, 7] }],
+    };
+
+    expect(referencedRefs(manifest).exercises).toEqual([]);
+  });
+
   it('collects block and exercise refs across sections, plus modals and hovers', () => {
     const manifest = {
       sections: [
