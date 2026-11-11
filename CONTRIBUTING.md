@@ -560,7 +560,10 @@ course loses track of which template commits it has
 > Note: adding a new **exercise engine** (not just content) follows the engine recipe —
 > schema + pure grading + colocated tests + thin view + fixture + two registry entries:
 > the view in `EXERCISE_REGISTRY` (`src/exercises/lazy-registry.ts`) and the schema in
-> `EXERCISE_CONFIG_SCHEMAS` (`src/exercises/exercise-schemas.ts`). See a recent engine
+> `EXERCISE_CONFIG_SCHEMAS` (`src/exercises/exercise-schemas.ts`). The fixture is
+> registered in `SHOWCASE_FIXTURES` (`src/showcase/fixtures.ts`; guard e fails without
+> it), and the key needs its copy in `EXERCISE_INSTRUCTIONS`
+> (`src/exercises/lib/instructions.ts`; the build does not compile without it). See a recent engine
 > (`src/exercises/reading/`) as the reference shape.
 
 **Claude skills.** The recurring jobs (a lesson, an engine, a block type, the theme, a

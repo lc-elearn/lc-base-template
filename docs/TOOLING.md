@@ -187,11 +187,11 @@ is too low`, and the guard fails closed, so every Claude edit was blocked — an
   Every source file counts (`include: src/**`), even one no test imports.
 - **The bars (lines)**, from a measurement on `31f3b91`:
 
-  | Group                                                                               | Bar  | Then  |
-  | ----------------------------------------------------------------------------------- | ---- | ----- |
-  | Logic — every `.ts` outside the glue below                                          | 80%  | 96.4% |
-  | Views — every `.tsx` (the suite renders static markup, so event handlers never run) | 20%  | 54.8% |
-  | Browser glue — `src/hooks/`, `src/audio/`, `use*.ts`, `reorder-animation.ts`        | none | 25.9% |
+  | Group                                                                                 | Bar  | Then  |
+  | ------------------------------------------------------------------------------------- | ---- | ----- |
+  | Logic — every `.ts` outside the glue below                                            | 80%  | 96.4% |
+  | Views — every `.tsx` (the suite renders static markup, so event handlers never run)   | 20%  | 54.8% |
+  | Browser glue — `.ts` in `src/hooks/`, `src/audio/`, `use*.ts`, `reorder-animation.ts` | none | 25.9% |
 
   Glue needs a DOM to test, so it is counted and reported with no bar until a DOM
   test environment is decided. Raise the views floor as their tests grow.
@@ -695,7 +695,7 @@ needs the number points here rather than restating it.
      `@tailwind base/components/utilities` directives.
   3. **First-party Vite plugin** — `@tailwindcss/vite` (faster than the v3 PostCSS path);
      wired in `vite.config.ts` as `plugins: [react(), tailwindcss(), …]` (the repo's own
-     `loDevPages()` and `sandboxDocs()` follow it — see below).
+     `loDevPages()`, `sandboxDocs()`, `feijoaFonts()` and `presetPreview()` follow it — see below).
 - **How it helps:** utilities are generated **on demand** by scanning source files, so the
   output CSS only contains classes actually used. Verified Step 8: a probe element
   (`bg-purple-600 rounded-lg text-2xl …`) produced exactly those rules in the built CSS.
@@ -999,8 +999,8 @@ stays on).`eslint.config.js` is locked by the config-protection hook, so it was
 - **Engine-local decisions:** per-blank metadata is a render-local value (not a
   ref) so the grading handlers close over it — avoids react-hooks/refs; the RNG
   seed is derived from `useId` (pure, distinct per instance) and bumped on reset.
-- **Design token added:** `--success` (→ Cambridge green `--cam-green`) +
-  `--success-foreground`, bridged to `text-success`/`bg-success`. Every
+- **Design token added:** `--success` (→ `--cam-green-deep` in light, `--cam-green-soft` in
+  dark) + `--success-foreground`, bridged to `text-success`/`bg-success`. Every
   blank-grading engine needs a "correct" colour; added once at the token layer
   (tokens.css + the `@theme inline` bridge, now in `src/styles/app.css`), not hardcoded
   per engine.

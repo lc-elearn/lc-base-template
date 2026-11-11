@@ -196,16 +196,16 @@ is the single source of truth for what is still open.
 
 ## Where does my change go?
 
-| I want to…                                       | Touch                                                                                                                                     |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| add a lesson                                     | a new `lo-config/lo-NN-slug/` folder — nothing else                                                                                       |
-| change the course title, home text or front page | `course.json` — see [`COURSE_GUIDE.md`](COURSE_GUIDE.md)                                                                                  |
-| reorder lessons                                  | rename the LO folders                                                                                                                     |
-| change a colour or font                          | `src/styles/palette.css` — see [`DESIGNER.md`](DESIGNER.md)                                                                               |
-| add an exercise engine                           | a new `src/exercises/<type>/`, its key in `EXERCISE_TYPE_KEYS`, and two registry entries (`EXERCISE_REGISTRY`, `EXERCISE_CONFIG_SCHEMAS`) |
-| change what an exercise config accepts           | the engine's `<type>-schema.ts`, or `src/config/` for the shared envelope — a **contract** change                                         |
-| add audio or images                              | `public/`, mirroring the config's ordinal-type names                                                                                      |
-| change the page chrome                           | `src/components/shell/`                                                                                                                   |
+| I want to…                                       | Touch                                                                                                                                                                                                  |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| add a lesson                                     | a new `lo-config/lo-NN-slug/` folder — nothing else                                                                                                                                                    |
+| change the course title, home text or front page | `course.json` — see [`COURSE_GUIDE.md`](COURSE_GUIDE.md)                                                                                                                                               |
+| reorder lessons                                  | rename the LO folders                                                                                                                                                                                  |
+| change a colour or font                          | `src/styles/palette.css` — see [`DESIGNER.md`](DESIGNER.md)                                                                                                                                            |
+| add an exercise engine                           | a new `src/exercises/<type>/`, its key in `EXERCISE_TYPE_KEYS`, two registry entries (`EXERCISE_REGISTRY`, `EXERCISE_CONFIG_SCHEMAS`), a `SHOWCASE_FIXTURES` card and its `EXERCISE_INSTRUCTIONS` copy |
+| change what an exercise config accepts           | the engine's `<type>-schema.ts`, or `src/config/` for the shared envelope — a **contract** change                                                                                                      |
+| add audio or images                              | `public/`, mirroring the config's ordinal-type names                                                                                                                                                   |
+| change the page chrome                           | `src/components/shell/`                                                                                                                                                                                |
 
 Anything in the second half of that table re-skins or re-shapes **every** course
 built from this template. Those paths are owned in
