@@ -2940,8 +2940,7 @@ rather than the Language Centre's course factory; the maintainer took three smal
   AGENTS.md, and `DEBUG=1 bun run build && DEBUG=1 bun run test:e2e`;
   `e2e/exercise-set.spec.ts` and `e2e/debug/exercise-set-engines.spec.ts`. **Next:** the
   Russian course uses it for lessons 6 ("Reconstruct the text") and 7 ("Set
-  expressions") with its next update. Its merged commit and Done-recently row go in with
-  the next docs change, as E56's do here. **Found while building, fixed by E58:** the LO
+  expressions") with its next update. Merged as `64b878f`. **Found while building, fixed by E58:** the LO
   envelope dropped engine-only options such as flashcards' `srs`, so a set of such decks
   could not say so in its box; it now does, and a loader test proves it.
 - **E58 — a lesson's flashcards keep their own options. DONE 2026-11-11** (branch
@@ -3237,3 +3236,4 @@ build, so it cannot return. Two remain:
 | 2026-11-10 | `5662951` | **typed answers accept more than one form** — `\|` means "or" in the four typed engines, the first preferred, the rest "Also accepted"; PR 90 (E54)                 |
 | 2026-11-11 | `cd14265` | **a course of one lesson** — `"home": "lesson"` in `course.json` makes `index.html` the lesson's page; the build refuses it with two lessons; PR 92 (E55)           |
 | 2026-11-11 | `bf016ac` | **a Credits link in the footer** — `"credits": "<modal id>"` in `lo.json` adds a Credits button to the lesson footer; popups may hold one `<h3>`; PR 98 (E56)       |
+| 2026-11-11 | `64b878f` | **exercises in tabs** — a section's `exercises` in `lo.json` may hold a set: one accordion, one instruction box, a tab per exercise, any engine; PR 99 (E57)        |
