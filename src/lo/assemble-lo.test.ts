@@ -257,6 +257,8 @@ test("assembleLo: a lesson's flashcards deck keeps its engine-only options", () 
   expect(node).toEqual(browser);
 });
 
+// The Node reader refuses a select's `srs` (E59, below); the browser reader checks no
+// engine options, so `savesProgress` must still ask for a deck.
 test('assembleLo: a stray srs on a set of selects does not promise saved progress', () => {
   const tree = treeWithSet({
     title: 'Parts',
@@ -266,7 +268,7 @@ test('assembleLo: a stray srs on a set of selects does not promise saved progres
     ...tree.exercises,
     '03-select': { ...(tree.exercises['03-select'] as object), options: { srs: true } },
   };
-  const lo = assembleLo('lo-01-salutations', { ...tree, exercises }, exerciseConfigSchema);
+  const lo = assembleLo('lo-01-salutations', { ...tree, exercises });
   const set = lo.sections[0]?.exercises[1];
 
   expect(set !== undefined && isExerciseSet(set) && set.instructions).toBe(
@@ -278,6 +280,25 @@ test('assembleLo: a bad engine-only option fails the build, naming the file', ()
   expect(() =>
     assembleLo('lo-01-salutations', treeWithDeck({ direction: 'sideways' }), exerciseConfigSchema),
   ).toThrow(/exercises\/01-flashcards\/exercise\.json is invalid[\s\S]*direction/);
+});
+
+// Maintainer, 2026-11-11 (E59): a typo in an option key fails the build, naming the
+// file and the key, instead of being ignored.
+test('assembleLo: an unknown option key fails the build, naming the file and the key', () => {
+  expect(() =>
+    assembleLo('lo-01-salutations', treeWithDeck({ lockDirecton: true }), exerciseConfigSchema),
+  ).toThrow(/exercises\/01-flashcards\/exercise\.json is invalid[\s\S]*"lockDirecton"/);
+});
+
+test('assembleLo: a deck option on a select fails the build, naming the file', () => {
+  const tree = validTree();
+  const exercises = {
+    ...tree.exercises,
+    '01-select': { ...(tree.exercises['01-select'] as object), options: { srs: true } },
+  };
+  expect(() =>
+    assembleLo('lo-01-salutations', { ...tree, exercises }, exerciseConfigSchema),
+  ).toThrow(/exercises\/01-select\/exercise\.json is invalid[\s\S]*"srs"/);
 });
 
 test('assembleLo: a popup may hold an <h3>, and credits is carried through (E56)', () => {
