@@ -93,8 +93,13 @@ describe('example LO (lo-00-example)', () => {
   const blockRefs = manifest.sections.flatMap((section) =>
     section.blocks.map((ref) => [section.id, ref] as const),
   );
+  // A set's tabs name exercise refs too (E57); each parses like a plain ref.
   const exerciseRefs = manifest.sections.flatMap((section) =>
-    section.exercises.map((ref) => [section.id, ref] as const),
+    section.exercises.flatMap((entry) =>
+      (typeof entry === 'string' ? [entry] : entry.tabs.map((tab) => tab.exercise)).map(
+        (ref) => [section.id, ref] as const,
+      ),
+    ),
   );
 
   it('declares at least one block and one exercise across its sections', () => {

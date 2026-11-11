@@ -1,4 +1,5 @@
 import { test, expect } from 'vitest';
+import { z } from 'zod';
 import {
   HoverConfigSchema,
   LoManifestSchema,
@@ -420,4 +421,76 @@ test('lo-schema: manifest rejects credits naming an undeclared modal', () => {
       message: 'credits names modal "credits", which modals does not declare — add it to modals',
     }),
   );
+});
+
+// --- Exercise sets (E57) -------------------------------------------------------
+
+const SET = {
+  title: 'Reconstruct the text',
+  tabs: [{ exercise: '03-drag-fill-gaps' }, { exercise: '04-drag-fill-gaps' }],
+};
+
+/** A manifest with one section listing these exercise entries. */
+function withExercises(...exercises: unknown[]) {
+  return { title: 'T', sections: [{ id: 'exercises', label: 'Exercises', exercises }] };
+}
+
+/** The prettified error for an input that must fail. */
+function errorOf(input: unknown): string {
+  const result = LoManifestSchema.safeParse(input);
+  if (result.success) throw new Error('expected the manifest to fail');
+  return z.prettifyError(result.error);
+}
+
+test('lo-schema: a section lists an exercise set beside plain refs (S1)', () => {
+  const parsed = LoManifestSchema.parse(withExercises('01-select', SET, '02-radio-quiz'));
+
+  expect(parsed.sections[0]?.exercises).toEqual(['01-select', SET, '02-radio-quiz']);
+});
+
+test('lo-schema: a set takes optional instructions and tab media', () => {
+  const set = {
+    ...SET,
+    instructions: 'Do both parts.',
+    tabs: [
+      SET.tabs[0],
+      { exercise: '04-drag-fill-gaps', media: { audio: { src: 'audio/x.m4a' } } },
+    ],
+  };
+
+  expect(LoManifestSchema.safeParse(withExercises(set)).success).toBe(true);
+});
+
+test('lo-schema: a set needs a title, two tabs and no stray keys', () => {
+  expect(LoManifestSchema.safeParse(withExercises({ ...SET, title: '' })).success).toBe(false);
+  expect(LoManifestSchema.safeParse(withExercises({ ...SET, tabs: [SET.tabs[0]] })).success).toBe(
+    false,
+  );
+  expect(LoManifestSchema.safeParse(withExercises({ ...SET, instructions: '' })).success).toBe(
+    false,
+  );
+  expect(errorOf(withExercises({ ...SET, tabz: [] }))).toContain('tabz');
+});
+
+test.each([
+  [
+    'twice in sections',
+    [
+      { id: 'a', label: 'A', exercises: ['01-select'] },
+      { id: 'b', label: 'B', exercises: ['01-select'] },
+    ],
+  ],
+  [
+    'twice in tabs',
+    [
+      {
+        id: 'a',
+        label: 'A',
+        exercises: [{ ...SET, tabs: [{ exercise: '01-select' }, { exercise: '01-select' }] }],
+      },
+    ],
+  ],
+  ['in a section and a tab', [{ id: 'a', label: 'A', exercises: ['03-drag-fill-gaps', SET] }]],
+])('lo-schema: an exercise used %s fails (S7)', (_case, sections) => {
+  expect(errorOf({ title: 'T', sections })).toMatch(/used twice/);
 });
