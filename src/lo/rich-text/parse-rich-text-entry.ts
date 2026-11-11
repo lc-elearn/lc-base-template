@@ -218,11 +218,13 @@ export interface RichTextEntryOptions {
 
 const HEADING_TAG = /^h[1-6]$/;
 
-/** True when `nodes` hold no visible text at any depth. */
+/** True when `nodes` hold no visible text at any depth; a line break is not text. */
 function isBlank(nodes: readonly RichTextNode[]): boolean {
-  return nodes.every((node) =>
-    node.kind === 'text' ? node.value.trim() === '' : 'children' in node && isBlank(node.children),
-  );
+  return nodes.every((node) => {
+    if (node.kind === 'text') return node.value.trim() === '';
+    if (node.kind === 'break') return true;
+    return 'children' in node && isBlank(node.children);
+  });
 }
 
 function parseHeading(
