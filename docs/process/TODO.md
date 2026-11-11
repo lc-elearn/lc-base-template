@@ -10,7 +10,7 @@ session, on either machine.
 | `2026-08-06-post-phase-d-handover.md` | state snapshot at end of Phase D, plus the §5 decision log |
 | [`../ROADMAP.md`](../ROADMAP.md)      | larger work beyond this queue, each with its trigger       |
 
-**Last updated:** 2026-11-11 · **HEAD:** see `git log` · **Suite:** 213 files · 2552 tests green
+**Last updated:** 2026-11-11 · **HEAD:** see `git log` · **Suite:** 213 files · 2602 tests green
 (Vitest) · 147 Playwright tests (49 × 3 browsers, `bun run test:e2e`; the 9 for the `home` mode not built skip) plus 111 on a `DEBUG=1` build (37 × 3, `e2e/debug/`) · CI green · `main` protected since 2026-10-21 (job E1).
 
 Non-negotiable constraints for every job below live in
@@ -2959,13 +2959,33 @@ rather than the Language Centre's course factory; the maintainer took three smal
   fixture's option typo still fails to compile. Since any exercise can now carry a stray
   `srs`, `savesProgress` also asks that the exercise be a deck. Every other engine was
   checked: none adds options or top-level keys, and `labels` is shared and strict, so
-  nothing else was lost. A key no engine knows is kept and ignored, as it was dropped
-  before. **Verify:** the gate in AGENTS.md; the tests are in
+  nothing else was lost. A key no engine knows was kept and ignored, as it was dropped
+  before; E59 now refuses it at load. **Verify:** the gate in AGENTS.md; the tests are in
   `src/config/lo-schema.test.ts`, `src/lo/assemble-lo.test.ts`,
   `src/lo/lo-page-sections.test.tsx` and `src/exercises/lib/instructions.test.ts`. Unit
   tests only: `lo-00-example` has no deck, so no browser test opens a lesson's deck.
   **Next:** each course takes it with its next update; a lesson with a deck that sets
   `srs` or a direction starts behaving as written, with no change to its files.
+- **E59 — a typo in an exercise's options fails the build. DONE 2026-11-11** (branch
+  `fix/strict-exercise-options`, stacked on E58's PR 100; follow-up E58 left open).
+  **Decision (maintainer, 2026-11-11): refuse unknown option keys at load.** Until now an
+  options key the engine does not know (`shufle`, `lockDirecton`, a deck's `srs` copied
+  onto a select) was ignored without a word. Courses take template updates by merge, so
+  the risk was a course's build failing on merge over a stray key; it was weighed first.
+  Every `exercise.json` on every branch of the four course repos (277 files) and the
+  example lesson was run through the new check: none fails. The keys in use are `shuffle`,
+  and `srs` on the Russian course's decks. The fix: `exerciseConfigSchema`
+  (`src/exercises/exercise-schemas.ts`), the check the Node reader runs at load, is each
+  engine's schema with its own `options` closed (the shared block, or flashcards'
+  extension of it), so the build and the dev page fail naming the file and the key. Only
+  at load: each engine's own schema, re-parsed at render, stays tolerant, and the LO
+  envelope stays loose so both readers still agree. `safeExtend`, not `extend`: some
+  engines refine the whole config, and Zod refuses to overwrite a key there. **Verify:**
+  the gate in AGENTS.md; the tests are in `src/exercises/exercise-schemas.test.ts` and
+  `src/lo/assemble-lo.test.ts`. **Next:** each course takes it with its next update; a
+  lesson written since, with a stray key, fails that update's build naming the file, and
+  the fix is the one line. Top-level keys of `exercise.json` are still stripped silently;
+  no one has asked for that to change.
 - **E16 — after the organisation move, file `ORGANIZATION.md` under `docs/process/`.**
   Once steps 1–9 are done it is a record, not a guide; course repos inherit the file,
   so moving it keeps their top-level docs to what a course needs. Fix the links that
