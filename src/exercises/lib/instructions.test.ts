@@ -7,6 +7,7 @@ import {
   EXERCISE_INSTRUCTIONS,
   SAVED_PROGRESS_INSTRUCTIONS,
   resolveInstructions,
+  resolveSetInstructions,
   savesProgress,
 } from './instructions';
 
@@ -97,5 +98,30 @@ describe('flashcards instructions', () => {
     expect(savesProgress({ options: { srs: false } })).toBe(false);
     expect(savesProgress({ options: {} })).toBe(false);
     expect(savesProgress(null)).toBe(false);
+  });
+});
+
+describe('an exercise set (E57)', () => {
+  test('its own instructions show above the tabs', () => {
+    expect(resolveSetInstructions('Do both parts.', ['select', 'inline-choice'])).toBe(
+      'Do both parts.',
+    );
+  });
+
+  test('without them, tabs of one engine show that engine default copy (S2)', () => {
+    expect(resolveSetInstructions(undefined, ['drag-fill-gaps', 'drag-fill-gaps'])).toBe(
+      EXERCISE_INSTRUCTIONS['drag-fill-gaps'],
+    );
+  });
+
+  test('tabs of different engines have no default, so the loader must refuse (S2)', () => {
+    expect(resolveSetInstructions(undefined, ['select', 'inline-choice'])).toBeNull();
+  });
+
+  test('in a tab, only the exercise own instructions show (S3)', () => {
+    expect(resolveInstructions('select', undefined, { useDefault: false })).toBeNull();
+    expect(resolveInstructions('select', 'Listen first.', { useDefault: false })).toBe(
+      'Listen first.',
+    );
   });
 });
