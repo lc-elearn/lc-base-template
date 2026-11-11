@@ -1,8 +1,23 @@
 # Exercises in tabs: the exercise set (E57)
 
-**Date:** 2026-11-11 · **Status:** approved 2026-11-11, not built · **Plan:** [`2026-11-11-tab-exercises-plan.md`](../process/2026-11-11-tab-exercises-plan.md)
+**Date:** 2026-11-11 · **Status:** built 2026-11-11 (TODO §E57) · **Plan:** [`2026-11-11-tab-exercises-plan.md`](../process/2026-11-11-tab-exercises-plan.md)
 **TODO:** §E57 · **Builds on:** [`2026-10-07-tabs-block-design.md`](2026-10-07-tabs-block-design.md)
 (the tab UI), [`2026-10-07-tabs-media-design.md`](2026-10-07-tabs-media-design.md) (media in a tab)
+
+> **Deviations from this spec.** (1) §8: the answer-survives-a-switch test is in the
+> browser (`e2e/exercise-set.spec.ts`), not Vitest: lazy engines render only after
+> hydration, so a static render has no answer to keep. (2) §7: only `line-match` gets a
+> measurement check. `inline-gap` places its feedback lines only after a Check, which
+> needs its tab showing, so it never measures inside a hidden panel; the every-engine
+> test covers it rendering. (3) S6: all 15 engines passed in a tab in Chromium, Firefox
+> and WebKit with no change, so none is refused. (4) §3: a section's `exercises` entry is
+> parsed with a transform, not a plain `z.union`, so a misspelt key in a set is named
+> (a union reports only "Invalid input"). (5) §5: the set's body adds no gap below its
+> box, which keeps the bottom margin it has above a standalone exercise. (6) The
+> example's existing loader test (`load-lo.test.ts`) now lists the set, so it gained no
+> second test. (7) Review: a set whose tabs are decks that save progress adds the
+> saved-progress line to the default copy above the tabs, since its tabs show no box;
+> and a set's `instructions` are trimmed, so a blank string fails.
 
 ## 1. Why
 

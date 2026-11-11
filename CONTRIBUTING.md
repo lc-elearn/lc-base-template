@@ -227,10 +227,58 @@ A set of labelled tabs, one panel showing at a time. Add it like any block: a
   four "Placeholder tab A"-length labels fit with room to spare).
 - A misspelt key fails the build rather than being ignored.
 
-Design and what is coming next (callouts and exercises in a tab):
+Design and what is coming next (callouts in a tab; exercises go in an exercise set, below):
 [`docs/specs/2026-10-07-tabs-block-design.md`](docs/specs/2026-10-07-tabs-block-design.md).
 Media in a tab:
 [`docs/specs/2026-10-07-tabs-media-design.md`](docs/specs/2026-10-07-tabs-media-design.md).
+
+### Exercise sets: exercises in tabs
+
+An exercise set puts exercises in tabs, under one accordion and one instruction box. It
+is not a block: it sits in a section's `exercises` list in `lo.json`, beside the plain
+refs, so it keeps its place among the numbered exercises. Each tab's exercise is an
+ordinary `exercises/NN-type/exercise.json` folder. `lo-00-example` has one between its
+two exercises.
+
+```json
+{
+  "id": "exercises",
+  "label": "Exercises",
+  "exercises": [
+    "01-select",
+    {
+      "title": "Reconstruct the text",
+      "instructions": "Drag each word into its gap. Check, Reset and Show answers work per part.",
+      "tabs": [
+        { "exercise": "03-drag-fill-gaps" },
+        {
+          "exercise": "04-inline-choice",
+          "media": { "audio": { "src": "audio/lo-07-x/dialogue-1.m4a", "label": "Dialogue 1" } }
+        }
+      ]
+    },
+    "02-radio-quiz"
+  ]
+}
+```
+
+- `title` is required: it is the accordion's heading and names the tab row.
+- At least two tabs. A tab's label is its exercise's `title`, so the titles of one set's
+  exercises must differ.
+- `instructions` shows once, above the tabs. It is optional only when every tab uses
+  the same engine (that engine's default copy shows instead); a set whose tabs mix
+  engines must write it.
+- A tab shows an instruction box of its own only when its `exercise.json` writes
+  `content.instructions`. Otherwise the tab has no box.
+- Each tab keeps its own Check, Reset, Show answers and score. Answers stay when a
+  learner switches tabs and back.
+- `media` is the tabs block's (image, audio, transcript), except that audio may come
+  without a transcript: the exercise's own lines are the text.
+- Each exercise is used once per lesson: in one section list or in one tab, never twice.
+- Any engine works in a tab; the exercise showcase (`DEBUG=1` builds) proves each one.
+- A misspelt key fails the build rather than being ignored.
+
+Design: [`docs/specs/2026-11-11-tab-exercises-design.md`](docs/specs/2026-11-11-tab-exercises-design.md).
 
 ### Sources block
 
