@@ -315,6 +315,50 @@ test('lo-schema: options.caseSensitive defaults to false and can be turned on', 
   expect(ExerciseOptionsSchema.parse({ caseSensitive: true }).caseSensitive).toBe(true);
 });
 
+// The envelope checks the shared options; an engine's own (the flashcards' srs,
+// direction, lockDirection) pass through untouched for that engine's schema to check.
+// Stripped here, a lesson's deck lost them before its engine ever saw them.
+test("lo-schema: the LO envelope keeps an engine's own options for the engine", () => {
+  const parsed = LoExerciseConfigSchema.parse({
+    type: 'flashcards',
+    title: 'Deck',
+    content: {},
+    options: { srs: true, direction: 'native-target', lockDirection: true },
+  });
+  expect(parsed.options).toEqual({
+    srs: true,
+    direction: 'native-target',
+    lockDirection: true,
+    shuffle: false,
+    allowShowAnswers: true,
+    caseSensitive: false,
+  });
+});
+
+// Passing through is not a loophole: a shared option is still checked by the envelope.
+test('lo-schema: the envelope still rejects a bad shared option beside an engine one', () => {
+  const parsed = LoExerciseConfigSchema.safeParse({
+    type: 'flashcards',
+    title: 'Deck',
+    content: {},
+    options: { srs: true, shuffle: 'yes' },
+  });
+  expect(parsed.success).toBe(false);
+});
+
+// Only the LO envelope keeps unknown option keys. The shared envelope that every engine
+// schema extends stays closed, so a typo in a showcase fixture's options (typed against
+// its engine's schema input) still fails to compile. `tsc -b` in the build checks this.
+test('lo-schema: an engine config type still refuses an unknown option key', () => {
+  const input: z.input<typeof ExerciseConfigSchema> = {
+    type: 'select',
+    content: {},
+    // @ts-expect-error — `shufle` is not an option; the closed envelope type refuses it.
+    options: { shufle: true },
+  };
+  expect(input.type).toBe('select');
+});
+
 // Guard: sampleSize must be a positive integer.
 test('lo-schema: options rejects non-positive sampleSize', () => {
   expect(() => ExerciseOptionsSchema.parse({ sampleSize: 0 })).toThrow();

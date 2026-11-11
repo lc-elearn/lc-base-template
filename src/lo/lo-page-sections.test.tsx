@@ -106,6 +106,29 @@ test('toPageSections: each exercise saves progress under its LO and exercise fol
   expect(ids).toEqual(['lo-00-example/01-select', 'lo-00-example/02-radio-quiz']);
 });
 
+// A deck saves progress only when its `srs` option reaches the page, through the LO
+// envelope; the box above it then says what is remembered and how to forget it.
+test("toPageSections: a lesson's deck that saves progress says so in its box", () => {
+  const lo = assembleLo('lo-01-x', {
+    manifest: {
+      title: 'X',
+      sections: [{ id: 'exercises', label: 'Exercises', exercises: ['01-flashcards'] }],
+    },
+    blocks: {},
+    exercises: {
+      '01-flashcards': {
+        type: 'flashcards',
+        title: 'Deck',
+        content: { cards: [{ target: 'el perro', native: 'the dog' }] },
+        options: { srs: true },
+      },
+    },
+  });
+  const html = renderToStaticMarkup(<>{toPageSections(lo)[0]?.content}</>);
+
+  expect(html).toContain('This deck saves your progress in this browser');
+});
+
 test('toPageSections: accordion ids are unique across the whole page', () => {
   const html = sections.map((section) => renderSection(section.id)).join('');
   const ids = [...html.matchAll(/id="([^"]+)"/g)].map((match) => match[1]);

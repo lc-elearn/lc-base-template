@@ -164,9 +164,20 @@ export type ExerciseConfig = z.infer<typeof ExerciseConfigSchema>;
  * HAS one (the third step of the authoring contract, design spec §13 "Rare path") — it
  * deliberately does not parse content itself, which would make a registry guard fail
  * for content reasons.
+ *
+ * `options` is loose here, as `content` is: the envelope checks and defaults the options
+ * every engine shares, and keeps the rest untouched, so an engine's own (flashcards'
+ * `srs`, `direction`, `lockDirection`) reach that engine, whose schema checks them (at
+ * load in the Node reader, at render in the engine). A closed object stripped them, and
+ * what `assembleLo` hands the page is this parse, so a lesson's deck lost them before its
+ * engine saw them. The browser reader has no engine schemas, so keeping them here is what
+ * makes both readers agree. A key no engine knows is kept and ignored, as it was dropped
+ * before. Only this envelope is loose: `ExerciseConfigSchema`, which every engine schema
+ * extends, stays closed, so a fixture's typo still fails to compile.
  */
 export const LoExerciseConfigSchema = ExerciseConfigSchema.extend({
   title: z.string().min(1),
+  options: ExerciseOptionsSchema.loose().optional(),
 });
 export type LoExerciseConfig = z.infer<typeof LoExerciseConfigSchema>;
 

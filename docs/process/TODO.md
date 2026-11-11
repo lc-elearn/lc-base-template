@@ -10,7 +10,7 @@ session, on either machine.
 | `2026-08-06-post-phase-d-handover.md` | state snapshot at end of Phase D, plus the §5 decision log |
 | [`../ROADMAP.md`](../ROADMAP.md)      | larger work beyond this queue, each with its trigger       |
 
-**Last updated:** 2026-11-11 · **HEAD:** see `git log` · **Suite:** 213 files · 2543 tests green
+**Last updated:** 2026-11-11 · **HEAD:** see `git log` · **Suite:** 213 files · 2552 tests green
 (Vitest) · 147 Playwright tests (49 × 3 browsers, `bun run test:e2e`; the 9 for the `home` mode not built skip) plus 111 on a `DEBUG=1` build (37 × 3, `e2e/debug/`) · CI green · `main` protected since 2026-10-21 (job E1).
 
 Non-negotiable constraints for every job below live in
@@ -2941,11 +2941,32 @@ rather than the Language Centre's course factory; the maintainer took three smal
   `e2e/exercise-set.spec.ts` and `e2e/debug/exercise-set-engines.spec.ts`. **Next:** the
   Russian course uses it for lessons 6 ("Reconstruct the text") and 7 ("Set
   expressions") with its next update. Its merged commit and Done-recently row go in with
-  the next docs change, as E56's do here. **Found while building, not fixed here:** the LO
-  envelope's `options` (`ExerciseOptionsSchema`, not strict) drops engine-only options
-  such as flashcards' `srs`, `direction` and `lockDirection` before the engine sees them,
-  so a lesson's deck neither saves progress nor keeps its direction. Once it does, a set
-  of such decks says so in its box (`resolveSetInstructions`); add a loader test then.
+  the next docs change, as E56's do here. **Found while building, fixed by E58:** the LO
+  envelope dropped engine-only options such as flashcards' `srs`, so a set of such decks
+  could not say so in its box; it now does, and a loader test proves it.
+- **E58 — a lesson's flashcards keep their own options. DONE 2026-11-11** (branch
+  `fix/lo-engine-options`; found while building E57). The LO envelope's `options` was a
+  plain `z.object`, so Zod stripped every key it did not know, and what `assembleLo` hands
+  the page is the envelope's parse: a lesson's flashcards deck lost `srs`, `direction` and
+  `lockDirection` before its engine saw them. It neither saved progress nor kept its
+  direction, and the saved-progress line never showed. The showcase was unaffected (it
+  passes raw configs). Fixed in the LO envelope, not in `assembleLo`:
+  `LoExerciseConfigSchema`'s `options` is now loose, as its `content` is, so shared
+  options are still checked and defaulted there and the rest kept for the engine that owns
+  them, whose schema checks them (at load in the Node reader, at render in the engine).
+  Returning the engine's parse instead would have split the readers, since the browser
+  reader has no engine schemas, and the prerender would no longer match the first client
+  render. `ExerciseConfigSchema`, which every engine schema extends, stays closed, so a
+  fixture's option typo still fails to compile. Since any exercise can now carry a stray
+  `srs`, `savesProgress` also asks that the exercise be a deck. Every other engine was
+  checked: none adds options or top-level keys, and `labels` is shared and strict, so
+  nothing else was lost. A key no engine knows is kept and ignored, as it was dropped
+  before. **Verify:** the gate in AGENTS.md; the tests are in
+  `src/config/lo-schema.test.ts`, `src/lo/assemble-lo.test.ts`,
+  `src/lo/lo-page-sections.test.tsx` and `src/exercises/lib/instructions.test.ts`. Unit
+  tests only: `lo-00-example` has no deck, so no browser test opens a lesson's deck.
+  **Next:** each course takes it with its next update; a lesson with a deck that sets
+  `srs` or a direction starts behaving as written, with no change to its files.
 - **E16 — after the organisation move, file `ORGANIZATION.md` under `docs/process/`.**
   Once steps 1–9 are done it is a record, not a guide; course repos inherit the file,
   so moving it keeps their top-level docs to what a course needs. Fix the links that

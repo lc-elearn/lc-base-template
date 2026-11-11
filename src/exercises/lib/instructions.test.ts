@@ -93,11 +93,19 @@ describe('flashcards instructions', () => {
     expect(resolveInstructions('flashcards', 'Mine.', { savesProgress: true })).toBe('Mine.');
   });
 
-  test('savesProgress reads options.srs off an unknown config', () => {
-    expect(savesProgress({ options: { srs: true } })).toBe(true);
-    expect(savesProgress({ options: { srs: false } })).toBe(false);
-    expect(savesProgress({ options: {} })).toBe(false);
+  test("savesProgress reads a deck's options.srs off an unknown config", () => {
+    expect(savesProgress({ type: 'flashcards', options: { srs: true } })).toBe(true);
+    expect(savesProgress({ type: 'flashcards', options: { srs: false } })).toBe(false);
+    expect(savesProgress({ type: 'flashcards', options: {} })).toBe(false);
     expect(savesProgress(null)).toBe(false);
+  });
+
+  // Only a deck saves progress. The LO envelope keeps options it does not know, for the
+  // engine that owns them, so a stray `srs` (options copied from a deck) can reach any
+  // exercise; it must not promise a learner that a select remembers anything.
+  test('savesProgress: an exercise that is not a deck never saves progress', () => {
+    expect(savesProgress({ type: 'select', options: { srs: true } })).toBe(false);
+    expect(savesProgress({ options: { srs: true } })).toBe(false);
   });
 });
 

@@ -75,9 +75,15 @@ export const EXERCISE_INSTRUCTIONS: Record<ExerciseType, string> = {
 export const SAVED_PROGRESS_INSTRUCTIONS =
   'This deck saves your progress in this browser: the cards you found hard come first next time, even after **Reset**. Select **Clear saved progress** to forget it and start fresh.';
 
-/** Whether an unknown exercise config saves progress (`options.srs === true`). */
+/**
+ * Whether an unknown exercise config saves progress: a flashcards deck with
+ * `options.srs === true`. The type is checked too, because the LO envelope keeps options
+ * it does not know (for the engine that owns them), so a stray `srs` may sit on any
+ * exercise, and only a deck saves anything.
+ */
 export function savesProgress(config: unknown): boolean {
   if (typeof config !== 'object' || config === null) return false;
+  if ((config as { type?: unknown }).type !== 'flashcards') return false;
   const options = (config as { options?: unknown }).options;
   if (typeof options !== 'object' || options === null) return false;
   return (options as { srs?: unknown }).srs === true;
