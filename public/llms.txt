@@ -65,6 +65,8 @@ forms split by `|`, the first preferred: `[fato|facto::hint]`, `"answer": "fato|
 
 ## Notes
 
+- A lesson page's footer may end its © line with a "Credits" button that opens a popup
+  (a dialog) naming the lesson's team; it navigates nowhere. The landing page has none.
 - UI chrome strings resolve through `src/config/ui-strings.ts` (English by default);
   authored content carries the target language via `lang` attributes.
 - Design tokens and theme colours live in `src/styles/`.

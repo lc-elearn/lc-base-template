@@ -10,8 +10,8 @@ session, on either machine.
 | `2026-08-06-post-phase-d-handover.md` | state snapshot at end of Phase D, plus the §5 decision log |
 | [`../ROADMAP.md`](../ROADMAP.md)      | larger work beyond this queue, each with its trigger       |
 
-**Last updated:** 2026-11-11 · **HEAD:** see `git log` · **Suite:** 209 files · 2478 tests green
-(Vitest) · 120 Playwright tests (40 × 3 browsers, `bun run test:e2e`; the 9 for the `home` mode not built skip) plus 105 on a `DEBUG=1` build (35 × 3, `e2e/debug/`) · CI green · `main` protected since 2026-10-21 (job E1).
+**Last updated:** 2026-11-11 · **HEAD:** see `git log` · **Suite:** 210 files · 2505 tests green
+(Vitest) · 135 Playwright tests (45 × 3 browsers, `bun run test:e2e`; the 9 for the `home` mode not built skip) plus 105 on a `DEBUG=1` build (35 × 3, `e2e/debug/`) · CI green · `main` protected since 2026-10-21 (job E1).
 
 Non-negotiable constraints for every job below live in
 [`AGENTS.md` → "Hard constraints"](../../AGENTS.md) (they grew out of
@@ -2908,6 +2908,21 @@ rather than the Language Centre's course factory; the maintainer took three smal
   still written, so the lesson keeps one address when the course later gains lessons.
   Plan: [`2026-11-10-standalone-lesson-plan.md`](2026-11-10-standalone-lesson-plan.md). **Next:** each course takes it with its next update; a one-lesson course sets
   `"home": "lesson"` in `course.json`.
+- **E56 — a per-lesson Credits link in the footer. DONE 2026-11-11** (branch
+  `feat/e56-footer-credits`; spec
+  [`2026-11-11-footer-credits-design.md`](../specs/2026-11-11-footer-credits-design.md),
+  plan [`2026-11-11-footer-credits-plan.md`](2026-11-11-footer-credits-plan.md)). After the
+  2015 Russian lessons: `"credits": "<modal id>"` in `lo.json` ends the footer's © line
+  with a "Credits" button (new UI string `credits`) that opens that popup. The build
+  refuses an id `modals` does not list. Popups, and only popups, may now hold one `<h3>`
+  as a whole entry (the dialog title is the h2); page prose refuses it and says why, the
+  one written exception to rich-text spec §14. Per lesson only, the maintainer's decision:
+  the landing page's footer is unchanged. `lo-00-example` has a placeholder credits popup
+  (paragraph, Team heading, role lines, Voices list), so a copied lesson starts with one
+  to fill in or delete. **Verify:** the gate in AGENTS.md, and
+  `DEBUG=1 bun run build && DEBUG=1 bun run test:e2e`; `e2e/footer-credits.spec.ts` and
+  the credits state in `e2e/axe-open-states.spec.ts`. **Next:** each course takes it with
+  its next update; the Russian course sets `credits` per lesson from the 2015 units.
 - **E16 — after the organisation move, file `ORGANIZATION.md` under `docs/process/`.**
   Once steps 1–9 are done it is a record, not a guide; course repos inherit the file,
   so moving it keeps their top-level docs to what a course needs. Fix the links that

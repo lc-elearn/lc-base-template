@@ -1,8 +1,16 @@
 # A Credits link in the footer (E56)
 
-**Date:** 2026-11-11 · **Status:** approved 2026-11-11, not yet built · **Plan:** [`2026-11-11-footer-credits-plan.md`](../process/2026-11-11-footer-credits-plan.md)
+**Date:** 2026-11-11 · **Status:** built 2026-11-11 (TODO §E56) · **Plan:** [`2026-11-11-footer-credits-plan.md`](../process/2026-11-11-footer-credits-plan.md)
 **TODO:** §E56 · **Builds on:** [`lo-rich-text-modals.md`](lo-rich-text-modals.md) (popups),
 [`2026-09-09-footer-colophon-design.md`](2026-09-09-footer-colophon-design.md) (the footer)
+
+> **Deviations from this spec.** (1) §7: `CreditsButton.test.tsx` stubs the modal
+> context and checks the click asks for `"credits"`; the real dialog is the browser test.
+> (2) §7: the browser test opens the popup from the keyboard before checking that Escape
+> returns focus: WebKit, like Safari, does not focus a button on a mouse click, so a click
+> leaves no focus to return. (3) The plan's phone check (320 × 568) passed with no change,
+> so popups keep their height. (4) Guard b's own test lists the example's modal folders,
+> so it gained `credits`; the guard itself is unchanged.
 
 ## 1. Why
 
