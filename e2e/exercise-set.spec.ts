@@ -46,9 +46,17 @@ test('an answer survives a switch to the other tab and back', async ({ page }) =
 
   await pick.click();
   await expect(pick).toBeChecked();
-  await row.getByRole('tab', { name: 'Part 1' }).click();
+  // Switch by keyboard (←/→ activate on focus). A click on Part 1 here, after the pick
+  // scrolled the row up under the sticky header, sometimes landed on the page instead
+  // in Firefox (about 1 run in 10): the page scrolled between Playwright's hit test and
+  // the click, and focus fell to <body>.
+  const part2Tab = row.getByRole('tab', { name: 'Part 2' });
+  await part2Tab.focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(row.getByRole('tab', { name: 'Part 1' })).toHaveAttribute('aria-selected', 'true');
   await expect(pick).toBeHidden();
-  await row.getByRole('tab', { name: 'Part 2' }).click();
+  await page.keyboard.press('ArrowRight');
+  await expect(part2Tab).toHaveAttribute('aria-selected', 'true');
   await expect(pick).toBeChecked();
 });
 
