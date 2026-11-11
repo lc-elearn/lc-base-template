@@ -53,6 +53,15 @@ lessons, one folder each, each lesson's own media folder, and your course's sett
 build with a message naming `course.json` and the field. Its rules are the template's
 (`src/config/course.config.ts`), so ask the maintainer for a new setting.
 
+`.github/CODEOWNERS` encodes this table, and a test (`src/docs/codeowners.test.ts`) holds
+the file to it. A pull request that mixes a lesson with anything from the last four rows
+waits for the maintainer as a whole, so keep lessons in pull requests of their own.
+
+If a lesson seems to need a change outside its own two or three folders, **stop and ask
+the maintainer**: it usually means the content model needs extending, which is done once
+in the template for every course. The full rule:
+[`CONTRIBUTING.md` → "Adding content vs. changing the system"](CONTRIBUTING.md#adding-content-vs-changing-the-system-read-before-a-pr).
+
 ### One lesson, or several
 
 A course of one lesson can skip the list of lessons: `"home": "lesson"` in `course.json`
@@ -63,15 +72,6 @@ When a second lesson arrives, the build stops and says so. Change the setting to
 `"landing"` and build again. For students, the front address now opens the list of
 lessons, one click from the lesson. A link straight to the lesson (`<slug>.html`) and
 their saved progress are unchanged.
-
-`.github/CODEOWNERS` encodes this table, and a test (`src/docs/codeowners.test.ts`) holds
-the file to it. A pull request that mixes a lesson with anything from the last four rows
-waits for the maintainer as a whole, so keep lessons in pull requests of their own.
-
-If a lesson seems to need a change outside its own two or three folders, **stop and ask
-the maintainer**: it usually means the content model needs extending, which is done once
-in the template for every course. The full rule:
-[`CONTRIBUTING.md` → "Adding content vs. changing the system"](CONTRIBUTING.md#adding-content-vs-changing-the-system-read-before-a-pr).
 
 ## Every day: the loop
 

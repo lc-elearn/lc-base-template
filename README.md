@@ -77,7 +77,7 @@ optimisation): [`public/fonts/feijoa/README.md`](public/fonts/feijoa/README.md).
 ## Build
 
 ```bash
-bun run build     # type-check, bundle, then prerender the landing page + one HTML file per LO
+bun run build     # type-check, bundle, then prerender the front page + one HTML file per LO
 bun run preview   # serve the built output locally
 ```
 
@@ -134,7 +134,7 @@ drift from the folders. Move a lesson by renaming its folder.
 
 ### Previewing a course while you author it
 
-`bun run dev` serves the whole course with hot reload — the landing page at `/`, and
+`bun run dev` serves the whole course with hot reload — the landing page (or, with `"home": "lesson"`, the lesson) at `/`, and
 each LO at `/<slug>.html`, so lesson cards and the lesson nav work as they do in
 production. `<slug>.html` files themselves only exist after a build, so a small
 Vite plugin answers those URLs by stamping the LO's folder onto the dev `index.html`,

@@ -53,8 +53,8 @@ Once per machine, for the browser tests:
 
 | Command                 | What it does                                                                                           |
 | ----------------------- | ------------------------------------------------------------------------------------------------------ |
-| `bun run dev`           | Vite dev server, hot reload — landing page and every LO page                                           |
-| `bun run build`         | Type-check + bundle + prerender the landing page and one HTML per LO                                   |
+| `bun run dev`           | Vite dev server, hot reload — the front page and every LO page                                         |
+| `bun run build`         | Type-check + bundle + prerender the front page (landing page, or the one lesson) and one HTML per LO   |
 | `bun run preview`       | Serve the production build locally                                                                     |
 | `bun run test`          | Run the test suite (Vitest, one-shot)                                                                  |
 | `bun run test:coverage` | The suite plus per-file coverage bars — what CI runs                                                   |
@@ -90,7 +90,9 @@ Publishing a course (fonts, the address, the checks before it goes live, the upl
 
 An LO is a folder under `lo-config/`; it exists because the folder exists. Nothing in
 the app enumerates LOs — adding a folder adds its page **and its card on the landing
-page**, with no code change.
+page**, with no code change. A course of one lesson may set `"home": "lesson"` in
+`course.json` and have no landing page; it switches back before a second lesson
+([`COURSE_GUIDE.md` → "One lesson, or several"](COURSE_GUIDE.md#one-lesson-or-several)).
 
 1. Copy `lo-config/lo-00-example/` to `lo-config/lo-NN-your-slug/` — the `lo-NN-`
    ordinal is the course order (see below), and the URL drops it (`your-slug.html`).
@@ -107,7 +109,7 @@ page**, with no code change.
 suites and browser tests run on it, and template updates change it, so a course that
 edits or deletes it gets red CI and clashing updates. Learners never meet it: once
 `lo-config/` holds a lesson of its own, the landing page leaves the example's card out
-by itself (`EXAMPLE_LO_FOLDER` in `src/lo/lo-index.ts`). Its page is still built, with
+by itself (`EXAMPLE_LO_FOLDER` in `src/lo/course-lessons.ts`). Its page is still built, with
 nothing linking to it, so the browser tests keep a page to drive.
 
 > **Only add pictures and audio that we made, or that we are clearly allowed to
