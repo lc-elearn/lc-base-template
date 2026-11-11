@@ -2908,8 +2908,8 @@ rather than the Language Centre's course factory; the maintainer took three smal
   still written, so the lesson keeps one address when the course later gains lessons.
   Plan: [`2026-11-10-standalone-lesson-plan.md`](2026-11-10-standalone-lesson-plan.md). **Next:** each course takes it with its next update; a one-lesson course sets
   `"home": "lesson"` in `course.json`.
-- **E56 — a per-lesson Credits link in the footer. DONE 2026-11-11** (branch
-  `feat/e56-footer-credits`; spec
+- **E56 — a per-lesson Credits link in the footer. DONE 2026-11-11** (PR 98, merged as
+  `bf016ac`; spec
   [`2026-11-11-footer-credits-design.md`](../specs/2026-11-11-footer-credits-design.md),
   plan [`2026-11-11-footer-credits-plan.md`](2026-11-11-footer-credits-plan.md)). After the
   2015 Russian lessons: `"credits": "<modal id>"` in `lo.json` ends the footer's © line
@@ -3192,3 +3192,4 @@ build, so it cannot return. Two remain:
 | 2026-10-21 | `35b36d6` | **third review's defects** — exercises checked at load, reserved page names, the playlist's gap; PR 31 (E28)                                                        |
 | 2026-11-10 | `5662951` | **typed answers accept more than one form** — `\|` means "or" in the four typed engines, the first preferred, the rest "Also accepted"; PR 90 (E54)                 |
 | 2026-11-11 | `cd14265` | **a course of one lesson** — `"home": "lesson"` in `course.json` makes `index.html` the lesson's page; the build refuses it with two lessons; PR 92 (E55)           |
+| 2026-11-11 | `bf016ac` | **a Credits link in the footer** — `"credits": "<modal id>"` in `lo.json` adds a Credits button to the lesson footer; popups may hold one `<h3>`; PR 98 (E56)       |
