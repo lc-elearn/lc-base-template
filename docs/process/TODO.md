@@ -10,8 +10,8 @@ session, on either machine.
 | `2026-08-06-post-phase-d-handover.md` | state snapshot at end of Phase D, plus the §5 decision log |
 | [`../ROADMAP.md`](../ROADMAP.md)      | larger work beyond this queue, each with its trigger       |
 
-**Last updated:** 2026-11-11 · **HEAD:** see `git log` · **Suite:** 210 files · 2508 tests green
-(Vitest) · 135 Playwright tests (45 × 3 browsers, `bun run test:e2e`; the 9 for the `home` mode not built skip) plus 105 on a `DEBUG=1` build (35 × 3, `e2e/debug/`) · CI green · `main` protected since 2026-10-21 (job E1).
+**Last updated:** 2026-11-11 · **HEAD:** see `git log` · **Suite:** 213 files · 2543 tests green
+(Vitest) · 147 Playwright tests (49 × 3 browsers, `bun run test:e2e`; the 9 for the `home` mode not built skip) plus 111 on a `DEBUG=1` build (37 × 3, `e2e/debug/`) · CI green · `main` protected since 2026-10-21 (job E1).
 
 Non-negotiable constraints for every job below live in
 [`AGENTS.md` → "Hard constraints"](../../AGENTS.md) (they grew out of
@@ -2923,6 +2923,29 @@ rather than the Language Centre's course factory; the maintainer took three smal
   `DEBUG=1 bun run build && DEBUG=1 bun run test:e2e`; `e2e/footer-credits.spec.ts` and
   the credits state in `e2e/axe-open-states.spec.ts`. **Next:** each course takes it with
   its next update; the Russian course sets `credits` per lesson from the 2015 units.
+- **E57 — exercises in tabs: the exercise set. DONE 2026-11-11** (branch
+  `feat/e57-tab-exercises`; spec
+  [`2026-11-11-tab-exercises-design.md`](../specs/2026-11-11-tab-exercises-design.md),
+  plan [`2026-11-11-tab-exercises-plan.md`](2026-11-11-tab-exercises-plan.md)). After the
+  2015 Russian lessons 6 and 7: a section's `exercises` list in `lo.json` may hold a set
+  (`title`, optional `instructions`, two or more `tabs` of `{ exercise, media? }`), shown
+  as one accordion, one instruction box and the tabs block's tab UI (now shared as
+  `TabSet`), each panel the tab's media then its exercise. The maintainer's decisions: a
+  set sits among the exercises, not in a tabs block (S1); one box above the tabs, the
+  engine's default copy only when every tab uses one engine (S2); a tab has no box unless
+  its exercise.json writes one (S3); Check, Reset, Show answers and score per tab (S4); tab
+  audio may come without a transcript (S5); every engine allowed and proven in a tab
+  (S6, all 15 pass); an exercise used once per lesson, plain refs included (S7);
+  `lo-00-example` and the exercise showcase show it (S8). **Verify:** the gate in
+  AGENTS.md, and `DEBUG=1 bun run build && DEBUG=1 bun run test:e2e`;
+  `e2e/exercise-set.spec.ts` and `e2e/debug/exercise-set-engines.spec.ts`. **Next:** the
+  Russian course uses it for lessons 6 ("Reconstruct the text") and 7 ("Set
+  expressions") with its next update. Its merged commit and Done-recently row go in with
+  the next docs change, as E56's do here. **Found while building, not fixed here:** the LO
+  envelope's `options` (`ExerciseOptionsSchema`, not strict) drops engine-only options
+  such as flashcards' `srs`, `direction` and `lockDirection` before the engine sees them,
+  so a lesson's deck neither saves progress nor keeps its direction. Once it does, a set
+  of such decks says so in its box (`resolveSetInstructions`); add a loader test then.
 - **E16 — after the organisation move, file `ORGANIZATION.md` under `docs/process/`.**
   Once steps 1–9 are done it is a record, not a guide; course repos inherit the file,
   so moving it keeps their top-level docs to what a course needs. Fix the links that
