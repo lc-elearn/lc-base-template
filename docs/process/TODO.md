@@ -28,7 +28,7 @@ build served from a folder (`SERVE_PATH=/any/folder/ bun run test:e2e`) and unde
 bun run format && bun run lint && bun run lint:css && bun run test:coverage && bun run build && bun run test:e2e
 ```
 
-`bun run guards` (`vitest run src/guards`) is the fast subset — **214** tests in ~1s — for
+`bun run guards` (`vitest run src/guards`) is the fast subset — **216** tests in ~1s — for
 when you only want to know whether you broke a repo-wide invariant. It is a subset of
 `bun run test`, never a replacement for the gate above. It stayed at 211 when §B landed
 **on purpose**: the docs-freshness test lives in `src/docs/`, not `src/guards/`, because
@@ -42,7 +42,9 @@ authored as `image: { src, alt }` — the shape required once alt text is mandat
 walked straight past and the guard reported green having checked nothing. That is the
 staleness `asset-existence.ts`'s own header warns about, so `src` joined `ASSET_KEYS`.
 The outcomes block's OWN tests are not in this number: they live beside the code, which
-is exactly what the paragraph above is about.
+is exactly what the paragraph above is about. **216 on 2026-11-11:** E57 added two of
+guard **b**'s own (`7e85d63`): a set's exercises count as referenced, and a malformed set
+is read without throwing.
 
 `bun run test` (Vitest), **not** `bun test` — Bun's own runner throws on the
 `import.meta.glob` in `load-lo-glob.ts` and reports a false failure.
@@ -2916,8 +2918,8 @@ rather than the Language Centre's course factory; the maintainer took three smal
   plan [`2026-11-11-footer-credits-plan.md`](2026-11-11-footer-credits-plan.md)). After the
   2015 Russian lessons: `"credits": "<modal id>"` in `lo.json` ends the footer's © line
   with a "Credits" button (new UI string `credits`) that opens that popup. The build
-  refuses an id `modals` does not list. Popups, and only popups, may now hold one `<h3>`
-  as a whole entry (the dialog title is the h2); page prose refuses it and says why, the
+  refuses an id `modals` does not list. Popups, and only popups, may now have entries that
+  are each one `<h3>` (the dialog title is the h2); page prose refuses it and says why, the
   one written exception to rich-text spec §14. Per lesson only, the maintainer's decision:
   the landing page's footer is unchanged. `lo-00-example` has a placeholder credits popup
   (paragraph, Team heading, role lines, Voices list), so a copied lesson starts with one
@@ -2946,7 +2948,7 @@ rather than the Language Centre's course factory; the maintainer took three smal
   envelope dropped engine-only options such as flashcards' `srs`, so a set of such decks
   could not say so in its box; it now does, and a loader test proves it.
 - **E58 — a lesson's flashcards keep their own options. DONE 2026-11-11** (PR 100, branch
-  `fix/lo-engine-options`; found while building E57). The LO envelope's `options` was a
+  `fix/lo-engine-options`, rebase-merged as `221f364`; found while building E57). The LO envelope's `options` was a
   plain `z.object`, so Zod stripped every key it did not know, and what `assembleLo` hands
   the page is the envelope's parse: a lesson's flashcards deck lost `srs`, `direction` and
   `lockDirection` before its engine saw them. It neither saved progress nor kept its
@@ -2968,8 +2970,8 @@ rather than the Language Centre's course factory; the maintainer took three smal
   tests only: `lo-00-example` has no deck, so no browser test opens a lesson's deck.
   **Next:** each course takes it with its next update; a lesson with a deck that sets
   `srs` or a direction starts behaving as written, with no change to its files.
-- **E59 — a typo in an exercise's options fails the build. DONE 2026-11-11** (branch
-  `fix/strict-exercise-options`, stacked on E58's PR 100; follow-up E58 left open).
+- **E59 — a typo in an exercise's options fails the build. DONE 2026-11-11** (PR 101,
+  branch `fix/strict-exercise-options`, built on E58; rebase-merged as `40419ee`).
   **Decision (maintainer, 2026-11-11): refuse unknown option keys at load.** Until now an
   options key the engine does not know (`shufle`, `lockDirecton`, a deck's `srs` copied
   onto a select) was ignored without a word. Courses take template updates by merge, so
@@ -3031,15 +3033,16 @@ the slice-1 scope and the open list live in
 - **F2a — media in a tab. DONE 2026-10-07** (`feat/tabs-media`). Portrait or figure
   image, audio player, Show/Hide transcript (`<details>`). Spec
   `2026-10-07-tabs-media-design.md`, plan `2026-10-07-tabs-media-plan.md`.
-- **F2 — remaining panel entries:** callout, exercise by folder ref; transcript in the
-  popup (`{ "modal": id }`); media as a standalone block. Verify: each entry in the
-  example LO, guards b–h green.
+- **F2 — remaining panel entries:** callout; transcript in the popup
+  (`{ "modal": id }`); media as a standalone block. Verify: each entry in the example LO,
+  guards b–h green. (The exercise by folder ref was built instead as the exercise set,
+  E57: [`2026-11-11-tab-exercises-design.md`](../specs/2026-11-11-tab-exercises-design.md).)
 - **F3 — phones. DONE 2026-10-13** (`22b637d`, docs `d72cd02`, `2d6f10c`). Below the block's
   `@3xl` container width (48rem) the tab row is hidden and the vendored shadcn `Select`
   stands in, sharing one `value` with the tabs; the narrow stack is gone. First built at
   `@xl` (36rem), where the example's four tabs wrapped between 36rem and ~43rem, so the
   switch moved up (maintainer); a lesson whose tabs outgrow 48rem wraps again, and the
-  fix then is to measure the row (`TabsBlock.tsx` header). JS 113.63 → 135.45
+  fix then is to measure the row (`TabSet.tsx` header, `TabsBlock.tsx` before E57). JS 113.63 → 135.45
   kB (Base UI Select and Floating UI join `main-*.js`; the select exercise had them
   only lazily), so the maintainer raised the JS cap 120 → 140 kB. CSS 18.09 → 18.03 kB.
   Browser: 320, 375, 768, 820, 840, 880, 1024 and 1440, light and dark: no sideways
@@ -3257,5 +3260,7 @@ build, so it cannot return. Two remain:
 | 2026-10-21 | `35b36d6` | **third review's defects** — exercises checked at load, reserved page names, the playlist's gap; PR 31 (E28)                                                        |
 | 2026-11-10 | `5662951` | **typed answers accept more than one form** — `\|` means "or" in the four typed engines, the first preferred, the rest "Also accepted"; PR 90 (E54)                 |
 | 2026-11-11 | `cd14265` | **a course of one lesson** — `"home": "lesson"` in `course.json` makes `index.html` the lesson's page; the build refuses it with two lessons; PR 92 (E55)           |
-| 2026-11-11 | `bf016ac` | **a Credits link in the footer** — `"credits": "<modal id>"` in `lo.json` adds a Credits button to the lesson footer; popups may hold one `<h3>`; PR 98 (E56)       |
+| 2026-11-11 | `bf016ac` | **a Credits link in the footer** — `"credits": "<modal id>"` in `lo.json` adds a Credits button to the lesson footer; a popup entry may be one `<h3>`; PR 98 (E56)  |
 | 2026-11-11 | `64b878f` | **exercises in tabs** — a section's `exercises` in `lo.json` may hold a set: one accordion, one instruction box, a tab per exercise, any engine; PR 99 (E57)        |
+| 2026-11-11 | `221f364` | **a lesson's flashcards keep their own options** — the LO envelope's `options` is loose, so `srs` and a direction reach the deck; PR 100 (E58)                      |
+| 2026-11-11 | `40419ee` | **a typo in an exercise's options fails the build** — the load check closes each engine's `options`, naming the file and the key; PR 101 (E59)                      |
