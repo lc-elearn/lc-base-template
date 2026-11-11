@@ -734,7 +734,7 @@ In `axe-open-states.spec.ts` `OPEN_STATES`, after the conjugation entry:
 
 **Files:** `docs/specs/lo-rich-text-modals.md`, `docs/specs/2026-11-11-footer-credits-design.md`, `CONTRIBUTING.md`, `STRUCTURE.md`, `COURSE_GUIDE.md`, `public/llms.txt`, `docs/process/TODO.md`. Re-read each right before editing (Prettier reflows tables).
 
-- [ ] **Step 1:** rich-text spec, end of §14 "Authoring": `_(Amended 2026-11-11, E56: a popup may also hold one `<h3>` as a whole entry; page prose may not. The one exception to "anything a popup accepts, page prose accepts" — [`2026-11-11-footer-credits-design.md`](2026-11-11-footer-credits-design.md) §4.)_`
+- [ ] **Step 1:** rich-text spec, end of §14 "Authoring": `_(Amended 2026-11-11, E56: a popup may also hold one `<h3>` as a whole entry; page prose may not. The one exception to "anything a popup accepts, page prose accepts" — [`2026-11-11-footer-credits-design.md`](../specs/2026-11-11-footer-credits-design.md) §4.)_`
 - [ ] **Step 2:** CONTRIBUTING, after the rich-text paragraph (line ~129): a short "Credits" paragraph — set `"credits": "<modal id>"` in `lo.json` to add a Credits button to the lesson's footer; the popup is an ordinary one, and popups (only) may use `<h3>` for a heading such as "Team"; link the E56 spec.
 - [ ] **Step 3:** STRUCTURE's tree: add `modals/credits/modal.json         the footer's Credits popup, named by lo.json's credits` under the example-popup line.
 - [ ] **Step 4:** COURSE_GUIDE: where lessons' files are described, one line that the footer's Credits link is per lesson (`credits` in `lo.json`), linking CONTRIBUTING.

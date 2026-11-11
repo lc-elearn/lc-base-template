@@ -53,6 +53,7 @@ lo-config/lo-00-example/
   blocks/03-outcomes/block.json    back in the Introduction — see the ordinal rule
   exercises/01-select/exercise.json
   modals/example-popup/modal.json
+  modals/credits/modal.json        the footer's Credits popup, named by lo.json's credits
   hovers/lo-json/hover.json        a hover card, declared in lo.json's hovers[]
 ```
 

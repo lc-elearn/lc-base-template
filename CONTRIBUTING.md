@@ -130,6 +130,12 @@ Rich text in `text` fields takes the tags listed in
 authors most often trip on: a link, popup link, hover term or audio icon cannot sit
 inside another one. Put them side by side; the build names both if you forget.
 
+**Credits.** A lesson can end the footer's © line with a "Credits" link: write the credits
+as one of its popups (`modals/<id>/modal.json`) and name it in `lo.json` with
+`"credits": "<id>"`. The build refuses an id that `modals` does not list. Popups, and only
+popups, may use `<h3>` for a heading such as "Team". `lo-00-example` has one to copy
+([`docs/specs/2026-11-11-footer-credits-design.md`](docs/specs/2026-11-11-footer-credits-design.md)).
+
 ### What an LO's card on the landing page reads from
 
 Three `lo.json` fields do double duty as that LO's card:
