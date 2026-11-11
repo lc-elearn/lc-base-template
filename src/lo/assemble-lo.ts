@@ -38,7 +38,7 @@ import {
   type LoHero,
 } from '@/config/lo-schema';
 import type { ExerciseType } from '@/config/exercise-types';
-import { resolveSetInstructions } from '@/exercises/lib/instructions';
+import { resolveSetInstructions, savesProgress } from '@/exercises/lib/instructions';
 import type { Media } from './blocks/media-schema';
 import { parseRichTextEntry } from './rich-text/parse-rich-text-entry';
 import {
@@ -279,7 +279,11 @@ export function assembleLo(
       titles.add(config.title);
     }
     const types = tabs.map((tab) => tab.config.type);
-    const instructions = resolveSetInstructions(set.instructions, types);
+    const instructions = resolveSetInstructions(set.instructions, types, {
+      // Every tab saves under its lesson, so a deck that saves progress always does. (The
+      // LO envelope drops engine-only options such as `srs` today; see TODO §E57's note.)
+      savesProgress: tabs.some((tab) => savesProgress(tab.config)),
+    });
     if (instructions === null) {
       throw new Error(
         `${manifestPath}: the exercise set "${set.title}" mixes ${[...new Set(types)].join(' and ')} — write its instructions, since no one engine's default copy fits`,
