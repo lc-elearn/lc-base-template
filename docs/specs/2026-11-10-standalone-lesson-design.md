@@ -1,7 +1,18 @@
 # A course of one lesson — no landing page (E55)
 
-**Date:** 2026-11-10 · **Status:** approved 2026-11-10, not built · **Plan:** [`2026-11-10-standalone-lesson-plan.md`](../process/2026-11-10-standalone-lesson-plan.md)
+**Date:** 2026-11-10 · **Status:** built 2026-11-11 (TODO §E55) · **Plan:** [`2026-11-10-standalone-lesson-plan.md`](../process/2026-11-10-standalone-lesson-plan.md)
 **TODO:** §E55
+
+> **Deviations from this spec.** (1) §5: the dev server reads `home` through
+> `parseCourseHome()` (`src/config/course-home.ts`, via `readCourseHome()` in
+> `src/config/course-json-disk.ts`), not `parseCourseConfig()`: one schema for `home`,
+> and the dev plugin need not import `course.config.ts`. Same message prefix
+> ("course.json is invalid"). (2) §8: the browser tests read the course's own
+> `course.json` instead of a test-only build switch; `e2e/home-page.spec.ts` runs the
+> half for the course's setting (the template, on "landing", runs the landing half in
+> CI; the lesson half was run locally). The rail check uses
+> `nav[aria-label="Lessons"]`, not a role query, since the collapsed rail's nav is not
+> in the accessibility tree.
 
 ## 1. Why
 
