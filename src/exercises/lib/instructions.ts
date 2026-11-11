@@ -109,15 +109,20 @@ export function resolveInstructions(
  * The box above an exercise set's tabs (E57, spec S2): the set's own text, or, when every
  * tab uses one engine, that engine's default copy. Tabs of different engines share no
  * default, so this returns `null` and the loader refuses the set.
+ *
+ * `savesProgress` adds SAVED_PROGRESS_INSTRUCTIONS to the default, as above a standalone
+ * deck: a tab shows no box of its own (S3), so this box is the only place to say it.
  */
 export function resolveSetInstructions(
   instructions: string | undefined,
   types: readonly ExerciseType[],
+  context: { savesProgress?: boolean } = {},
 ): string | null {
   if (instructions !== undefined) return instructions;
   const [first, ...rest] = types;
   if (first === undefined || rest.some((type) => type !== first)) return null;
-  return EXERCISE_INSTRUCTIONS[first];
+  const copy = EXERCISE_INSTRUCTIONS[first];
+  return context.savesProgress ? `${copy} ${SAVED_PROGRESS_INSTRUCTIONS}` : copy;
 }
 
 /**

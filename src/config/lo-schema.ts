@@ -41,7 +41,7 @@
 import { z } from 'zod';
 import { UiStringsOverrideSchema } from './ui-strings';
 import { EXERCISE_TYPE_KEYS } from './exercise-types';
-// Relative, never `@/…`: this file is reachable from vite.config.ts (AGENTS.md, constraint 1).
+// Relative, like every other import in this file.
 import { SetTabMediaSchema } from '../lo/blocks/media-schema';
 
 /**
@@ -249,7 +249,8 @@ export const ExerciseSetTabSchema = z.strictObject({
 
 export const ExerciseSetSchema = z.strictObject({
   title: z.string().min(1),
-  instructions: z.string().min(1).optional(),
+  /** Plain text; trimmed, so a blank string fails rather than showing an empty box. */
+  instructions: z.string().trim().min(1).optional(),
   tabs: z.array(ExerciseSetTabSchema).min(2),
 });
 export type ExerciseSet = z.infer<typeof ExerciseSetSchema>;

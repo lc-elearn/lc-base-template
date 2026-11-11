@@ -37,7 +37,7 @@
  *        docs/specs/2026-11-11-tab-exercises-design.md §5.
  */
 import { useState, type ReactNode } from 'react';
-import { FOCUS_OUTLINE } from '@/components/shell/focus-outline';
+import { FOCUS_OUTLINE } from './focus-outline';
 import {
   Select,
   SelectContent,

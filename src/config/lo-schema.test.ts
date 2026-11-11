@@ -469,12 +469,16 @@ test('lo-schema: a set needs a title, two tabs and no stray keys', () => {
   expect(LoManifestSchema.safeParse(withExercises({ ...SET, instructions: '' })).success).toBe(
     false,
   );
+  expect(LoManifestSchema.safeParse(withExercises({ ...SET, instructions: '   ' })).success).toBe(
+    false,
+  );
   expect(errorOf(withExercises({ ...SET, tabz: [] }))).toContain('tabz');
 });
 
 test.each([
   [
     'twice in sections',
+    'sections[1].exercises[0]',
     [
       { id: 'a', label: 'A', exercises: ['01-select'] },
       { id: 'b', label: 'B', exercises: ['01-select'] },
@@ -482,6 +486,7 @@ test.each([
   ],
   [
     'twice in tabs',
+    'sections[0].exercises[0].tabs[1].exercise',
     [
       {
         id: 'a',
@@ -490,7 +495,14 @@ test.each([
       },
     ],
   ],
-  ['in a section and a tab', [{ id: 'a', label: 'A', exercises: ['03-drag-fill-gaps', SET] }]],
-])('lo-schema: an exercise used %s fails (S7)', (_case, sections) => {
-  expect(errorOf({ title: 'T', sections })).toMatch(/used twice/);
+  [
+    'in a section and a tab',
+    'sections[0].exercises[1].tabs[0].exercise',
+    [{ id: 'a', label: 'A', exercises: ['03-drag-fill-gaps', SET] }],
+  ],
+])('lo-schema: an exercise used %s fails, naming the second use (S7)', (_case, at, sections) => {
+  const error = errorOf({ title: 'T', sections });
+
+  expect(error).toMatch(/used twice/);
+  expect(error).toContain(`at ${at}`);
 });

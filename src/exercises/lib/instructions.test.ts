@@ -114,6 +114,12 @@ describe('an exercise set (E57)', () => {
     );
   });
 
+  test('a set of decks that save progress says so above the tabs', () => {
+    expect(
+      resolveSetInstructions(undefined, ['flashcards', 'flashcards'], { savesProgress: true }),
+    ).toBe(`${EXERCISE_INSTRUCTIONS.flashcards} ${SAVED_PROGRESS_INSTRUCTIONS}`);
+  });
+
   test('tabs of different engines have no default, so the loader must refuse (S2)', () => {
     expect(resolveSetInstructions(undefined, ['select', 'inline-choice'])).toBeNull();
   });
