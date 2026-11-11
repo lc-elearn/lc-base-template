@@ -2904,7 +2904,7 @@ rather than the Language Centre's course factory; the maintainer took three smal
   `"lesson"`, which makes `index.html` the one lesson's page. The build refuses
   `"lesson"` when there is more than one lesson, and says to switch. `<slug>.html` is
   still written, so the lesson keeps one address when the course later gains lessons.
-  Plan: [`2026-11-10-standalone-lesson-plan.md`](2026-11-10-standalone-lesson-plan.md). **Next:** the full gate, then a pull request.
+  Plan: [`2026-11-10-standalone-lesson-plan.md`](2026-11-10-standalone-lesson-plan.md). **Next:** pull request [#92](https://github.com/lc-elearn/lc-base-template/pull/92) merges on green CI.
 - **E16 — after the organisation move, file `ORGANIZATION.md` under `docs/process/`.**
   Once steps 1–9 are done it is a record, not a guide; course repos inherit the file,
   so moving it keeps their top-level docs to what a course needs. Fix the links that
