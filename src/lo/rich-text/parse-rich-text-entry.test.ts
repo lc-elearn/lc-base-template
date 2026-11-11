@@ -238,9 +238,12 @@ describe('headings (popups only, E56)', () => {
     );
   });
 
-  test('needs text', () => {
-    expect(() => parseRichTextEntry('<h3>  </h3>', undefined, POPUP)).toThrow(/needs text/);
-  });
+  test.each(['<h3>  </h3>', '<h3><br></h3>', '<h3><strong> </strong><br/></h3>'])(
+    'needs text: %s',
+    (html) => {
+      expect(() => parseRichTextEntry(html, undefined, POPUP)).toThrow(/needs text/);
+    },
+  );
 
   test('rejects an unclosed heading', () => {
     expect(() => parseRichTextEntry('<h3>Team', undefined, POPUP)).toThrow(/unclosed <h3>/);
@@ -258,7 +261,16 @@ describe('headings (popups only, E56)', () => {
     );
   });
 
-  test('a heading mid-paragraph gets the own-entry message', () => {
-    expect(() => parseRichTextEntry('Intro <h3>Team</h3>', undefined, POPUP)).toThrow(/own entry/);
+  test('a heading mid-paragraph says it must be a whole popup entry', () => {
+    expect(() => parseRichTextEntry('Intro <h3>Team</h3>', undefined, POPUP)).toThrow(
+      /headings are allowed only as a whole entry in a popup \(modal\.json\)/,
+    );
+  });
+
+  // Inline-only fields (hover cards, outcomes, sources) never take a heading, so the
+  // message must not send their authors to "its own entry", which would fail again.
+  test('the inline parser says the same, not "its own entry"', () => {
+    expect(() => parseRichText('x <h3>Team</h3>')).toThrow(/whole entry in a popup/);
+    expect(() => parseRichText('x <h3>Team</h3>')).not.toThrow(/own entry/);
   });
 });
