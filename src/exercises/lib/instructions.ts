@@ -88,18 +88,36 @@ export function savesProgress(config: unknown): boolean {
  *
  * @param type     the engine type (selects the default copy).
  * @param override the author's `content.instructions`, if any.
- * @param context  `savesProgress` adds SAVED_PROGRESS_INSTRUCTIONS to the default.
+ * @param context  `savesProgress` adds SAVED_PROGRESS_INSTRUCTIONS to the default;
+ *                 `useDefault: false` drops the default copy, leaving only an author's
+ *                 own text (an exercise in a set's tab, E57 S3).
  * @returns the text to show, or `null` to suppress the box entirely.
  */
 export function resolveInstructions(
   type: ExerciseType,
   override?: string | null,
-  context: { savesProgress?: boolean } = {},
+  context: { savesProgress?: boolean; useDefault?: boolean } = {},
 ): string | null {
   if (override === '' || override === null) return null;
   if (typeof override === 'string' && override.trim() !== '') return override;
+  if (context.useDefault === false) return null;
   const copy = EXERCISE_INSTRUCTIONS[type];
   return context.savesProgress ? `${copy} ${SAVED_PROGRESS_INSTRUCTIONS}` : copy;
+}
+
+/**
+ * The box above an exercise set's tabs (E57, spec S2): the set's own text, or, when every
+ * tab uses one engine, that engine's default copy. Tabs of different engines share no
+ * default, so this returns `null` and the loader refuses the set.
+ */
+export function resolveSetInstructions(
+  instructions: string | undefined,
+  types: readonly ExerciseType[],
+): string | null {
+  if (instructions !== undefined) return instructions;
+  const [first, ...rest] = types;
+  if (first === undefined || rest.some((type) => type !== first)) return null;
+  return EXERCISE_INSTRUCTIONS[first];
 }
 
 /**
