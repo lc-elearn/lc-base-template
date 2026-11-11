@@ -904,7 +904,7 @@ After the sentence ending "(CONTRIBUTING, "Authoring a Learning Object").", add:
 
 After the code block that runs `ls dist/*.html`, and before "If you see", add: `With \`"home": "lesson"\` in \`course.json\`, \`index.html\` is the lesson itself, and the lesson's own page is there too.`
 
-- [ ] **Step 4: `public/llms.txt`**, the `[Home](index.html)` bullet
+- [ ] **Step 4: `public/llms.txt`**, the Home bullet (the one that links to the site's index page)
 
 Append: `A course of one lesson may set \`home: "lesson"\` in its settings; its Home is then that lesson's page, which is also at \`<slug>.html\`.`
 
