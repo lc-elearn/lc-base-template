@@ -2897,14 +2897,14 @@ rather than the Language Centre's course factory; the maintainer took three smal
   (`e2e/debug/typed-answer-alternatives.spec.ts`). **Next:** each course takes it with
   its next update; the Russian course then restores the dropped alternatives in lessons
   3 and 4, checks lessons 1 and 2 against the 2015 units, and merges PR 8.
-- **E55 — a course of one lesson, with no landing page. SPEC APPROVED, PLAN WRITTEN 2026-11-10**
+- **E55 — a course of one lesson, with no landing page. BUILT 2026-11-11 (not merged)**
   (spec
   [`2026-11-10-standalone-lesson-design.md`](../specs/2026-11-10-standalone-lesson-design.md)).
   A new `course.json` setting, `home`: `"landing"` (the default, today's behaviour) or
   `"lesson"`, which makes `index.html` the one lesson's page. The build refuses
   `"lesson"` when there is more than one lesson, and says to switch. `<slug>.html` is
   still written, so the lesson keeps one address when the course later gains lessons.
-  Plan: [`2026-11-10-standalone-lesson-plan.md`](2026-11-10-standalone-lesson-plan.md). **Next:** build it on `feat/standalone-lesson`, plan Task 0 onward.
+  Plan: [`2026-11-10-standalone-lesson-plan.md`](2026-11-10-standalone-lesson-plan.md). **Next:** the full gate, then a pull request.
 - **E16 — after the organisation move, file `ORGANIZATION.md` under `docs/process/`.**
   Once steps 1–9 are done it is a record, not a guide; course repos inherit the file,
   so moving it keeps their top-level docs to what a course needs. Fix the links that

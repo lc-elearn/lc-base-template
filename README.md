@@ -122,7 +122,7 @@ The build emits **one real HTML file per folder in `lo-config/`** (`lo-00-exampl
 `dist/example.html`) plus **`dist/index.html`, the course landing page** — hero copy
 from `course.json` and one card per LO, linking to that LO's page. The
 example lesson's card shows only while it is the only LO: a course with lessons of its
-own leaves it out (CONTRIBUTING, "Authoring a Learning Object").
+own leaves it out (CONTRIBUTING, "Authoring a Learning Object"). A course of one lesson can set `"home": "lesson"` in `course.json`: `dist/index.html` is then that lesson's page, with no landing page (COURSE_GUIDE, "One lesson, or several").
 Each page's body is already rendered, so a course reads and navigates with JavaScript
 disabled, and hydrates into the interactive app when JavaScript runs. Exercises need
 JavaScript and say so on the static page.

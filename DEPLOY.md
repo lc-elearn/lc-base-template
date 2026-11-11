@@ -189,6 +189,8 @@ it. Do not deploy: send the message to the lesson's author or the maintainer.
    ls dist/*.html
    ```
 
+   With `"home": "lesson"` in `course.json`, `index.html` is the lesson itself, and the lesson's own page is there too.
+
    If you see `exercise-showcase.html`, `ui-showcase.html`, `debug-sandbox.html`,
    `code-style.html`, `culp-syllabi.html` or `claude-skills.html`, the build ran with `DEBUG` set. Open a new terminal and build again.
 
