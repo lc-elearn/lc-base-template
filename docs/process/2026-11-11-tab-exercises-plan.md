@@ -1644,7 +1644,7 @@ Re-read each doc immediately before editing it (Prettier reflows tables).
       do not restate it.
 - [ ] **Specs**: in `2026-10-07-tabs-block-design.md` §2, amend the "Panel entries beyond text" row's
       note: "exercise by folder ref: built instead as the exercise set, E57,
-      [`2026-11-11-tab-exercises-design.md`](2026-11-11-tab-exercises-design.md)". In the E57
+      with a link to the E57 spec". In the E57
       spec set **Status:** built, and add a "Deviations from this spec" note listing anything that
       changed while building (as the E56 spec does), including where the tab-switch state test
       lives (the browser, `e2e/exercise-set.spec.ts`, not Vitest: lazy engines do not hydrate in
