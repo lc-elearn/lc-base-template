@@ -5,7 +5,7 @@
  */
 import { test, expect } from 'vitest';
 import { exerciseConfigSchema } from '@/exercises/exercise-schemas';
-import { EXERCISE_INSTRUCTIONS } from '@/exercises/lib/instructions';
+import { EXERCISE_INSTRUCTIONS, SAVED_PROGRESS_INSTRUCTIONS } from '@/exercises/lib/instructions';
 import { assembleLo, isExerciseSet, type LoFileTree } from './assemble-lo';
 
 /** A valid two-section tree used as the base for the cases below. */
@@ -219,6 +219,67 @@ test('assembleLo: passes a valid tree through the engine schemas unchanged', () 
   );
 });
 
+// --- Engine-only options --------------------------------------------------------
+// The envelope checks the options every engine shares; an engine's own options (the
+// flashcards' srs, direction and lockDirection) must still reach the engine, from both
+// readers alike, or a lesson's deck neither saves progress nor keeps its direction.
+
+/** A one-exercise tree whose exercise is a flashcards deck with these `options`. */
+function treeWithDeck(options: object): LoFileTree {
+  return {
+    manifest: {
+      title: 'Salutations',
+      sections: [{ id: 'exercises', label: 'Exercises', exercises: ['01-flashcards'] }],
+    },
+    blocks: {},
+    exercises: {
+      '01-flashcards': {
+        type: 'flashcards',
+        title: 'Deck',
+        content: { cards: [{ target: 'el perro', native: 'the dog' }] },
+        options,
+      },
+    },
+  };
+}
+
+test("assembleLo: a lesson's flashcards deck keeps its engine-only options", () => {
+  const options = { srs: true, direction: 'native-target', lockDirection: true };
+  const node = assembleLo('lo-01-salutations', treeWithDeck(options), exerciseConfigSchema);
+  const browser = assembleLo('lo-01-salutations', treeWithDeck(options));
+
+  for (const lo of [node, browser]) {
+    const deck = lo.sections[0]?.exercises[0];
+    if (deck === undefined || isExerciseSet(deck)) throw new Error('expected an exercise');
+    expect(deck.config.options).toMatchObject(options);
+  }
+  // The prerender (Node reader) and the hydrating page (browser reader) must agree.
+  expect(node).toEqual(browser);
+});
+
+test('assembleLo: a stray srs on a set of selects does not promise saved progress', () => {
+  const tree = treeWithSet({
+    title: 'Parts',
+    tabs: [{ exercise: '03-select' }, { exercise: '04-select' }],
+  });
+  const exercises = {
+    ...tree.exercises,
+    '03-select': { ...(tree.exercises['03-select'] as object), options: { srs: true } },
+  };
+  const lo = assembleLo('lo-01-salutations', { ...tree, exercises }, exerciseConfigSchema);
+  const set = lo.sections[0]?.exercises[1];
+
+  expect(set !== undefined && isExerciseSet(set) && set.instructions).toBe(
+    EXERCISE_INSTRUCTIONS.select,
+  );
+});
+
+test('assembleLo: a bad engine-only option fails the build, naming the file', () => {
+  expect(() =>
+    assembleLo('lo-01-salutations', treeWithDeck({ direction: 'sideways' }), exerciseConfigSchema),
+  ).toThrow(/exercises\/01-flashcards\/exercise\.json is invalid[\s\S]*direction/);
+});
+
 test('assembleLo: a popup may hold an <h3>, and credits is carried through (E56)', () => {
   const tree = validTree();
   const lo = assembleLo('lo-01-salutations', {
@@ -298,6 +359,40 @@ test('assembleLo: a set of different engines must write its instructions (S2)', 
   );
   const set = lo.sections[0]?.exercises[1];
   expect(set !== undefined && isExerciseSet(set) && set.instructions).toBe('Do all three.');
+});
+
+test('assembleLo: a set of decks that save progress says so in its box', () => {
+  const card = { cards: [{ target: 'el perro', native: 'the dog' }] };
+  const deck = (title: string) => ({
+    type: 'flashcards',
+    title,
+    content: card,
+    options: { srs: true },
+  });
+  const lo = assembleLo('lo-01-salutations', {
+    manifest: {
+      title: 'Salutations',
+      sections: [
+        {
+          id: 'exercises',
+          label: 'Exercises',
+          exercises: [
+            {
+              title: 'Decks',
+              tabs: [{ exercise: '01-flashcards' }, { exercise: '02-flashcards' }],
+            },
+          ],
+        },
+      ],
+    },
+    blocks: {},
+    exercises: { '01-flashcards': deck('Animals'), '02-flashcards': deck('Houses') },
+  });
+  const set = lo.sections[0]?.exercises[0];
+
+  expect(set !== undefined && isExerciseSet(set) && set.instructions).toBe(
+    `${EXERCISE_INSTRUCTIONS.flashcards} ${SAVED_PROGRESS_INSTRUCTIONS}`,
+  );
 });
 
 test('assembleLo: two tabs titled alike fail — the title is the tab label', () => {

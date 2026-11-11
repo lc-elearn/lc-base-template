@@ -280,8 +280,7 @@ export function assembleLo(
     }
     const types = tabs.map((tab) => tab.config.type);
     const instructions = resolveSetInstructions(set.instructions, types, {
-      // Every tab saves under its lesson, so a deck that saves progress always does. (The
-      // LO envelope drops engine-only options such as `srs` today; see TODO §E57's note.)
+      // Every tab saves under its lesson, so a deck that saves progress always does.
       savesProgress: tabs.some((tab) => savesProgress(tab.config)),
     });
     if (instructions === null) {
