@@ -101,6 +101,8 @@ export interface AssembledLo {
   readonly modals: Readonly<Record<string, ModalContent>>;
   /** Declared hover cards, keyed by id, their lines already parsed (TODO §D17). */
   readonly hovers: Readonly<Record<string, HoverContent>>;
+  /** The modal id the footer's Credits button opens; absent when lo.json sets none (E56). */
+  readonly credits?: string;
 }
 
 /** An author-facing path for the LO file at `relative` inside this LO's folder. */
@@ -170,7 +172,10 @@ export function assembleLo(
           id,
           title: config.title,
           // Parsed HERE, at load, so a bad tag dies naming the file the author edits.
-          content: config.content.map((entry) => parseRichTextEntry(entry, filePath)),
+          // Popups only may hold an <h3> (E56): the dialog title is the h2.
+          content: config.content.map((entry) =>
+            parseRichTextEntry(entry, filePath, { headings: true }),
+          ),
           ...(config.lang === undefined ? {} : { lang: config.lang }),
         } satisfies ModalContent,
       ];
@@ -261,5 +266,6 @@ export function assembleLo(
     sections,
     modals,
     hovers,
+    ...(manifest.credits === undefined ? {} : { credits: manifest.credits }),
   };
 }
