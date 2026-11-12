@@ -28,8 +28,8 @@ import {
   type SelfTestState,
 } from './vocabulary-self-test';
 
-/** The word just revealed: focusable from script only, and focused once, on mount. */
-function RevealedWord({ text }: { text: string }) {
+/** The word (or gloss) just revealed: focusable from script only, and focused once, on mount. */
+function RevealedWord({ text, lang }: { text: string; lang?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     ref.current?.focus();
@@ -38,7 +38,7 @@ function RevealedWord({ text }: { text: string }) {
     <span
       ref={ref}
       tabIndex={-1}
-      lang={TARGET_LANG}
+      lang={lang}
       className="rounded-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
     >
       {text}
@@ -86,12 +86,10 @@ export function VocabularyRow({
         </button>
       );
     }
-    if (side === 'native') return text;
-    return focusSide === side ? (
-      <RevealedWord text={text} />
-    ) : (
-      <span lang={TARGET_LANG}>{text}</span>
-    );
+    // `lang` only on the course-language side: the gloss is the page's own language.
+    const lang = side === 'target' ? TARGET_LANG : undefined;
+    if (focusSide === side) return <RevealedWord text={text} lang={lang} />;
+    return side === 'native' ? text : <span lang={lang}>{text}</span>;
   };
 
   return (

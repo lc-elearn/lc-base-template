@@ -143,6 +143,16 @@ describe('self-test', () => {
     expect(container.textContent).not.toContain('alpha');
   });
 
+  test('Reveal English, word 1 moves focus to the gloss', () => {
+    const container = mount({ selfTest: true });
+    press(button(container, 'Hide English'));
+    press(button(container, 'Reveal English, word 1'));
+
+    const focused = document.activeElement as HTMLElement;
+    expect(focused.textContent).toBe('second');
+    expect(focused.closest('[lang]')).toBeNull();
+  });
+
   test('hiding English hides the glosses and releases the other button', () => {
     const container = mount({ selfTest: true });
     press(button(container, `Hide ${TARGET}`));
