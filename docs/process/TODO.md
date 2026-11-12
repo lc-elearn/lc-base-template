@@ -10,7 +10,7 @@ session, on either machine.
 | `2026-08-06-post-phase-d-handover.md` | state snapshot at end of Phase D, plus the §5 decision log |
 | [`../ROADMAP.md`](../ROADMAP.md)      | larger work beyond this queue, each with its trigger       |
 
-**Last updated:** 2026-11-12 · **HEAD:** see `git log` · **Suite:** 213 files · 2602 tests green
+**Last updated:** 2026-11-12 · **HEAD:** see `git log` · **Suite:** 214 files · 2640 tests green
 (Vitest) · 147 Playwright tests (49 × 3 browsers, `bun run test:e2e`; the 9 for the `home` mode not built skip) plus 111 on a `DEBUG=1` build (37 × 3, `e2e/debug/`) · CI green · `main` protected since 2026-10-21 (job E1).
 
 Non-negotiable constraints for every job below live in
@@ -28,11 +28,11 @@ build served from a folder (`SERVE_PATH=/any/folder/ bun run test:e2e`) and unde
 bun run format && bun run lint && bun run lint:css && bun run test:coverage && bun run build && bun run test:e2e
 ```
 
-`bun run guards` (`vitest run src/guards`) is the fast subset — **216** tests in ~1s — for
+`bun run guards` (`vitest run src/guards`) is the fast subset — **254** tests in ~1s — for
 when you only want to know whether you broke a repo-wide invariant. It is a subset of
 `bun run test`, never a replacement for the gate above. It stayed at 211 when §B landed
 **on purpose**: the docs-freshness test lives in `src/docs/`, not `src/guards/`, because
-that glob means "the spec guards' sweeps" (b–h; guard a runs in its colocated schema
+that glob means "the spec guards' sweeps" (b–i; guard a runs in its colocated schema
 tests) and a stale-tree check is not one of them.
 
 **211 → 214 on 2026-09-11**, and the rise is the rule working rather than being bent.
@@ -44,7 +44,8 @@ staleness `asset-existence.ts`'s own header warns about, so `src` joined `ASSET_
 The outcomes block's OWN tests are not in this number: they live beside the code, which
 is exactly what the paragraph above is about. **216 on 2026-11-11:** E57 added two of
 guard **b**'s own (`7e85d63`): a set's exercises count as referenced, and a malformed set
-is read without throwing.
+is read without throwing. **254 on 2026-11-12:** E60 added guard **i** (text integrity)
+and its 38 tests.
 
 `bun run test` (Vitest), **not** `bun test` — Bun's own runner throws on the
 `import.meta.glob` in `load-lo-glob.ts` and reports a false failure.
@@ -376,16 +377,17 @@ MacBook Pro (`docs/TOOLING.md`, "Browser tests").
 
 ---
 
-## A. Guards — 0 of 8 open — all eight guards live
+## A. Guards — 0 of 9 open — all nine guards live
 
 Guards **a** (config-schema, 19), **b** (naming + render-mirror, 20), **c** (asset-path,
 21), **d** (asset-existence, 22), **e** (registry, 23), **f** (token integrity, 24),
-**g** (CSS layer discipline, 25) and **h** (semantic DOM, 26) are all done. **Section A is
+**g** (CSS layer discipline, 25), **h** (semantic DOM, 26) and **i** (text integrity, E60,
+added 2026-11-12) are all done. **Section A is
 closed** — nothing here is open, and the per-guard notes below are kept only because each
 records a rule that is narrower than the spec sentence it came from, and that is worth
 reading before touching the guard or the code it protects.
 
-The ritual every one of them followed, in case a ninth is ever added: **write a
+The ritual every one of them followed, the ninth (i) included: **write a
 deliberately-broken fixture first, prove the guard blocks it, then make the real repo
 green** — and plant a real violation in source once, to see how many other test files stay
 quiet. A guard that was never seen to fail is a guard that might be asleep.
@@ -2996,6 +2998,31 @@ rather than the Language Centre's course factory; the maintainer took three smal
   lesson written since, with a stray key, fails that update's build naming the file, and
   the fix is the one line. Top-level keys of `exercise.json` are still stripped silently;
   no one has asked for that to change.
+- **E60 — guard i: no invisible text mistakes in lesson content. DONE 2026-11-12** (branch
+  `feat/text-integrity-guard`, pull request open, not merged). The Russian course's author
+  wrote a course-only script, `check-learning-object` (course PR 8), after lesson 2
+  shipped `(на ‹U+0301› Acc)` for `(на + Acc)` 33 times; it is manual, untested and
+  Russian-only, and its missing-file check repeats guard d. **Decision (maintainer,
+  2026-11-12): a generic guard in the template, keyed on `course.json`'s `languageCode`.**
+  `src/guards/text-integrity.ts` checks every string in `lo-config/**/*.json` and
+  `course.json`: NFC, a combining mark with a letter under it, one word in one of Latin,
+  Cyrillic and Greek, and a per-language profile (only `ru`: U+0301 on a Cyrillic vowel,
+  `ё` included). Spec: `docs/specs/2026-11-12-text-integrity-guard-design.md`. **Run
+  before turning it on:** the example lesson (190 strings), Spanish's pilot lesson (318)
+  and every Russian branch (`lo-04-2015-shape`, 2,867 strings and 1,098 stress marks;
+  `main`, `lo-04-festivals`, `restructure-lessons-1-3`) have no hit; the two Russian
+  commits before the plus-sign fix (`8a61dc5`, `6308ce9`) have exactly the 33 stray marks
+  and nothing else. French and German have no lesson of their own yet. Asset paths are not
+  swept (guard d owns them, and a Finder file name is NFD by design). A review before the
+  pull request added three cases: a stress mark NFC composes onto к or г (Macedonian ќ,
+  ѓ) now fails under `ru`; modifier letters such as `ʲ` (`[дʲ]`) pass; a mark shown alone
+  may sit on a no-break space as well as `◌`. Known limits are in the spec's §4.
+  `loConfigFiles()` is now exported from `asset-existence.ts`, unchanged, so both guards
+  read the same files. **Verify:** the gate
+  in AGENTS.md; the tests are in `src/guards/text-integrity.test.ts`. **Next:** merge, then
+  each course takes it with its next update; once Russian has it, its author can drop the
+  script's accent and Latin-letter checks and its missing-file check, keeping the
+  card-and-banner rule.
 - **E16 — after the organisation move, file `ORGANIZATION.md` under `docs/process/`.**
   Once steps 1–9 are done it is a record, not a guide; course repos inherit the file,
   so moving it keeps their top-level docs to what a course needs. Fix the links that
