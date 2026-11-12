@@ -1,0 +1,52 @@
+/**
+ * VocabularySections — the vocabulary block's list (E63, spec §4): one `<dl>` per
+ * topic or letter, each under its heading. A topic without a heading is a divider
+ * (none above the first). A list with one section and no heading is today's single
+ * `<dl>`, unchanged (W3).
+ *
+ * HEADING LEVEL FOLLOWS PRESENTATION, as in the sources block: `<h3>` in a plain block,
+ * under the section's `<h2>`; `<h4>` in a card, under the accordion's `<h3>`.
+ *
+ * The sections share one two-column grid (subgrid), so the terms line up across topics
+ * and letters as they did in one list.
+ */
+import type { VocabularyItem } from './vocabulary-block-schema';
+import type { VocabularySection } from './vocabulary-letters';
+import { VocabularyRow } from './VocabularyRow';
+
+/** Two columns from `sm`, the term's as wide as the longest term: today's list. */
+const LIST = 'grid gap-x-6 gap-y-2 sm:grid-cols-[max-content_1fr]';
+/** The same columns around sections, with more room between them. */
+const SECTIONS = 'grid gap-x-6 gap-y-4 sm:grid-cols-[max-content_1fr]';
+const HEADING = 'font-heading text-lg font-semibold text-foreground sm:col-span-2';
+
+interface VocabularySectionsProps {
+  sections: readonly VocabularySection<VocabularyItem>[];
+  headingLevel: 'h3' | 'h4';
+}
+
+export function VocabularySections({ sections, headingLevel: Heading }: VocabularySectionsProps) {
+  const rows = (section: VocabularySection<VocabularyItem>) =>
+    section.items.map((item) => <VocabularyRow key={item.term} item={item} />);
+
+  const [first] = sections;
+  if (sections.length === 1 && first !== undefined && first.heading === undefined) {
+    return <dl className={LIST}>{rows(first)}</dl>;
+  }
+  return (
+    <div className={SECTIONS}>
+      {sections.map((section, index) => (
+        <div key={section.key} className="grid gap-y-2 sm:col-span-2 sm:grid-cols-subgrid">
+          {section.heading === undefined ? (
+            index === 0 ? null : (
+              <hr className="border-border sm:col-span-2" />
+            )
+          ) : (
+            <Heading className={HEADING}>{section.heading}</Heading>
+          )}
+          <dl className="grid gap-y-2 sm:col-span-2 sm:grid-cols-subgrid">{rows(section)}</dl>
+        </div>
+      ))}
+    </div>
+  );
+}

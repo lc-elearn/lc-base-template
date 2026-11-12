@@ -30,6 +30,22 @@ describe('LoBlock', () => {
     expect(html).toContain('Body paragraph.');
   });
 
+  // E63: the renderer gets the block's labels override (Task 10 adds its options).
+  it("passes a block's labels to its renderer", () => {
+    const html = render({
+      type: 'vocabulary',
+      title: 'Words',
+      labels: { vocabularySemantic: 'By topic' },
+      content: {
+        items: [
+          { term: 'hola', gloss: 'hello' },
+          { term: 'adiós', gloss: 'goodbye' },
+        ],
+      },
+    });
+    expect(html).toContain('By topic');
+  });
+
   it('says so visibly when a block type has no renderer', () => {
     const html = render({ type: 'nope', presentation: 'plain', content: {} });
     expect(html).toContain('No renderer registered for block type <code>nope</code>');
