@@ -311,11 +311,15 @@ is too low`, and the guard fails closed, so every Claude edit was blocked — an
 **This is the one place the budget is written down.** Every other doc and comment that
 needs the number points here rather than restating it.
 
-| Asset        | Budget (gzipped) | Measured 2026-11-11 | Headroom |
+| Asset        | Budget (gzipped) | Measured 2026-11-12 | Headroom |
 | ------------ | ---------------- | ------------------- | -------- |
-| `main-*.js`  | **< 140 kB**     | 134.59 kB           | 5.41 kB  |
-| `main-*.css` | **< 19 kB**      | 18.01 kB            | 0.99 kB  |
+| `main-*.js`  | **< 140 kB**     | 137.21 kB           | 2.79 kB  |
+| `main-*.css` | **< 19 kB**      | 18.05 kB            | 0.95 kB  |
 
+- **Vocabulary word bank (2026-11-12, TODO §E63): JS 134.61 → 137.21 kB, CSS 18.01 →
+  18.05 kB**, against `main` built the same day: the word bank's views, letters,
+  self-test reducer and the split view; the block is not lazy, so all of it is in
+  `main-*.js`.
 - **Exercise sets (2026-11-11, TODO §E57): JS 137.90 → 134.59 kB, CSS 18.01 kB
   unchanged**, against `main` built the same day. The drop is not a saving: the set's
   schema made `lo-schema.ts` import the media schema, so Rollup moved shared schema and
