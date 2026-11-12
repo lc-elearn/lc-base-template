@@ -6,6 +6,7 @@
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, expect, test, vi } from 'vitest';
+import { ROW_CLIP_ROW_SELECTOR } from '@/audio/row-clip';
 import { VocabularyBlock } from './VocabularyBlock';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
@@ -38,7 +39,7 @@ function mount(): HTMLElement {
 
 test('a click on the gloss presses the row speaker', () => {
   const container = mount();
-  const rows = container.querySelectorAll('[data-row-clip]');
+  const rows = container.querySelectorAll(ROW_CLIP_ROW_SELECTOR);
   expect(rows).toHaveLength(1);
   const row = rows[0] as HTMLElement;
   const played = vi.fn();
@@ -46,5 +47,18 @@ test('a click on the gloss presses the row speaker', () => {
 
   act(() => (row.querySelector('dd') as HTMLElement).click());
 
+  expect(played).toHaveBeenCalledTimes(1);
+});
+
+test('a click on the speaker itself reaches its listener exactly once', () => {
+  const container = mount();
+  const row = container.querySelector(ROW_CLIP_ROW_SELECTOR) as HTMLElement;
+  const speaker = row.querySelector<HTMLElement>('[data-row-clip-speaker]') as HTMLElement;
+  const played = vi.fn();
+  speaker.addEventListener('click', played);
+
+  act(() => speaker.click());
+
+  // The row handler must not press it again: a second toggle would stop the clip at once.
   expect(played).toHaveBeenCalledTimes(1);
 });

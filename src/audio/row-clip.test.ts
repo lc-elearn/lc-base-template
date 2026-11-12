@@ -60,9 +60,35 @@ describe('playRowClip', () => {
   });
 });
 
+describe('playRowClip with a real selection', () => {
+  test('selected row text does not press the speaker', () => {
+    const { row, played } = makeRow(`${SPEAKER}<p id="text">la casa</p>`);
+    const text = row.querySelector('#text') as Element;
+    const range = document.createRange();
+    range.selectNodeContents(text);
+    window.getSelection()?.removeAllRanges();
+    window.getSelection()?.addRange(range);
+    expect(window.getSelection()?.toString()).toBe('la casa');
+    clickRow(row, text);
+    window.getSelection()?.removeAllRanges();
+    expect(played).not.toHaveBeenCalled();
+  });
+});
+
 describe('shouldPlayRowClip', () => {
   test.each([
-    ['the speaker itself', '<span id="t">x</span>', '[data-row-clip-speaker]'],
+    ['the speaker itself', '', '[data-row-clip-speaker]'],
+    [
+      'an icon inside the speaker',
+      '<button type="button" data-row-clip-speaker=""><svg><path id="t"/></svg></button>',
+      '#t',
+    ],
+    ['an editable region', '<div contenteditable id="t">x</div>', '#t'],
+    ['a role=link', '<span role="link" id="t">x</span>', '#t'],
+    ['a role=checkbox', '<span role="checkbox" id="t">x</span>', '#t'],
+    ['a role=switch', '<span role="switch" id="t">x</span>', '#t'],
+    ['a role=option', '<span role="option" id="t">x</span>', '#t'],
+    ['a role=slider', '<span role="slider" id="t">x</span>', '#t'],
     ['a button', '<button type="button" id="t">x</button>', '#t'],
     ['a link', '<a href="#x" id="t">x</a>', '#t'],
     ['a text box', '<input id="t" />', '#t'],
@@ -75,6 +101,20 @@ describe('shouldPlayRowClip', () => {
   ])('a click on %s does not play', (_name, inner, selector) => {
     const { row } = makeRow(`${SPEAKER}${inner}`);
     expect(shouldPlayRowClip(row.querySelector(selector), row, '')).toBe(false);
+  });
+
+  test.each([
+    ['a non-editable region', '<div contenteditable="false" id="t">x</div>'],
+    ['an anchor with no href', '<a id="t">x</a>'],
+  ])('a click on %s plays', (_name, inner) => {
+    const { row } = makeRow(`${SPEAKER}${inner}`);
+    expect(shouldPlayRowClip(row.querySelector('#t'), row, '')).toBe(true);
+  });
+
+  test('a row that is itself an option still plays on a click on its text', () => {
+    const { row } = makeRow(`${SPEAKER}<p id="t">x</p>`);
+    row.setAttribute('role', 'option');
+    expect(shouldPlayRowClip(row.querySelector('#t'), row, '')).toBe(true);
   });
 
   test('a control OUTSIDE the row does not stop it', () => {

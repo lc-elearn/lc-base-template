@@ -7,6 +7,7 @@
 import { act, type ComponentType } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { ROW_CLIP_ROW_SELECTOR } from '@/audio/row-clip';
 import type { ExerciseComponentProps } from '@/exercises/lazy-registry';
 import DictationExercise from '@/exercises/dictation/DictationExercise';
 import { dictationFixtures } from '@/exercises/dictation/dictation.fixture';
@@ -108,8 +109,8 @@ function mount(Engine: ComponentType<ExerciseComponentProps>, config: unknown): 
 }
 
 function firstRow(container: HTMLElement) {
-  const row = container.querySelector<HTMLElement>('[data-row-clip]');
-  if (row === null) throw new Error('no [data-row-clip] row rendered');
+  const row = container.querySelector<HTMLElement>(ROW_CLIP_ROW_SELECTOR);
+  if (row === null) throw new Error('no clip row rendered');
   const played = vi.fn();
   row.querySelector('[data-row-clip-speaker]')?.addEventListener('click', played);
   return { row, played };
