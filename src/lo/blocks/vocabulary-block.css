@@ -1,0 +1,21 @@
+/**
+ * vocabulary-block.css — the A–Z view's letter headings (E63, spec §4, W6): the letter
+ * centred, with a thin rule either side. The rules are empty ::before/::after boxes, so
+ * they are drawn and never announced: the heading reads as its letter alone. Plain CSS
+ * rather than utilities: a pseudo-element pair is unreadable as arbitrary values.
+ * Pinned by vocabulary-block-css.test.ts.
+ */
+@layer components {
+  .vocabulary-letter {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .vocabulary-letter::before,
+  .vocabulary-letter::after {
+    content: '';
+    flex: 1;
+    border-block-start: 1px solid var(--border);
+  }
+}
