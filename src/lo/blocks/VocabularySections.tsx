@@ -10,8 +10,10 @@
  * The sections share one two-column grid (subgrid), so the terms line up across topics
  * and letters as they did in one list.
  */
+import type { UiStringsOverride } from '@/config/ui-strings';
 import type { VocabularyItem } from './vocabulary-block-schema';
 import type { VocabularySection } from './vocabulary-letters';
+import type { SelfTestState } from './vocabulary-self-test';
 import { VocabularyRow } from './VocabularyRow';
 import './vocabulary-block.css';
 
@@ -26,15 +28,31 @@ interface VocabularySectionsProps {
   headingLevel: 'h3' | 'h4';
   /** Letter headings: centred, a thin rule either side (vocabulary-block.css). */
   letters: boolean;
+  test: SelfTestState;
+  rowClicks: boolean;
+  labels?: UiStringsOverride;
+  onReveal: (term: string) => void;
 }
 
 export function VocabularySections({
   sections,
   headingLevel: Heading,
   letters,
+  ...rowProps
 }: VocabularySectionsProps) {
+  // Each entry's place in the whole view, from 1: "Reveal Russian, word 3".
+  const numbers = new Map(
+    sections.flatMap((section) => section.items).map((item, index) => [item.term, index + 1]),
+  );
   const rows = (section: VocabularySection<VocabularyItem>) =>
-    section.items.map((item) => <VocabularyRow key={item.term} item={item} />);
+    section.items.map((item) => (
+      <VocabularyRow
+        key={item.term}
+        item={item}
+        number={numbers.get(item.term) ?? 0}
+        {...rowProps}
+      />
+    ));
 
   const [first] = sections;
   if (sections.length === 1 && first !== undefined && first.heading === undefined) {
