@@ -179,7 +179,7 @@ export function fillLabel(
   values: Readonly<Record<string, string | number>>,
 ): string {
   return Object.entries(values).reduce(
-    (text, [name, value]) => text.replaceAll(`{${name}}`, String(value)),
+    (text, [name, value]) => text.replaceAll(`{${name}}`, () => String(value)),
     template,
   );
 }

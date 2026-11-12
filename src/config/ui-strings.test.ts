@@ -115,3 +115,7 @@ test('fillLabel fills every named placeholder, and leaves others alone', () => {
   expect(fillLabel('{a} and {a}', { a: 'x' })).toBe('x and x');
   expect(fillLabel('Hide {language}', {})).toBe('Hide {language}');
 });
+
+test('fillLabel inserts a value literally, even one with $ replacement patterns', () => {
+  expect(fillLabel('Hide {language}', { language: "$& $$ $'" })).toBe("Hide $& $$ $'");
+});
