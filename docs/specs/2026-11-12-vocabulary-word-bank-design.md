@@ -1,6 +1,6 @@
 # One word bank per lesson, shown by topic and A–Z (E63)
 
-**Date:** 2026-11-12 · **Status:** design approved 2026-11-12, not built · **Plan:** not yet written
+**Date:** 2026-11-12 · **Status:** built 2026-11-12 (TODO §E63) · **Plan:** [`2026-11-12-vocabulary-word-bank-plan.md`](../process/2026-11-12-vocabulary-word-bank-plan.md)
 **TODO:** §E63 · **Answers:** template issue 108 (Russian, vocabulary block) ·
 **Builds on:** `src/lo/blocks/VocabularyBlock.tsx`, E62's `src/audio/row-clip.ts`
 ([`2026-11-12-row-click-audio-design.md`](2026-11-12-row-click-audio-design.md)), which
@@ -212,3 +212,46 @@ pull request, as template updates are. The maintainer reviews it.
 - An exercise generated from the word bank.
 - Converting Russian lessons 2–4 (W9), and any general conversion script in the template.
 - Changes to flashcards or other engines that show vocabulary.
+
+## 11. Deviations from this spec
+
+Decided while planning (2026-11-12), each because the code needed an answer the design
+did not give:
+
+- **The block's `labels` now reach its renderer.** `BlockConfigSchema` accepted them but
+  `LoBlock` never passed them on, so W10's override did nothing until now.
+- **Nine `ui-strings` keys**, not two: the view buttons' words and their group's name,
+  the self-test's group, Hide, Reveal and its accessible name, and the two speaker names
+  (visible term, hidden term). `{language}`, `{number}` and `{term}` are filled by
+  `fillLabel`, which inserts values literally (a `$` is safe); a rewording that drops one
+  is refused.
+- **Heading level follows presentation:** `<h4>` in a card, `<h3>` in a plain block, as
+  the sources block does.
+- **A topic without a heading is a divider except the first,** which has nothing above it.
+- **More build failures:** a topic `id` declared twice, a misspelt key in a topic, and an
+  empty `topics`.
+- **`lang` sits on a span around the term text, never on the `<dt>`,** so the speaker's
+  accessible name and a Reveal button (English chrome) are never inside it (§6). The
+  visible speaker's name comes from the `vocabularyListen` string ("Listen: {term}").
+- **"word 3" is the place in the current view,** counted across its sections.
+- **Reversing the A–Z view keeps what was revealed;** only Semantic ↔ Alphabetical clears it.
+- **Letter headings are cut from the A→Z order and reversed with it,** so a heading is the
+  same both ways. The heading shows the language's base letter whenever the collator
+  treats the marked and unmarked letter as the same (all marks removed then): German Ä
+  heads A, French É and Ê head E, Russian ё heads Е (dictionaries file it there). Letters
+  the language treats as distinct keep their marks: Spanish Ñ, Russian Й, Polish Ó. A
+  leading bracket is skipped.
+- **One collator sorts and sections the A–Z view,** `vocabularyCollator(lang)` in
+  `vocabulary-sort.ts`: `{ sensitivity: 'base', ignorePunctuation: true }`, not §4's
+  `{ sensitivity: 'base' }`. This also changes existing courses' A–Z order for entries
+  that start with punctuation: they now sort by their first letter.
+- **Content rules fail the build at the prerender, not the loader:** block content is
+  parsed by its renderer, so the message names the block type and the entry, not the file.
+  `options` are checked by the loader and name the file.
+- **An entry's own keys are strict:** an unknown key fails the build with a message
+  naming the entry and the key (maintainer decision, 2026-11-12). Every vocabulary entry
+  in the Russian course's lessons 1–4 uses only `term`, `gloss` and `audio`; no other
+  course has lessons yet.
+- **A bad `only` value's message names the entry** (`entry "брак": "only" must be ...`).
+- **Letter headings still show while the course language is hidden,** so each heading
+  gives away its words' first letter. The design is silent; left as is.

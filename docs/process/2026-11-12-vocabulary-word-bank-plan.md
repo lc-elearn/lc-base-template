@@ -25,8 +25,8 @@
 7. **A hidden term's `<dt>` drops `lang`.** The cell then holds English chrome (the Reveal button, the speaker's "Listen: word 3"); §6 puts `lang` on target-language text only.
 8. **"word 3" is the entry's place in the current view, from 1, counted across sections.**
 9. **Reversing the A–Z view is not a view switch:** what was revealed stays revealed. Only Semantic ↔ Alphabetical clears it.
-10. **Letter headings:** sections are cut from the A→Z order and then reversed, so a heading reads the same both ways. The heading is the first _letter_ (a leading bracket or quote is skipped), and a stress mark (U+0301, U+0300) is dropped only where the collator says the marked and unmarked letters are one letter: Russian "о́" heads "О", French "é" heads "E", but Polish "ó" stays "Ó".
-11. **The vocabulary item schema stays non-strict**, as today: an unknown key on an entry (say `"onyl"`) is still dropped silently. Making it strict could break a course's existing lessons; it is a separate decision for the maintainer.
+10. **Letter headings:** sections are cut from the A→Z order and then reversed, so a heading reads the same both ways. The heading is the first _letter_ (a leading bracket or quote is skipped), and it shows the language's BASE letter whenever the collator treats the marked and unmarked letter as the same (all `\p{M}` marks removed then): German "Ä" heads "A", French "É" and "Ê" head "E", Russian "ё" heads "Е" (Russian dictionaries file ё under Е). Letters the language treats as distinct keep their marks: Spanish "Ñ", Russian "Й", Polish "Ó".
+11. **The vocabulary item schema is strict** (maintainer decision, 2026-11-12; the plan had left it open): an unknown key on an entry (say `"onyl"`) fails the build with a message naming the entry and the key. Checked first: every vocabulary entry in the Russian course's lessons 1–4 uses only `term`, `gloss` and `audio`; no other course has lessons yet.
 
 ---
 
@@ -3189,27 +3189,39 @@ did not give:
 
 - **The block's `labels` now reach its renderer.** `BlockConfigSchema` accepted them but
   `LoBlock` never passed them on, so W10's override did nothing until now.
-- **Eight `ui-strings` keys**, not two: the view buttons' words and their group's name,
-  the self-test's group, Hide, Reveal and its accessible name, and the neutral speaker
-  name. `{language}` and `{number}` are filled by `fillLabel`; a rewording that drops one
+- **Nine `ui-strings` keys**, not two: the view buttons' words and their group's name,
+  the self-test's group, Hide, Reveal and its accessible name, and the two speaker names
+  (visible term, hidden term). `{language}`, `{number}` and `{term}` are filled by
+  `fillLabel`, which inserts values literally (a `$` is safe); a rewording that drops one
   is refused.
 - **Heading level follows presentation:** `<h4>` in a card, `<h3>` in a plain block, as
   the sources block does.
 - **A topic without a heading is a divider except the first,** which has nothing above it.
 - **More build failures:** a topic `id` declared twice, a misspelt key in a topic, and an
   empty `topics`.
-- **A hidden term's `<dt>` has no `lang`:** the cell then holds English (§6).
+- **`lang` sits on a span around the term text, never on the `<dt>`,** so the speaker's
+  accessible name and a Reveal button (English chrome) are never inside it (§6). The
+  visible speaker's name comes from the `vocabularyListen` string ("Listen: {term}").
 - **"word 3" is the place in the current view,** counted across its sections.
 - **Reversing the A–Z view keeps what was revealed;** only Semantic ↔ Alphabetical clears it.
 - **Letter headings are cut from the A→Z order and reversed with it,** so a heading is the
-  same both ways. A stress mark is dropped from a heading only where the collator treats
-  the marked and unmarked letter as one (Polish "ó" stays "Ó"); a leading bracket is
-  skipped.
+  same both ways. The heading shows the language's base letter whenever the collator
+  treats the marked and unmarked letter as the same (all marks removed then): German Ä
+  heads A, French É and Ê head E, Russian ё heads Е (dictionaries file it there). Letters
+  the language treats as distinct keep their marks: Spanish Ñ, Russian Й, Polish Ó. A
+  leading bracket is skipped.
+- **One collator sorts and sections the A–Z view,** `vocabularyCollator(lang)` in
+  `vocabulary-sort.ts`: `{ sensitivity: 'base', ignorePunctuation: true }`, not §4's
+  `{ sensitivity: 'base' }`. This also changes existing courses' A–Z order for entries
+  that start with punctuation: they now sort by their first letter.
 - **Content rules fail the build at the prerender, not the loader:** block content is
   parsed by its renderer, so the message names the block type and the entry, not the file.
   `options` are checked by the loader and name the file.
-- **An entry's own keys stay non-strict,** as before: an unknown key on an entry is
-  dropped, not refused. Making it strict is a separate decision.
+- **An entry's own keys are strict:** an unknown key fails the build with a message
+  naming the entry and the key (maintainer decision, 2026-11-12). Every vocabulary entry
+  in the Russian course's lessons 1–4 uses only `term`, `gloss` and `audio`; no other
+  course has lessons yet.
+- **A bad `only` value's message names the entry** (`entry "брак": "only" must be ...`).
 - **Letter headings still show while the course language is hidden,** so each heading
   gives away its words' first letter. The design is silent; left as is.
 ```
