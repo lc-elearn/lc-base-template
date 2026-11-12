@@ -266,7 +266,7 @@ export default function InlineTypedGapExercise({ config }: ExerciseComponentProp
     );
 
     rows.push(
-      // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events -- mouse-only enhancement over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events -- pointer-only enhancement (mouse and touch) over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
       <div
         key={`row-${i}`}
         onClick={item.audio ? playRowClip : undefined}

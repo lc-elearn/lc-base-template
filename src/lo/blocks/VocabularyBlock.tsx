@@ -103,7 +103,7 @@ export function VocabularyBlock({ content }: { content: unknown }) {
           //
           // Only a row WITH a clip gets the cursor and the hover: a pointer over a row
           // that does nothing is a promise the page cannot keep.
-          // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events -- mouse-only enhancement over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
+          // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events -- pointer-only enhancement (mouse and touch) over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
           <div
             key={item.term}
             onClick={item.audio === undefined ? undefined : playRowClip}

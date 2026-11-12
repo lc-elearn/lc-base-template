@@ -273,7 +273,7 @@ export default function PhraseReorderExercise({ config }: ExerciseComponentProps
           const isDragging = draggingId === token.id;
           const isDropTarget = dropTargetId === token.id && !isDragging;
           return (
-            // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- mouse-only enhancement over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- pointer-only enhancement (mouse and touch) over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
             <li
               key={`slot-${index}`}
               className={cn('phrase-reorder-row', row.audio && ROW_CLIP_CLASSES)}
