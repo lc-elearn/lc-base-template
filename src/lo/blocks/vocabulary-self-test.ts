@@ -1,0 +1,63 @@
+/**
+ * vocabulary-self-test.ts — the word bank's self-test as one pure reducer (E63, spec §5).
+ * The view holds only `useReducer(selfTestReducer, INITIAL_SELF_TEST)`.
+ *
+ * Either/or (W7): `hidden` is one side or none, so hiding one side shows the other.
+ * Words are revealed one by one, by term (terms are unique in a block, schema rule 5).
+ * `lastRevealed` is the word the view moves focus to. Switching view keeps the hidden
+ * side and forgets what was revealed; pressing the pressed button again shows all.
+ *
+ * Initial state hides nothing, so the prerendered markup equals the first client render.
+ */
+
+/** Which side of every entry a hide button covers: the course language, or English. */
+export type HideSide = 'target' | 'native';
+
+export interface SelfTestState {
+  readonly hidden: HideSide | 'none';
+  /** Terms revealed since the side was hidden or the view switched. */
+  readonly revealed: readonly string[];
+  /** The term revealed last, which takes focus; null when there is none. */
+  readonly lastRevealed: string | null;
+}
+
+export type SelfTestAction =
+  | { readonly type: 'hide'; readonly side: HideSide }
+  | { readonly type: 'reveal'; readonly term: string }
+  | { readonly type: 'switch-view' };
+
+export const INITIAL_SELF_TEST: SelfTestState = {
+  hidden: 'none',
+  revealed: [],
+  lastRevealed: null,
+};
+
+export function selfTestReducer(state: SelfTestState, action: SelfTestAction): SelfTestState {
+  switch (action.type) {
+    case 'hide':
+      return {
+        hidden: state.hidden === action.side ? 'none' : action.side,
+        revealed: [],
+        lastRevealed: null,
+      };
+    case 'reveal':
+      if (state.hidden === 'none' || state.revealed.includes(action.term)) return state;
+      return {
+        ...state,
+        revealed: [...state.revealed, action.term],
+        lastRevealed: action.term,
+      };
+    case 'switch-view':
+      return { ...state, revealed: [], lastRevealed: null };
+  }
+}
+
+/** Whether `side` of the entry `term` is hidden now. */
+export function isHidden(state: SelfTestState, term: string, side: HideSide): boolean {
+  return state.hidden === side && !state.revealed.includes(term);
+}
+
+/** Whether any of `terms` (the entries shown) has a side hidden: row clicks stop (W8). */
+export function isAnyHidden(state: SelfTestState, terms: readonly string[]): boolean {
+  return state.hidden !== 'none' && terms.some((term) => !state.revealed.includes(term));
+}
