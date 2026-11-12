@@ -24,7 +24,7 @@ export interface WordBankEntry {
 }
 
 /** What the views need from a topic. */
-export interface WordBankTopic {
+interface WordBankTopic {
   readonly id: string;
   readonly heading?: string;
 }
@@ -86,7 +86,7 @@ export function alphabeticalSections<T extends WordBankEntry>(
   }));
 }
 
-export interface ViewSettings {
+interface ViewSettings {
   readonly mode: VocabularySortMode;
   readonly topics?: readonly WordBankTopic[];
   readonly lang: string;

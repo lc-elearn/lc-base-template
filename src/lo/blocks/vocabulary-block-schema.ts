@@ -76,11 +76,10 @@ export const VocabularySummarySchema = z.object({
 });
 
 /** One group of the topic view. Without a `heading` it renders as a divider. */
-export const VocabularyTopicSchema = z.strictObject({
+const VocabularyTopicSchema = z.strictObject({
   id: z.string().min(1),
   heading: z.string().min(1).optional(),
 });
-export type VocabularyTopic = z.infer<typeof VocabularyTopicSchema>;
 
 const VocabularyBlockContentShape = z.object({
   /** Accordion-level instructions, rendered by LoAccordion's one instructions slot. */

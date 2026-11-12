@@ -46,7 +46,7 @@ function RevealedWord({ text, lang }: { text: string; lang?: string }) {
   );
 }
 
-export interface VocabularyRowProps {
+interface VocabularyRowProps {
   item: VocabularyItem;
   /** The entry's place in the view, from 1: how a hidden word is named ("word 3"). */
   number: number;
