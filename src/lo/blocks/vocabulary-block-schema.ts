@@ -10,26 +10,53 @@
 import { z } from 'zod';
 import { parseRichText } from '../rich-text/parse-rich-text';
 
-export const VocabularyItemSchema = z.object({
-  /** The target-language word or phrase. */
-  term: z.string().min(1),
-  /** Its UI-language gloss. */
-  gloss: z.string().min(1),
-  /**
-   * Optional clip of the TERM being said, rendered as a speaker button beside it.
-   *
-   * Optional because a vocabulary list is useful without audio and a course may not
-   * have recordings yet — a required field would make every clone record audio before
-   * it could ship a word list. `audio` is a key guard d already sweeps, so a path
-   * pointing at a file that is not there fails the build rather than going silent in
-   * the browser.
-   */
-  audio: z.string().min(1).optional(),
-  /** The `id` of a declared topic: the group this entry sits in, in the topic view. */
-  topic: z.string().min(1).optional(),
-  /** The one view this entry shows in. Absent means both. */
-  only: z.enum(['topics', 'alphabetical']).optional(),
-});
+const ONLY_VIEWS = ['topics', 'alphabetical'] as const;
+type OnlyView = (typeof ONLY_VIEWS)[number];
+
+/** The entry's term for a message, whatever the offending input is. */
+const termOf = (input: unknown): string => {
+  const term = (input as { term?: unknown } | null)?.term;
+  return typeof term === 'string' ? term.normalize('NFC') : '?';
+};
+
+export const VocabularyItemSchema = z
+  .strictObject(
+    {
+      /** The target-language word or phrase. */
+      term: z.string().min(1),
+      /** Its UI-language gloss. */
+      gloss: z.string().min(1),
+      /**
+       * Optional clip of the TERM being said, rendered as a speaker button beside it.
+       *
+       * Optional because a vocabulary list is useful without audio and a course may not
+       * have recordings yet — a required field would make every clone record audio before
+       * it could ship a word list. `audio` is a key guard d already sweeps, so a path
+       * pointing at a file that is not there fails the build rather than going silent in
+       * the browser.
+       */
+      audio: z.string().min(1).optional(),
+      /** The `id` of a declared topic: the group this entry sits in, in the topic view. */
+      topic: z.string().min(1).optional(),
+      /** The one view this entry shows in. Absent means both. */
+      only: z.custom<OnlyView>().optional(),
+    },
+    {
+      error: (issue) =>
+        issue.code === 'unrecognized_keys'
+          ? `entry "${termOf(issue.input)}" has unknown key(s) ${issue.keys.map((key) => `"${key}"`).join(', ')} — allowed: term, gloss, audio, topic, only`
+          : undefined,
+    },
+  )
+  .superRefine((item, ctx) => {
+    if (item.only !== undefined && !ONLY_VIEWS.includes(item.only)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['only'],
+        message: `entry "${termOf(item)}": "only" must be "topics" or "alphabetical", not ${JSON.stringify(item.only)}`,
+      });
+    }
+  });
 export type VocabularyItem = z.infer<typeof VocabularyItemSchema>;
 
 /**

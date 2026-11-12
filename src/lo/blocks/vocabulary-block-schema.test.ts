@@ -133,6 +133,18 @@ describe('the build fails on', () => {
     );
   });
 
+  test('6. …and the message names the entry and the allowed values', () => {
+    expect(errorFor({ items: [{ term: 'брак', gloss: 'marriage', only: 'semantic' }] })).toMatch(
+      /entry "брак".*"only".*"topics".*"alphabetical"/,
+    );
+  });
+
+  test('an unknown key (a misspelt "only") fails the build, naming the key and the entry', () => {
+    const message = errorFor({ items: [{ term: 'брак', gloss: 'marriage', onyl: 'topics' }] });
+    expect(message).toMatch(/onyl/);
+    expect(message).toMatch(/"брак"/);
+  });
+
   test('a topic id declared twice', () => {
     expect(
       errorFor({
