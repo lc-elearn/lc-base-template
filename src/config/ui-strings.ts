@@ -100,6 +100,7 @@ export const UiStringsSchema = z.strictObject({
   vocabularyHide: labelWith('language'),
   vocabularyReveal: z.string().min(1),
   vocabularyRevealWord: labelWith('language', 'number'),
+  vocabularyListen: labelWith('term'),
   vocabularyListenWord: labelWith('number'),
 });
 
@@ -155,6 +156,7 @@ const raw: UiStrings = {
   vocabularyHide: 'Hide {language}',
   vocabularyReveal: 'Reveal',
   vocabularyRevealWord: 'Reveal {language}, word {number}',
+  vocabularyListen: 'Listen: {term}',
   vocabularyListenWord: 'Listen: word {number}',
 };
 

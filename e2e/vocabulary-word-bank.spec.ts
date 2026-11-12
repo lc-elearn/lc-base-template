@@ -60,7 +60,7 @@ test('the self-test drill from the keyboard: hide, reveal, focus, switch view', 
   await press(page, bank, bank.getByRole('button', { name: /, word 1$/ }));
   const word = bank.getByText(FIRST_TERM, { exact: true });
   await expect(word).toBeFocused();
-  await expect(word.locator('xpath=ancestor::dt[1]')).toHaveAttribute('lang', /.+/);
+  await expect(word).toHaveAttribute('lang', /.+/);
 
   const alphabetical = bank.getByRole('button', { name: 'Alphabetical' });
   await alphabetical.focus();
@@ -78,6 +78,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
     test.use({ colorScheme });
 
     test('no axe violations with words hidden, in both views', async ({ page }) => {
+      const problems = watchForProblems(page);
       const bank = await openWordBank(page);
       await press(page, bank, hideTarget(bank));
       await expect(bank.getByRole('button', { name: /, word 1$/ })).toBeVisible();
@@ -86,6 +87,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
       await press(page, bank, bank.getByRole('button', { name: 'Alphabetical' }));
       await expect(bank.getByRole('heading', { level: 4, name: 'A', exact: true })).toBeVisible();
       await expectNoAxeViolations(page);
+      expect(problems).toEqual([]);
     });
   });
 }

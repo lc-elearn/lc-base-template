@@ -9,9 +9,16 @@
  *
  * Initial state hides nothing, so the prerendered markup equals the first client render.
  */
+import { NATIVE_LANGUAGE_NAME, TARGET_LANGUAGE_NAME } from '@/lib/lang';
 
 /** Which side of every entry a hide button covers: the course language, or English. */
 export type HideSide = 'target' | 'native';
+
+/** The language each side of a row is in, by name: the one map the controls and rows share. */
+export const LANGUAGE_NAMES: Readonly<Record<HideSide, string>> = {
+  target: TARGET_LANGUAGE_NAME,
+  native: NATIVE_LANGUAGE_NAME,
+};
 
 export interface SelfTestState {
   readonly hidden: HideSide | 'none';
