@@ -36,9 +36,14 @@ describe('headingLetter', () => {
     expect(headingLetter('о́чень', 'ru')).toBe('О');
   });
 
-  test('ru: ё and й keep their own marks', () => {
-    expect(headingLetter('ёлка', 'ru')).toBe('Ё');
+  test('ru: й keeps its mark, a letter of its own; ё is filed under Е', () => {
     expect(headingLetter('йод', 'ru')).toBe('Й');
+    expect(headingLetter('ёлка', 'ru')).toBe('Е');
+  });
+
+  test('a marked letter the collation treats as the base letter heads as the base letter', () => {
+    expect(headingLetter('Ärger', 'de')).toBe('A');
+    expect(headingLetter('être', 'fr')).toBe('E');
   });
 
   test('fr: an accent the collation ignores is dropped from the heading', () => {
@@ -67,9 +72,9 @@ describe('letterSections', () => {
     ]);
   });
 
-  test('ru: a section of ё words alone is headed Ё', () => {
+  test('ru: a section of ё words alone is headed Е (dictionaries file ё under Е)', () => {
     expect(sectionsOf('ru', ['ёж', 'жена'])).toEqual([
-      ['Ё', ['ёж']],
+      ['Е', ['ёж']],
       ['Ж', ['жена']],
     ]);
   });
@@ -93,6 +98,24 @@ describe('letterSections', () => {
     expect(sectionsOf('de', ['bauen', 'Ärger', 'apfel', 'Affe'])).toEqual([
       ['A', ['Affe', 'apfel', 'Ärger']],
       ['B', ['bauen']],
+    ]);
+  });
+
+  test('a marked letter sorting first still heads as the base letter', () => {
+    expect(sectionsOf('de', ['Ärger', 'Arm'])).toEqual([['A', ['Ärger', 'Arm']]]);
+    expect(sectionsOf('fr', ['être', 'eu'])).toEqual([['E', ['être', 'eu']]]);
+    expect(sectionsOf('ru', ['ёж', 'есть'])).toEqual([['Е', ['ёж', 'есть']]]);
+  });
+
+  test('a leading bracket or quote does not move an entry out of its letter section', () => {
+    expect(sectionsOf('ru', ['(с) кем', 'а', 'сад', 'брак'])).toEqual([
+      ['А', ['а']],
+      ['Б', ['брак']],
+      ['С', ['сад', '(с) кем']],
+    ]);
+    expect(sectionsOf('ru', ['«да»', 'дом', 'ад'])).toEqual([
+      ['А', ['ад']],
+      ['Д', ['«да»', 'дом']],
     ]);
   });
 

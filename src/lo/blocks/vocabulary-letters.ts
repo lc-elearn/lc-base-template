@@ -9,10 +9,12 @@
  * after n, German ä joins a — whatever the language's collation says (the tests pin it).
  *
  * The HEADING is the section's first letter, upper-cased for the course language, with
- * a stress mark (U+0301 acute, U+0300 grave) removed only where the collator says the
- * marked and unmarked letters are the same letter: Russian "о́" heads "О", French "é"
- * heads "E", but Polish "ó", a letter of its own, stays "Ó".
+ * every mark removed where the collator says the marked and unmarked letters are the
+ * same letter: Russian "о́" and "ё" head "О" and "Е", French "é" and German "ä" head "E"
+ * and "A", but Polish "ó", Spanish "ñ" and Russian "й", letters of their own, keep theirs.
  */
+
+import { vocabularyCollator } from './vocabulary-sort';
 
 /** One run of entries under an optional heading: a topic, or a letter. */
 export interface VocabularySection<T> {
@@ -22,7 +24,7 @@ export interface VocabularySection<T> {
   readonly items: readonly T[];
 }
 
-const STRESS_MARKS = /[̀́]/gu;
+const MARKS = /\p{M}/gu;
 
 /**
  * The first letter of a term with its combining marks, composed (NFC). Anything before
@@ -37,10 +39,9 @@ export function firstLetter(term: string): string {
 /** The heading a section starting with `term` shows, in `lang`. */
 export function headingLetter(term: string, lang: string): string {
   const letter = firstLetter(term);
-  const unstressed = letter.normalize('NFD').replace(STRESS_MARKS, '').normalize('NFC');
-  const sameLetter =
-    new Intl.Collator(lang, { sensitivity: 'base' }).compare(letter, unstressed) === 0;
-  return (sameLetter ? unstressed : letter).toLocaleUpperCase(lang);
+  const bare = letter.normalize('NFD').replace(MARKS, '').normalize('NFC');
+  const sameLetter = vocabularyCollator(lang).compare(letter, bare) === 0;
+  return (sameLetter ? bare : letter).toLocaleUpperCase(lang);
 }
 
 /**
@@ -51,7 +52,7 @@ export function letterSections<T extends { readonly term: string }>(
   sorted: readonly T[],
   lang: string,
 ): VocabularySection<T>[] {
-  const collator = new Intl.Collator(lang, { sensitivity: 'base' });
+  const collator = vocabularyCollator(lang);
   return sorted.reduce<VocabularySection<T>[]>((sections, item, index) => {
     const previous = sorted[index - 1];
     const last = sections.at(-1);
