@@ -636,7 +636,8 @@ course loses track of which template commits it has
 
 **Claude skills.** The recurring jobs (a lesson, an engine, a block type, the theme, a
 template sync, the check before a pull request, a build for upload, a level check
-against the CULP syllabi in [`docs/culp-syllabi/`](docs/culp-syllabi/README.md)) have
+against the CULP syllabi in [`docs/culp-syllabi/`](docs/culp-syllabi/README.md), the
+maintainer's read-only status report across the course repos) have
 recipes in [`.claude/skills/`](.claude/skills/), with a reviewer in
 [`.claude/agents/lc-reviewer.md`](.claude/agents/lc-reviewer.md). The code recipes start
 from a failing test. In a course repo they file a **Template request** issue on the

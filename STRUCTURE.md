@@ -246,7 +246,8 @@ as far as the tree is concerned.
 │       ├── build-for-upload/
 │       ├── change-theme/
 │       ├── culp-syllabus/
-│       └── sync-from-template/
+│       ├── sync-from-template/
+│       └── team-status/
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
 │   └── workflows/
