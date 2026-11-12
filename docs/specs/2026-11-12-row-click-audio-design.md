@@ -1,8 +1,27 @@
 # Tap anywhere on a row to hear it (E62)
 
-**Date:** 2026-11-12 · **Status:** design approved 2026-11-12, not built · **Plan:** not yet written
+**Date:** 2026-11-12 · **Status:** built 2026-11-12 (TODO §E62) · **Plan:** [`2026-11-12-row-click-audio-plan.md`](../process/2026-11-12-row-click-audio-plan.md)
 **TODO:** §E62 · **Builds on:** `src/lo/blocks/VocabularyBlock.tsx` (`playRowClip`, ported from french-lo-1's `PhraseTable`)
 **Comes before:** the vocabulary word bank (Russian, template issue 108), which reuses the helper this spec adds
+
+> **Deviations from this spec.** (1) Each clip row also carries a `data-row-clip`
+> attribute (a literal JSX attribute, so the tests and the browser test find rows by it);
+> `src/audio/row-clip.ts` exports `ROW_CLIP_ROW_SELECTOR = '[data-row-clip]'` for them.
+> It changes nothing for learners. (2) `ROW_CLIP_CLASSES` is `'cursor-pointer
+hover:bg-muted'`, with no `transition-colors`: the hover snaps, per TODO §D8 (never
+> transition a token colour declared in a base state). This also removes the vocabulary
+> block's former hover fade. (3) The eslint-disable comments say "pointer-only
+> enhancement (mouse and touch)". (4) Tests beyond the plan: edge cases in
+> `row-clip.test.ts` (an svg inside the speaker, contenteditable, roles, a real text
+> selection, no transition), a speaker clicked once in `VocabularyBlock.row-clip.test.tsx`,
+> and `row-clip-engines.test.tsx` also checks that rows without audio stay unmarked
+> (skipped for dictation, whose schema requires audio on every row) and clicks a text
+> descendant rather than the row itself. (5) Some of those tests were added after the code
+> and passed first time, since they pin behaviour that was already right; the
+> row-without-audio test was shown able to fail by temporarily marking every word-spot
+> row. (6) The browser test (`e2e/debug/showcase-audio.spec.ts`, "on a phone") passes in
+> chromium, firefox and webkit and was shown to fail with inline-gap's row click
+> disabled. (Recorded 2026-11-12.)
 
 ## 1. Why
 
