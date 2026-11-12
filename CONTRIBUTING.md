@@ -632,7 +632,9 @@ course loses track of which template commits it has
 > registered in `SHOWCASE_FIXTURES` (`src/showcase/fixtures.ts`; guard e fails without
 > it), and the key needs its copy in `EXERCISE_INSTRUCTIONS`
 > (`src/exercises/lib/instructions.ts`; the build does not compile without it). See a recent engine
-> (`src/exercises/reading/`) as the reference shape.
+> (`src/exercises/reading/`) as the reference shape. An engine whose rows each carry a clip
+> plays it from anywhere on the row with `src/audio/row-clip.ts` (`docs/STYLE.md`, "A row
+> with its own clip").
 
 **Claude skills.** The recurring jobs (a lesson, an engine, a block type, the theme, a
 template sync, the check before a pull request, a build for upload, a level check
