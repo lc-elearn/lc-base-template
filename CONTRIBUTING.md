@@ -124,6 +124,17 @@ nothing linking to it, so the browser tests keep a page to drive.
 > scans, stock photos, or anything found online without such a licence. If you are
 > not sure, do not add it — ask the maintainer first. Content pull requests skip
 > owner review, so nobody else checks this for you.
+>
+> **Made with an AI tool** (generated images, synthetic speech): allowed only when the
+> tool's terms let us publish what it makes, such as an image tool whose terms give the
+> output to the person who made it, or a paid speech service licensed for publishing its
+> output. Not allowed: output from a free consumer feature never licensed for that, such
+> as a browser's read-aloud voice. Credit it as AI-generated, naming the tool, in the
+> lesson's Credits popup (below). The result must carry no Cambridge branding (no crest,
+> wordmark or imagery recognisably taken from the University's visual identity), which
+> `LICENSE` excludes from both licences. Keep a record, outside the course repo, of the
+> tool and prompt or script behind each file, and show the maintainer a sample before a
+> course's first AI-made media.
 
 Rich text in `text` fields takes the tags listed in
 [`docs/specs/lo-rich-text-modals.md`](docs/specs/lo-rich-text-modals.md). The rule
