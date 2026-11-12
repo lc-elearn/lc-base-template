@@ -16,8 +16,9 @@
  * click, and because a vocabulary list is heard before it is read — the clip is the
  * way in to the word, not an afterthought hung off its end.
  */
-import { useState, type MouseEvent } from 'react';
+import { useState } from 'react';
 import { ArrowDownAZ, ArrowUpZA, CircleCheck, Layers } from 'lucide-react';
+import { playRowClip, ROW_CLIP_CLASSES } from '@/audio/row-clip';
 import { AudioClip } from '@/components/audio/AudioClip';
 import Callout from '@/components/shell/Callout';
 import { buttonVariants } from '@/components/ui/button';
@@ -26,25 +27,6 @@ import { RichText } from '../rich-text/RichText';
 import { parseBlockContent } from './parse-block-content';
 import { VocabularyBlockContentSchema } from './vocabulary-block-schema';
 import { nextSortMode, sortVocabulary, type VocabularySortMode } from './vocabulary-sort';
-
-/**
- * Forward a click anywhere on the row to the row's own speaker button.
- *
- * Ported from french-lo-1's `handleRowClick` (PhraseTable.jsx), including the reason
- * it DELEGATES rather than playing the clip itself: the button already owns the
- * playback state — what is playing, the progress ring, stopping every other clip —
- * so a second entry point that called the audio layer directly would be a second
- * source of truth for the same fact.
- *
- * Returns early when the click landed on the button, or the press began on it: the
- * button's own handler is about to run, and firing this too would toggle it twice and
- * leave a clip stopped the instant it started.
- */
-function playRowClip(event: MouseEvent<HTMLDivElement>): void {
-  const target = event.target instanceof Element ? event.target : null;
-  if (target?.closest('button')) return;
-  event.currentTarget.querySelector('button')?.click();
-}
 
 export function VocabularyBlock({ content }: { content: unknown }) {
   const { items, summary } = parseBlockContent('vocabulary', VocabularyBlockContentSchema, content);
@@ -121,14 +103,13 @@ export function VocabularyBlock({ content }: { content: unknown }) {
           //
           // Only a row WITH a clip gets the cursor and the hover: a pointer over a row
           // that does nothing is a promise the page cannot keep.
-          // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events -- mouse-only enhancement over the speaker <button>, which is the keyboard path; see above
+          // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events -- mouse-only enhancement over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
           <div
             key={item.term}
             onClick={item.audio === undefined ? undefined : playRowClip}
+            data-row-clip={item.audio === undefined ? undefined : ''}
             className={`grid gap-x-6 rounded-md sm:col-span-2 sm:grid-cols-subgrid ${
-              item.audio === undefined
-                ? ''
-                : 'cursor-pointer transition-colors hover:bg-muted motion-reduce:transition-none'
+              item.audio === undefined ? '' : ROW_CLIP_CLASSES
             }`}
           >
             <dt lang={TARGET_LANG} className="flex items-center gap-2 font-medium text-foreground">
