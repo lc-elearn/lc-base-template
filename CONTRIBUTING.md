@@ -325,18 +325,20 @@ second press reverses it). `lo-00-example` has one in its Vocabulary section
 - `only` keeps an entry to one view: `"topics"` (a phrase that belongs with its topic) or
   `"alphabetical"` (a headword for the A–Z list). Without it, the entry shows in both.
 - `topics` (optional) groups the Semantic view, in the order listed; each entry shown
-  there names its group with `topic`. A topic without a `heading` shows as a line.
+  there names its group with `topic`. A topic without a `heading` shows as a line
+  (except the first, which shows nothing above it).
 - `options.letterHeadings` puts a letter over each run of the A–Z list. Which letters
   share one (Russian ё with е, Spanish ñ on its own) is the course language's own
   alphabetical order, not a rule of ours; a heading shows the base letter where the
   language treats a marked letter as the same (German Ä under A) and keeps the mark where
   it does not (Spanish Ñ, Russian Й).
-- `options.selfTest` adds **Hide <language>** and **Hide English**: one side of every
+- `options.selfTest` adds `Hide {language}` and **Hide English**: one side of every
   entry is replaced by a Reveal button. Both options are off by default.
 - The build fails, naming the entry, on: a `topic` not in `topics`; with `topics`, an
   entry in the Semantic view with no `topic`; a topic nothing uses; `topic` with
-  `"only": "alphabetical"`; the same `term` twice; an unknown key in `options` or
-  on an entry.
+  `"only": "alphabetical"`; the same `term` twice; an `only` value other than
+  `"topics"` or `"alphabetical"`; a topic `id` declared twice; an empty `topics`; an
+  unknown key in `options`, on an entry or in a topic.
 - `labels` renames the buttons for one block, e.g.
   `"labels": { "vocabularySemantic": "By topic" }`; the keys are in
   `src/config/ui-strings.ts`.

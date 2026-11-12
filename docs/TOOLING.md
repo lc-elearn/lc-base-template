@@ -313,10 +313,10 @@ needs the number points here rather than restating it.
 
 | Asset        | Budget (gzipped) | Measured 2026-11-12 | Headroom |
 | ------------ | ---------------- | ------------------- | -------- |
-| `main-*.js`  | **< 140 kB**     | 137.21 kB           | 2.79 kB  |
+| `main-*.js`  | **< 140 kB**     | 137.22 kB           | 2.78 kB  |
 | `main-*.css` | **< 19 kB**      | 18.05 kB            | 0.95 kB  |
 
-- **Vocabulary word bank (2026-11-12, TODO §E63): JS 134.61 → 137.21 kB, CSS 18.01 →
+- **Vocabulary word bank (2026-11-12, TODO §E63): JS 134.61 → 137.22 kB, CSS 18.01 →
   18.05 kB**, against `main` built the same day: the word bank's views, letters,
   self-test reducer and the split view; the block is not lazy, so all of it is in
   `main-*.js`.
