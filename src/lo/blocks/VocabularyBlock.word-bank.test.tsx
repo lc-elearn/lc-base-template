@@ -9,10 +9,14 @@
  */
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { ROW_CLIP_ROW_SELECTOR } from '@/audio/row-clip';
+import { languageName, TARGET_LANG } from '@/lib/lang';
 import { VocabularyBlock } from './VocabularyBlock';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
+
+const TARGET = languageName(TARGET_LANG);
 
 const CLIP = 'audio/lo-00-example/placeholder.m4a';
 
@@ -84,5 +88,95 @@ describe('A–Z view with letter headings', () => {
     press(button(container, 'Alphabetical'));
     expect(headings(container)).toEqual([]);
     expect(terms(container)).toEqual(['alpha', 'amber', 'beta', 'gamma']);
+  });
+});
+
+describe('self-test', () => {
+  test('two toggle buttons in a group named "Test yourself", named for the languages', () => {
+    const container = mount({ selfTest: true });
+    const group = container.querySelector('[role="group"][aria-label="Test yourself"]');
+    expect(group).not.toBeNull();
+    expect(Array.from(group?.querySelectorAll('button') ?? []).map((b) => b.textContent)).toEqual([
+      `Hide ${TARGET}`,
+      'Hide English',
+    ]);
+    expect(button(container, `Hide ${TARGET}`).getAttribute('aria-pressed')).toBe('false');
+  });
+
+  test('hiding the course language removes its words from the DOM, leaving Reveal buttons', () => {
+    const container = mount({ selfTest: true });
+    press(button(container, `Hide ${TARGET}`));
+
+    expect(button(container, `Hide ${TARGET}`).getAttribute('aria-pressed')).toBe('true');
+    expect(container.textContent).not.toContain('beta');
+    expect(container.textContent).toContain('second');
+    expect(button(container, `Reveal ${TARGET}, word 1`).textContent).toBe('Reveal');
+    // The hidden cell holds English chrome, so its <dt> drops the course language.
+    expect(container.querySelector('dt')?.hasAttribute('lang')).toBe(false);
+  });
+
+  test('a hidden term’s speaker is named for its slot, not its word, and still works', () => {
+    const container = mount({ selfTest: true });
+    press(button(container, `Hide ${TARGET}`));
+    expect(button(container, 'Listen: word 1')).toBeDefined();
+    expect(container.innerHTML).not.toContain('Listen: beta');
+  });
+
+  test('Reveal shows the word and moves focus to it, in the course language', () => {
+    const container = mount({ selfTest: true });
+    press(button(container, `Hide ${TARGET}`));
+    press(button(container, `Reveal ${TARGET}, word 1`));
+
+    const focused = document.activeElement as HTMLElement;
+    expect(focused.textContent).toBe('beta');
+    expect(focused.closest('[lang]')?.getAttribute('lang')).toBe(TARGET_LANG);
+    expect(container.textContent).not.toContain('alpha');
+  });
+
+  test('hiding English hides the glosses and releases the other button', () => {
+    const container = mount({ selfTest: true });
+    press(button(container, `Hide ${TARGET}`));
+    press(button(container, 'Hide English'));
+
+    expect(button(container, `Hide ${TARGET}`).getAttribute('aria-pressed')).toBe('false');
+    expect(button(container, 'Hide English').getAttribute('aria-pressed')).toBe('true');
+    expect(container.textContent).toContain('beta');
+    expect(container.textContent).not.toContain('second');
+    expect(button(container, 'Reveal English, word 2')).toBeDefined();
+  });
+
+  test('switching view keeps the hidden side and clears what was revealed', () => {
+    const container = mount({ selfTest: true });
+    press(button(container, `Hide ${TARGET}`));
+    press(button(container, `Reveal ${TARGET}, word 1`));
+    press(button(container, 'Alphabetical'));
+
+    expect(button(container, `Hide ${TARGET}`).getAttribute('aria-pressed')).toBe('true');
+    expect(container.querySelectorAll('dt button[aria-label^="Reveal"]')).toHaveLength(4);
+  });
+
+  test('releasing the pressed button shows everything', () => {
+    const container = mount({ selfTest: true });
+    press(button(container, `Hide ${TARGET}`));
+    press(button(container, `Hide ${TARGET}`));
+
+    expect(container.textContent).toContain('beta');
+    expect(container.querySelectorAll('button[aria-label^="Reveal"]')).toHaveLength(0);
+  });
+
+  test('no row click while a word is hidden; row clicks return once all are revealed', () => {
+    const container = mount({ selfTest: true });
+    expect(container.querySelectorAll(ROW_CLIP_ROW_SELECTOR)).toHaveLength(2);
+    press(button(container, `Hide ${TARGET}`));
+    expect(container.querySelectorAll(ROW_CLIP_ROW_SELECTOR)).toHaveLength(0);
+
+    const played = vi.fn();
+    const speaker = container.querySelector('[data-row-clip-speaker]') as HTMLElement;
+    speaker.addEventListener('click', played);
+    press(container.querySelector('dd') as HTMLElement);
+    expect(played).not.toHaveBeenCalled();
+
+    for (const number of [1, 2, 3]) press(button(container, `Reveal ${TARGET}, word ${number}`));
+    expect(container.querySelectorAll(ROW_CLIP_ROW_SELECTOR)).toHaveLength(2);
   });
 });
