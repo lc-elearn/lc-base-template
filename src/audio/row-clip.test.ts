@@ -5,7 +5,7 @@
  */
 import type { MouseEvent } from 'react';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { playRowClip, shouldPlayRowClip } from './row-clip';
+import { playRowClip, ROW_CLIP_CLASSES, shouldPlayRowClip } from './row-clip';
 
 afterEach(() => {
   document.body.innerHTML = '';
@@ -26,6 +26,12 @@ function makeRow(inner: string, outer = (row: string) => row) {
 function clickRow(row: HTMLElement, target: Element): void {
   playRowClip({ currentTarget: row, target } as unknown as MouseEvent<HTMLElement>);
 }
+
+describe('ROW_CLIP_CLASSES', () => {
+  test('declares no transition (TODO §D8: never transition a base-state token colour)', () => {
+    expect(ROW_CLIP_CLASSES.split(/\s+/).filter((c) => c.includes('transition'))).toEqual([]);
+  });
+});
 
 describe('playRowClip', () => {
   test('a click on the row text presses the speaker', () => {

@@ -29,9 +29,14 @@ export const ROW_CLIP_ROW_SELECTOR = '[data-row-clip]';
 /**
  * The look of a row with a clip. A row WITHOUT one gets neither: a pointer over a row
  * that does nothing is a promise the page cannot keep.
+ *
+ * NO `transition-colors`. Rows such as inline-gap and line-match declare `bg-card` and
+ * `border-border/70` in their base state, and TODO §D8 says never to transition a token
+ * colour declared in a base state: after a light/dark toggle the colours would animate
+ * or stick. The hover snaps instead, as the header links do (see the note at the top of
+ * src/components/shell/header.css).
  */
-export const ROW_CLIP_CLASSES =
-  'cursor-pointer transition-colors hover:bg-muted motion-reduce:transition-none';
+export const ROW_CLIP_CLASSES = 'cursor-pointer hover:bg-muted';
 
 /** Anything inside a row that does its own job when clicked. */
 const CONTROL_SELECTOR = [

@@ -98,7 +98,7 @@ export default function WordSpotExercise({ config }: ExerciseComponentProps) {
     <div className="word-spot">
       <ol className="word-spot-lines" aria-label="Spot the target part-words">
         {rows.map((row, rowIndex) => (
-          // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- mouse-only enhancement over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- pointer-only enhancement (mouse and touch) over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
           <li
             className={cn('word-spot-row', row.audio && ROW_CLIP_CLASSES)}
             key={`row-${rowIndex}`}

@@ -367,7 +367,7 @@ export default function LineMatchExercise({ config }: ExerciseComponentProps) {
     const selectId = `${uid}-match-${key}`;
 
     return (
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- mouse-only enhancement over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- pointer-only enhancement (mouse and touch) over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
       <li
         className={cn(
           'flex items-center gap-3 rounded-xl border border-border/70 bg-card p-3',

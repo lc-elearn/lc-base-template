@@ -306,7 +306,7 @@ export default function DragFillGapsExercise({ config }: ExerciseComponentProps)
 
       <ol className="drag-fill-gaps-rows" aria-label="Sentences with blanks">
         {rows.map((row, rowIndex) => (
-          // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- mouse-only enhancement over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- pointer-only enhancement (mouse and touch) over the speaker <button>, which is the keyboard path; see src/audio/row-clip.ts
           <li
             className={cn('drag-fill-gaps-row', row.audio && ROW_CLIP_CLASSES)}
             key={`row-${rowIndex}`}
