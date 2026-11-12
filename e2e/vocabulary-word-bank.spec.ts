@@ -73,6 +73,39 @@ test('the self-test drill from the keyboard: hide, reveal, focus, switch view', 
   expect(problems).toEqual([]);
 });
 
+test('hiding English: revealing a gloss moves focus to it', async ({ page }) => {
+  const problems = watchForProblems(page);
+  const bank = await openWordBank(page);
+  const hideEnglish = bank.getByRole('button', { name: 'Hide English' });
+
+  await press(page, bank, hideEnglish);
+  await expect(hideEnglish).toHaveAttribute('aria-pressed', 'true');
+  await press(page, bank, bank.getByRole('button', { name: 'Reveal English, word 1' }));
+  // The gloss is a `dd`'s only child; the focused span must be inside one.
+  const gloss = bank.locator('dd > span:focus');
+  await expect(gloss).toBeFocused();
+  await expect(gloss).not.toHaveAttribute('lang', /.+/);
+  expect(problems).toEqual([]);
+});
+
+test('no horizontal scroll at 320px with words hidden, in both views', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  const bank = await openWordBank(page);
+  const overflow = () =>
+    page.evaluate(() => {
+      const root = document.documentElement;
+      return root.scrollWidth - root.clientWidth;
+    });
+
+  await press(page, bank, hideTarget(bank));
+  expect(await overflow()).toBeLessThanOrEqual(0);
+  await press(page, bank, bank.getByRole('button', { name: 'Alphabetical' }));
+  await expect(bank.getByRole('heading', { level: 4, name: 'A', exact: true })).toBeVisible();
+  expect(await overflow()).toBeLessThanOrEqual(0);
+  await press(page, bank, bank.getByRole('button', { name: 'Hide English' }));
+  expect(await overflow()).toBeLessThanOrEqual(0);
+});
+
 for (const colorScheme of ['light', 'dark'] as const) {
   test.describe(`${colorScheme} mode`, () => {
     test.use({ colorScheme });

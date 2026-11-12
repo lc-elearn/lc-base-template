@@ -154,6 +154,10 @@ describe('the build fails on', () => {
     ).toMatch(/topic "marriage" is declared twice/);
   });
 
+  test('an empty topics array', () => {
+    expect(errorFor({ topics: [], items: [{ term: 'брак', gloss: 'marriage' }] })).not.toBe('');
+  });
+
   test('a misspelt key in a topic', () => {
     expect(
       errorFor({
