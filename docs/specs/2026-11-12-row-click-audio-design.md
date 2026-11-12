@@ -7,11 +7,15 @@
 > **Deviations from this spec.** (1) Each clip row also carries a `data-row-clip`
 > attribute (a literal JSX attribute, so the tests and the browser test find rows by it);
 > `src/audio/row-clip.ts` exports `ROW_CLIP_ROW_SELECTOR = '[data-row-clip]'` for them.
-> It changes nothing for learners. (2) `ROW_CLIP_CLASSES` is `'cursor-pointer
-hover:bg-muted'`, with no `transition-colors`: the hover snaps, per TODO §D8 (never
-> transition a token colour declared in a base state). This also removes the vocabulary
-> block's former hover fade. (3) The eslint-disable comments say "pointer-only
-> enhancement (mouse and touch)". (4) Tests beyond the plan: edge cases in
+> It changes nothing for learners. (2) `ROW_CLIP_CLASSES` is
+> `'cursor-pointer hover:bg-muted'`, with no `transition-colors`: the hover snaps, per
+> TODO §D8 (never transition a token colour declared in a base state). This also removes
+> the vocabulary block's former hover fade. Text-entry's rows are the exception: shadcn's
+> `TableRow` keeps its own `transition-colors` and `hover:bg-muted/50` on every row, as
+> before this change (no §D8 bug, since the row declares no base background). (3) The
+> eslint-disable comments say "pointer-only enhancement (mouse and touch)", and the `<li>`
+> rows disable `jsx-a11y/no-noninteractive-element-interactions` where §5's `<div>`
+> disables `no-static-element-interactions`. (4) Tests beyond the plan: edge cases in
 > `row-clip.test.ts` (an svg inside the speaker, contenteditable, roles, a real text
 > selection, no transition), a speaker clicked once in `VocabularyBlock.row-clip.test.tsx`,
 > and `row-clip-engines.test.tsx` also checks that rows without audio stay unmarked
@@ -21,7 +25,10 @@ hover:bg-muted'`, with no `transition-colors`: the hover snaps, per TODO §D8 (n
 > row-without-audio test was shown able to fail by temporarily marking every word-spot
 > row. (6) The browser test (`e2e/debug/showcase-audio.spec.ts`, "on a phone") passes in
 > chromium, firefox and webkit and was shown to fail with inline-gap's row click
-> disabled. (Recorded 2026-11-12.)
+> disabled. It taps an inline-gap row's text, not a vocabulary gloss as §6 says, so the
+> vocabulary block's row click is covered by its mounted test only. (7) In inline-gap the
+> row with the click is the outer bordered `<div>` holding the prompt and the
+> `<span data-gap-row>`, so a tap on the prompt plays too. (Recorded 2026-11-12.)
 
 ## 1. Why
 
