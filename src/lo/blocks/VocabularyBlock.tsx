@@ -4,7 +4,8 @@
  * of `<span>` pairs.
  *
  * `lang` (spec §3, WCAG 3.1.2) is per-part, not per-block: the TERM is target
- * language, its GLOSS is the UI language, so only the `<dt>` carries TARGET_LANG.
+ * language, its GLOSS is the UI language, so TARGET_LANG sits on a span around the term
+ * text, never on the `<dt>` (whose speaker and Reveal button are UI-language chrome).
  *
  * A WORD BANK (E63, docs/specs/2026-11-12-vocabulary-word-bank-design.md). One list per
  * lesson, each word written and recorded once, shown two ways: the topic view (the

@@ -14,4 +14,3 @@ export const VocabularyBlockOptionsSchema = z.strictObject({
   /** Letter headings in the A–Z view, from the course language's collation. */
   letterHeadings: z.boolean().default(false),
 });
-export type VocabularyBlockOptions = z.infer<typeof VocabularyBlockOptionsSchema>;
