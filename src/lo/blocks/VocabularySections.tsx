@@ -13,6 +13,7 @@
 import type { VocabularyItem } from './vocabulary-block-schema';
 import type { VocabularySection } from './vocabulary-letters';
 import { VocabularyRow } from './VocabularyRow';
+import './vocabulary-block.css';
 
 /** Two columns from `sm`, the term's as wide as the longest term: today's list. */
 const LIST = 'grid gap-x-6 gap-y-2 sm:grid-cols-[max-content_1fr]';
@@ -23,9 +24,15 @@ const HEADING = 'font-heading text-lg font-semibold text-foreground sm:col-span-
 interface VocabularySectionsProps {
   sections: readonly VocabularySection<VocabularyItem>[];
   headingLevel: 'h3' | 'h4';
+  /** Letter headings: centred, a thin rule either side (vocabulary-block.css). */
+  letters: boolean;
 }
 
-export function VocabularySections({ sections, headingLevel: Heading }: VocabularySectionsProps) {
+export function VocabularySections({
+  sections,
+  headingLevel: Heading,
+  letters,
+}: VocabularySectionsProps) {
   const rows = (section: VocabularySection<VocabularyItem>) =>
     section.items.map((item) => <VocabularyRow key={item.term} item={item} />);
 
@@ -42,7 +49,9 @@ export function VocabularySections({ sections, headingLevel: Heading }: Vocabula
               <hr className="border-border sm:col-span-2" />
             )
           ) : (
-            <Heading className={HEADING}>{section.heading}</Heading>
+            <Heading className={letters ? `vocabulary-letter ${HEADING}` : HEADING}>
+              {section.heading}
+            </Heading>
           )}
           <dl className="grid gap-y-2 sm:col-span-2 sm:grid-cols-subgrid">{rows(section)}</dl>
         </div>

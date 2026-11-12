@@ -21,27 +21,34 @@ import Callout from '@/components/shell/Callout';
 import { TARGET_LANG } from '@/lib/lang';
 import { RichText } from '../rich-text/RichText';
 import type { BlockRendererProps } from './block-renderers';
-import { parseBlockContent } from './parse-block-content';
+import { parseBlockContent, parseBlockOptions } from './parse-block-content';
 import { VocabularyBlockContentSchema } from './vocabulary-block-schema';
+import { VocabularyBlockOptionsSchema } from './vocabulary-options-schema';
 import { nextSortMode, type VocabularySortMode } from './vocabulary-sort';
 import { offersBothViews, sectionsFor } from './vocabulary-views';
 import { ViewButtons } from './VocabularyControls';
 import { VocabularySections } from './VocabularySections';
 
-export function VocabularyBlock({ content, labels, presentation = 'card' }: BlockRendererProps) {
+export function VocabularyBlock({
+  content,
+  options,
+  labels,
+  presentation = 'card',
+}: BlockRendererProps) {
   const { items, summary, topics } = parseBlockContent(
     'vocabulary',
     VocabularyBlockContentSchema,
     content,
   );
+  const { letterHeadings } = parseBlockOptions('vocabulary', VocabularyBlockOptionsSchema, options);
   // The topic view on the first render: the prerendered markup and the first client
   // render agree. The learner changes it with the buttons.
   const [sortMode, setSortMode] = useState<VocabularySortMode>('semantic');
-  const { sections } = sectionsFor(items, {
+  const { view, sections } = sectionsFor(items, {
     mode: sortMode,
     topics,
     lang: TARGET_LANG,
-    letterHeadings: false,
+    letterHeadings,
   });
 
   return (
@@ -76,6 +83,7 @@ export function VocabularyBlock({ content, labels, presentation = 'card' }: Bloc
       <VocabularySections
         sections={sections}
         headingLevel={presentation === 'plain' ? 'h3' : 'h4'}
+        letters={view === 'alphabetical'}
       />
     </div>
   );
