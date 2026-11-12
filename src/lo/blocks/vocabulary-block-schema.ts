@@ -1,6 +1,11 @@
 /**
  * vocabulary-block-schema.ts — the per-type `content` contract for
  * `type: "vocabulary"`, mirroring the per-engine `*-schema.ts` convention.
+ *
+ * A WORD BANK (E63, spec docs/specs/2026-11-12-vocabulary-word-bank-design.md §3): one
+ * list, each entry written once, shown two ways. `topics` groups the topic view;
+ * `only` keeps an entry to one view (a phrase to the topics, a headword to A–Z). The
+ * cross-entry rules are one superRefine at the end, each message naming the entry.
  */
 import { z } from 'zod';
 import { parseRichText } from '../rich-text/parse-rich-text';
@@ -20,6 +25,10 @@ export const VocabularyItemSchema = z.object({
    * the browser.
    */
   audio: z.string().min(1).optional(),
+  /** The `id` of a declared topic: the group this entry sits in, in the topic view. */
+  topic: z.string().min(1).optional(),
+  /** The one view this entry shows in. Absent means both. */
+  only: z.enum(['topics', 'alphabetical']).optional(),
 });
 export type VocabularyItem = z.infer<typeof VocabularyItemSchema>;
 
@@ -39,10 +48,95 @@ export const VocabularySummarySchema = z.object({
     .transform((entries) => entries.map((entry) => parseRichText(entry))),
 });
 
-export const VocabularyBlockContentSchema = z.object({
+/** One group of the topic view. Without a `heading` it renders as a divider. */
+export const VocabularyTopicSchema = z.strictObject({
+  id: z.string().min(1),
+  heading: z.string().min(1).optional(),
+});
+export type VocabularyTopic = z.infer<typeof VocabularyTopicSchema>;
+
+const VocabularyBlockContentShape = z.object({
   /** Accordion-level instructions, rendered by LoAccordion's one instructions slot. */
   instructions: z.string().min(1).optional(),
   summary: VocabularySummarySchema.optional(),
+  /** The topic view's groups, in display order. Absent: one flat list, as before E63. */
+  topics: z.array(VocabularyTopicSchema).min(1).optional(),
   items: z.array(VocabularyItemSchema).min(1),
 });
+
+/** How a message names an entry: `items[3] "брак"`. */
+const entryName = (index: number, term: string): string =>
+  `items[${index}] "${term.normalize('NFC')}"`;
+
+/** Rules 1–4 (spec §3) for one entry, given the declared topic ids. */
+function checkEntryTopic(
+  item: VocabularyItem,
+  index: number,
+  declared: readonly string[] | undefined,
+  ctx: z.RefinementCtx,
+): void {
+  const name = entryName(index, item.term);
+  const path = ['items', index, 'topic'];
+  if (item.topic !== undefined && item.only === 'alphabetical') {
+    ctx.addIssue({
+      code: 'custom',
+      path,
+      message: `${name} has a topic but "only": "alphabetical", so the topic would never show — remove one`,
+    });
+  } else if (item.topic !== undefined && !(declared ?? []).includes(item.topic)) {
+    const known = declared === undefined ? 'none' : declared.join(', ');
+    ctx.addIssue({
+      code: 'custom',
+      path,
+      message: `${name}: topic "${item.topic}" is not declared in "topics" (declared: ${known})`,
+    });
+  } else if (item.topic === undefined && declared !== undefined && item.only !== 'alphabetical') {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['items', index],
+      message: `${name} shows in the topic view but has no "topic" — give it one, or "only": "alphabetical"`,
+    });
+  }
+}
+
+/** The word bank's cross-entry rules (spec §3, 1–5; rule 6 is the enum and the options). */
+function checkWordBank(
+  content: z.output<typeof VocabularyBlockContentShape>,
+  ctx: z.RefinementCtx,
+): void {
+  const declared = content.topics?.map((topic) => topic.id);
+  declared?.forEach((id, index) => {
+    if (declared.indexOf(id) !== index) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['topics', index, 'id'],
+        message: `topic "${id}" is declared twice`,
+      });
+    }
+    if (!content.items.some((item) => item.topic === id)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['topics', index],
+        message: `topic "${id}" is declared but no entry uses it`,
+      });
+    }
+  });
+  const firstIndex = new Map<string, number>();
+  content.items.forEach((item, index) => {
+    checkEntryTopic(item, index, declared, ctx);
+    const key = item.term.normalize('NFC');
+    const first = firstIndex.get(key);
+    if (first === undefined) {
+      firstIndex.set(key, index);
+      return;
+    }
+    ctx.addIssue({
+      code: 'custom',
+      path: ['items', index, 'term'],
+      message: `${entryName(index, item.term)} repeats items[${first}] — write each word once; "only" says which view it shows in`,
+    });
+  });
+}
+
+export const VocabularyBlockContentSchema = VocabularyBlockContentShape.superRefine(checkWordBank);
 export type VocabularyBlockContent = z.infer<typeof VocabularyBlockContentSchema>;
