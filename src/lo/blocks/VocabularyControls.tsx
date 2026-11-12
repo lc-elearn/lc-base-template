@@ -10,8 +10,7 @@
 import { ArrowDownAZ, ArrowUpZA, EyeOff, Layers } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import { fillLabel, resolveLabel, type UiStringsOverride } from '@/config/ui-strings';
-import { NATIVE_LANGUAGE_NAME, TARGET_LANGUAGE_NAME } from '@/lib/lang';
-import type { HideSide, SelfTestState } from './vocabulary-self-test';
+import { LANGUAGE_NAMES, type HideSide, type SelfTestState } from './vocabulary-self-test';
 import type { VocabularySortMode } from './vocabulary-sort';
 
 const toggleClass = (pressed: boolean): string =>
@@ -55,10 +54,7 @@ export function ViewButtons({ sortMode, labels, onChoose }: ViewButtonsProps) {
   );
 }
 
-const SIDES: readonly (readonly [HideSide, string])[] = [
-  ['target', TARGET_LANGUAGE_NAME],
-  ['native', NATIVE_LANGUAGE_NAME],
-];
+const SIDES: readonly HideSide[] = ['target', 'native'];
 
 interface SelfTestButtonsProps {
   hidden: SelfTestState['hidden'];
@@ -75,7 +71,7 @@ export function SelfTestButtons({ hidden, labels, onHide }: SelfTestButtonsProps
       role="group"
       aria-label={resolveLabel('vocabularySelfTest', labels)}
     >
-      {SIDES.map(([side, language]) => (
+      {SIDES.map((side) => (
         <button
           key={side}
           type="button"
@@ -84,7 +80,7 @@ export function SelfTestButtons({ hidden, labels, onHide }: SelfTestButtonsProps
           onClick={() => onHide(side)}
         >
           <EyeOff aria-hidden="true" />
-          {fillLabel(hide, { language })}
+          {fillLabel(hide, { language: LANGUAGE_NAMES[side] })}
         </button>
       ))}
     </div>

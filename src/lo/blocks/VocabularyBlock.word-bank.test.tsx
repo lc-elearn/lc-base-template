@@ -111,8 +111,9 @@ describe('self-test', () => {
     expect(container.textContent).not.toContain('beta');
     expect(container.textContent).toContain('second');
     expect(button(container, `Reveal ${TARGET}, word 1`).textContent).toBe('Reveal');
-    // The hidden cell holds English chrome, so its <dt> drops the course language.
+    // `lang` is only ever on the term text itself, never on the <dt> (chrome is English).
     expect(container.querySelector('dt')?.hasAttribute('lang')).toBe(false);
+    expect(container.querySelector('dt [lang]')).toBeNull();
   });
 
   test('a hidden term’s speaker is named for its slot, not its word, and still works', () => {
@@ -120,6 +121,15 @@ describe('self-test', () => {
     press(button(container, `Hide ${TARGET}`));
     expect(button(container, 'Listen: word 1')).toBeDefined();
     expect(container.innerHTML).not.toContain('Listen: beta');
+  });
+
+  test('the term text is in the course language; its speaker name is outside any [lang]', () => {
+    const container = mount({ selfTest: true });
+    const term = container.querySelector('dt [lang]') as HTMLElement;
+    expect(term.getAttribute('lang')).toBe(TARGET_LANG);
+    expect(term.textContent).toBe('beta');
+    expect(button(container, 'Listen: beta').closest('[lang]')).toBeNull();
+    expect(container.querySelector('dt')?.hasAttribute('lang')).toBe(false);
   });
 
   test('Reveal shows the word and moves focus to it, in the course language', () => {

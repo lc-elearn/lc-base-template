@@ -10,23 +10,23 @@
  * SELF-TEST (spec §5). A hidden word is REMOVED FROM THE DOM, not hidden with CSS, so
  * assistive technology cannot read it early; its cell holds a Reveal button named for
  * its slot ("Reveal Russian, word 3"). The revealed word takes focus. While the term is
- * hidden its speaker is "Listen: word 3", not "Listen: брак", and the `<dt>` drops
- * `lang`: the cell then holds English chrome, and `lang` is for target-language text
- * only (§6).
+ * hidden its speaker is "Listen: word 3", not "Listen: брак". `lang` sits on a span
+ * around the term text only, never on the `<dt>`: the speaker's name and the Reveal
+ * button are English chrome, and `lang` is for target-language text only (§6).
  */
 import { useEffect, useRef } from 'react';
 import { playRowClip, ROW_CLIP_CLASSES } from '@/audio/row-clip';
 import { AudioClip } from '@/components/audio/AudioClip';
 import { buttonVariants } from '@/components/ui/button';
 import { fillLabel, resolveLabel, type UiStringsOverride } from '@/config/ui-strings';
-import { NATIVE_LANGUAGE_NAME, TARGET_LANG, TARGET_LANGUAGE_NAME } from '@/lib/lang';
+import { TARGET_LANG } from '@/lib/lang';
 import type { VocabularyItem } from './vocabulary-block-schema';
-import { isHidden, type HideSide, type SelfTestState } from './vocabulary-self-test';
-
-const LANGUAGE_NAMES: Readonly<Record<HideSide, string>> = {
-  target: TARGET_LANGUAGE_NAME,
-  native: NATIVE_LANGUAGE_NAME,
-};
+import {
+  isHidden,
+  LANGUAGE_NAMES,
+  type HideSide,
+  type SelfTestState,
+} from './vocabulary-self-test';
 
 /** The word just revealed: focusable from script only, and focused once, on mount. */
 function RevealedWord({ text }: { text: string }) {
@@ -38,6 +38,7 @@ function RevealedWord({ text }: { text: string }) {
     <span
       ref={ref}
       tabIndex={-1}
+      lang={TARGET_LANG}
       className="rounded-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
     >
       {text}
@@ -85,7 +86,12 @@ export function VocabularyRow({
         </button>
       );
     }
-    return focusSide === side ? <RevealedWord text={text} /> : text;
+    if (side === 'native') return text;
+    return focusSide === side ? (
+      <RevealedWord text={text} />
+    ) : (
+      <span lang={TARGET_LANG}>{text}</span>
+    );
   };
 
   return (
@@ -100,10 +106,7 @@ export function VocabularyRow({
         plays ? ROW_CLIP_CLASSES : ''
       }`}
     >
-      <dt
-        lang={termHidden ? undefined : TARGET_LANG}
-        className="flex items-center gap-2 font-medium text-foreground"
-      >
+      <dt className="flex items-center gap-2 font-medium text-foreground">
         {item.audio === undefined ? null : (
           // `title` is the speaker's accessible name: "play" alone would be the same on
           // every row, and a hidden term must not be spoken in it.
@@ -114,7 +117,7 @@ export function VocabularyRow({
             title={
               termHidden
                 ? fillLabel(resolveLabel('vocabularyListenWord', labels), { number })
-                : `Listen: ${item.term}`
+                : fillLabel(resolveLabel('vocabularyListen', labels), { term: item.term })
             }
           />
         )}
