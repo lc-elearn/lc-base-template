@@ -253,5 +253,7 @@ did not give:
   in the Russian course's lessons 1–4 uses only `term`, `gloss` and `audio`; no other
   course has lessons yet.
 - **A bad `only` value's message names the entry** (`entry "брак": "only" must be ...`).
+- **Revealing either side moves focus to the revealed word** (the course-language term
+  or the English gloss), so focus never falls to `<body>` (WCAG 2.4.3).
 - **Letter headings still show while the course language is hidden,** so each heading
   gives away its words' first letter. The design is silent; left as is.
