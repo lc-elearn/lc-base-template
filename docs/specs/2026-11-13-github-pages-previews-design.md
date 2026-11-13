@@ -1,9 +1,11 @@
 # GitHub Pages previews: every course online, one landing page (E65)
 
-**Date:** 2026-11-13 · **Status:** designed, not built · **Plan:** to follow in
-`docs/process/2026-11-13-github-pages-previews-plan.md`
-**TODO:** §E65 · **Touches:** `.github/workflows/` (new `pages.yml`), `DEPLOY.md`,
-`docs/ORGANIZATION.md`, `STRUCTURE.md`; and a new repo, `lc-elearn/lc-elearn.github.io`
+**Date:** 2026-11-13 · **Status:** template part built on branch docs/github-pages-previews; landing repo built
+locally; not yet published · **Plan:**
+[`2026-11-13-github-pages-previews-plan.md`](../process/2026-11-13-github-pages-previews-plan.md)
+**TODO:** §E65 · **Touches:** `.github/workflows/` (new `pages.yml`),
+`src/build/debug-pages-in.ts` (+ test), `scripts/check-no-debug-pages.ts`, `DEPLOY.md`,
+`docs/ORGANIZATION.md`; and a new repo, `lc-elearn/lc-elearn.github.io`
 
 ## 1. Why
 
@@ -67,7 +69,6 @@ the course's owner agrees first.
   what the preview is, that it is not the live course, where it is, how to switch it on.
 - `docs/ORGANIZATION.md` step 6 (create a course repo): one line, switch Pages on.
 - `docs/process/TODO.md`: §E65.
-- `STRUCTURE.md`'s tree, under `.github/workflows/`, gains `pages.yml`.
 
 ## 4. The landing page
 
@@ -169,7 +170,8 @@ blank site.
   card, escaping a `<` or `"` in a title, the noindex tag), and `collect.ts` against a
   fake `fetch` (filters, skip with reason, template detection, lesson count without the
   example). Then one dry run against the real organisation before the first publish.
-- **Template:** no new site code, only `pages.yml` and docs; the full gate still runs. The
+- **Template:** no new site code, only `pages.yml`, `src/build/debug-pages-in.ts` (+ test),
+  `scripts/check-no-debug-pages.ts` and docs; the full gate still runs. The
   nested-folder browser tests already cover the addresses. After the first publish, the
   live template site is checked by hand: home, the example lesson, each debug page.
 
