@@ -10,8 +10,8 @@ session, on either machine.
 | `2026-08-06-post-phase-d-handover.md` | state snapshot at end of Phase D, plus the §5 decision log |
 | [`../ROADMAP.md`](../ROADMAP.md)      | larger work beyond this queue, each with its trigger       |
 
-**Last updated:** 2026-11-13 · **HEAD:** see `git log` · **Suite:** 225 files · 2798 tests green
-(Vitest) · 156 Playwright tests (52 × 3 browsers, `bun run test:e2e`; the 9 for the `home` mode not built skip) plus 114 on a `DEBUG=1` build (38 × 3, `e2e/debug/`) · CI green · `main` protected since 2026-10-21 (job E1).
+**Last updated:** 2026-11-13 · **HEAD:** see `git log` · **Suite:** 226 files · 2812 tests green
+(Vitest) · 159 Playwright tests (53 × 3 browsers, `bun run test:e2e`; the 9 for the `home` mode not built skip) plus 114 on a `DEBUG=1` build (38 × 3, `e2e/debug/`) · CI green · `main` protected since 2026-10-21 (job E1).
 
 Non-negotiable constraints for every job below live in
 [`AGENTS.md` → "Hard constraints"](../../AGENTS.md) (they grew out of
