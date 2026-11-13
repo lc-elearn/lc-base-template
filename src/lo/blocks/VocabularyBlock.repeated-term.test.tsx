@@ -41,3 +41,30 @@ test('A–Z sorts both rows of a repeated term, with no duplicate-key warning', 
   expect(error).not.toHaveBeenCalled();
   error.mockRestore();
 });
+
+test('a homonym: revealing one gloss leaves the other row hidden', () => {
+  const container = document.createElement('div');
+  document.body.append(container);
+  root = createRoot(container);
+  act(() =>
+    root?.render(
+      <VocabularyBlock
+        content={{
+          items: [
+            { term: 'мир', gloss: 'peace' },
+            { term: 'мир', gloss: 'world' },
+          ],
+        }}
+        options={{ selfTest: true }}
+      />,
+    ),
+  );
+  const named = (name: string) =>
+    Array.from(container.querySelectorAll('button')).find(
+      (b) => (b.getAttribute('aria-label') ?? b.textContent) === name,
+    );
+  act(() => named('Hide English')?.click());
+  act(() => named('Reveal English, word 1')?.click());
+  expect(named('Reveal English, word 2')).toBeDefined();
+  expect(named('Reveal English, word 1')).toBeUndefined();
+});
