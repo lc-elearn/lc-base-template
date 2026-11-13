@@ -49,7 +49,7 @@ schemas check every lesson file when it loads, and `bun run test` runs them.
    [`culp-syllabus`](../culp-syllabus/SKILL.md) skill can first check its level
    (optional).
    A vocabulary block is a word bank: write each word once, and place it in the two
-   views with `topic` and `only`
+   views with `topic` (one id or a list, for a word taught under two topics) and `only`
    ([`CONTRIBUTING.md` → "Vocabulary block (word bank)"](../../../CONTRIBUTING.md#vocabulary-block-word-bank)).
 5. **Use existing kinds only.** If the user wants a kind of exercise or block that does
    not exist, stop and use the `add-exercise-engine` or `add-block-type` skill instead.
