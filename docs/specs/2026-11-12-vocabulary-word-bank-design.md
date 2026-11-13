@@ -1,10 +1,10 @@
 # One word bank per lesson, shown by topic and A–Z (E63)
 
-**Date:** 2026-11-12 · **Status:** built 2026-11-12 (TODO §E63) · **Plan:** [`2026-11-12-vocabulary-word-bank-plan.md`](../process/2026-11-12-vocabulary-word-bank-plan.md)
+**Date:** 2026-11-12 · **Status:** built and merged 2026-11-12 (TODO §E63, PR 115, `0d0a8f3`; fix PR 116, `7a15d2f`) · **Plan:** [`2026-11-12-vocabulary-word-bank-plan.md`](../process/2026-11-12-vocabulary-word-bank-plan.md)
 **TODO:** §E63 · **Answers:** template issue 108 (Russian, vocabulary block) ·
 **Builds on:** `src/lo/blocks/VocabularyBlock.tsx`, E62's `src/audio/row-clip.ts`
 ([`2026-11-12-row-click-audio-design.md`](2026-11-12-row-click-audio-design.md)), which
-must merge first
+merged first (PR 114)
 
 ## 1. Why
 
