@@ -1,6 +1,6 @@
 # Tap anywhere on a row to hear it (E62)
 
-**Date:** 2026-11-12 · **Status:** built 2026-11-12 (TODO §E62) · **Plan:** [`2026-11-12-row-click-audio-plan.md`](../process/2026-11-12-row-click-audio-plan.md)
+**Date:** 2026-11-12 · **Status:** built and merged 2026-11-12 (TODO §E62, PR 114, `b7fbdf0`) · **Plan:** [`2026-11-12-row-click-audio-plan.md`](../process/2026-11-12-row-click-audio-plan.md)
 **TODO:** §E62 · **Builds on:** `src/lo/blocks/VocabularyBlock.tsx` (`playRowClip`, ported from french-lo-1's `PhraseTable`)
 **Comes before:** the vocabulary word bank (Russian, template issue 108), which reuses the helper this spec adds
 
