@@ -89,6 +89,23 @@ test('hiding English: revealing a gloss moves focus to it', async ({ page }) => 
   expect(problems).toEqual([]);
 });
 
+// An entry may belong to several topics: one word, two rows. The example lesson lists
+// "Another placeholder term" under both topics (word 3 and word 4 in the topic view).
+test('a word in two topics: Reveal on the second copy focuses that copy', async ({ page }) => {
+  const problems = watchForProblems(page);
+  const bank = await openWordBank(page);
+  const copies = bank.getByText('Another placeholder term', { exact: true });
+
+  await expect(copies).toHaveCount(2);
+  await press(page, bank, hideTarget(bank));
+  await press(page, bank, bank.getByRole('button', { name: /, word 4$/ }));
+  // One word: revealed in both places; focus is on the copy whose button was pressed.
+  await expect(copies.nth(1)).toBeFocused();
+  await expect(copies.nth(0)).not.toBeFocused();
+  await expect(copies.nth(0)).toBeVisible();
+  expect(problems).toEqual([]);
+});
+
 // Spec §5: a hidden word keeps its space, so the other column does not jump. Found by
 // eye in the browser (2026-11-13): hiding the course language moved the glosses ~120px
 // left, because the Reveal button is narrower than the words it stands in for.

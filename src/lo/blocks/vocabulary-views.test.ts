@@ -140,3 +140,25 @@ describe('sectionsFor', () => {
     expect(shape(result.sections)).toEqual([[undefined, ['a', 'b']]]);
   });
 });
+
+describe('an entry in several topics', () => {
+  const MULTI: WordBankEntry[] = [
+    { term: 'условия', topic: ['work', 'unemployment'] },
+    { term: 'зарплата', topic: 'work' },
+    { term: 'вредный', topic: ['work', 'unemployment'] },
+    { term: 'пособие', topic: 'unemployment' },
+  ];
+  const MULTI_TOPICS = [{ id: 'work' }, { id: 'unemployment' }];
+
+  test('the topic view shows it under each topic, in written order', () => {
+    expect(shape(topicSections(MULTI, MULTI_TOPICS))).toEqual([
+      [undefined, ['условия', 'зарплата', 'вредный']],
+      [undefined, ['условия', 'вредный', 'пособие']],
+    ]);
+  });
+
+  test('the A–Z view shows it once', () => {
+    const [only] = alphabeticalSections(MULTI, 'alphabetical', 'ru', false);
+    expect(terms(only?.items ?? [])).toEqual(['вредный', 'зарплата', 'пособие', 'условия']);
+  });
+});

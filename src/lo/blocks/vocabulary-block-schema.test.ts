@@ -187,3 +187,46 @@ describe('the build fails on', () => {
     ).toMatch(/haeding/);
   });
 });
+
+describe('an entry in several topics (maintainer 2026-11-13, 2015 units 2 and 9)', () => {
+  const items = (topic: unknown) => [
+    { term: 'условия', gloss: 'conditions', topic },
+    { term: 'брак', gloss: 'marriage', topic: 'attitudes' },
+  ];
+
+  test('topic is a string or a list of ids', () => {
+    expect(errorFor({ topics: TOPICS, items: items('marriage') })).toBe('');
+    expect(errorFor({ topics: TOPICS, items: items(['marriage', 'attitudes']) })).toBe('');
+  });
+
+  test('an undeclared id in the list names the entry and the id', () => {
+    expect(errorFor({ topics: TOPICS, items: items(['marriage', 'marrige']) })).toMatch(
+      /items\[0\] "условия": topic "marrige" is not declared/,
+    );
+  });
+
+  test('an id listed twice in one entry fails', () => {
+    expect(errorFor({ topics: TOPICS, items: items(['marriage', 'marriage']) })).toMatch(
+      /items\[0\] "условия".*"marriage" twice/,
+    );
+  });
+
+  test('an empty list fails', () => {
+    expect(errorFor({ topics: TOPICS, items: items([]) })).not.toBe('');
+  });
+
+  test('a declared topic used only as a second membership counts as used', () => {
+    expect(errorFor({ topics: TOPICS, items: items(['marriage', 'attitudes']).slice(0, 1) })).toBe(
+      '',
+    );
+  });
+
+  test('a topic with only "alphabetical" still fails, listed or not', () => {
+    expect(
+      errorFor({
+        topics: TOPICS,
+        items: [{ term: 'x', gloss: 'x', topic: ['marriage', 'attitudes'], only: 'alphabetical' }],
+      }),
+    ).toMatch(/has a topic but "only": "alphabetical"/);
+  });
+});
