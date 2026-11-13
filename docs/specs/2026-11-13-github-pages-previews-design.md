@@ -1,7 +1,7 @@
 # GitHub Pages previews: every course online, one landing page (E65)
 
-**Date:** 2026-11-13 · **Status:** template part built on branch docs/github-pages-previews; landing repo built
-locally; not yet published · **Plan:**
+**Date:** 2026-11-13 · **Status:** template preview and landing page live 2026-11-13 (PR 122, `3371438`); course
+previews follow each course's template update · **Plan:**
 [`2026-11-13-github-pages-previews-plan.md`](../process/2026-11-13-github-pages-previews-plan.md)
 **TODO:** §E65 · **Touches:** `.github/workflows/` (new `pages.yml`),
 `src/build/debug-pages-in.ts` (+ test), `scripts/check-no-debug-pages.ts`, `DEPLOY.md`,
@@ -192,3 +192,18 @@ Each step that changes something on GitHub waits for the maintainer's yes.
 - Who builds each course on the card (P5; needs a token for the private `lc-hub`).
 - A login or any access control (not possible on the free plan).
 - Any change to how the live course is built and uploaded (`DEPLOY.md` steps 1–9).
+
+## 10. As built (2026-11-13)
+
+- **Skip and fail rules (refines §6).** Only a repo's own data problem skips it: a missing
+  or invalid `course.json`, no commits on the default branch, or a second template repo.
+  Any other API failure (403, 429, 5xx, network) fails the run, so the last good page
+  stays up. If no course is readable and some were skipped, the build fails
+  (`src/guard.ts`) instead of publishing an empty page. 40 tests.
+- **Scheduled runs pause.** GitHub pauses a scheduled workflow after 60 days without
+  commits to the repo; the landing repo's README says so.
+- **Legacy-mode gotcha.** GitHub switches Pages on by itself for an `<org>.github.io` repo,
+  in legacy (branch) mode, and published the README. Its build finished after the first
+  Actions deploy and overwrote it. Fix: set the source to Actions
+  (`gh api -X PUT repos/lc-elearn/lc-elearn.github.io/pages -f build_type=workflow`) and run
+  `publish.yml` again.
