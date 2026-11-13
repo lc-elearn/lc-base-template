@@ -26,7 +26,6 @@
 | `.github/workflows/pages.yml`      | create | build and publish `main` to Pages (§3.1)                 |
 | `DEPLOY.md`                        | modify | new section "Preview on GitHub Pages" (§3.3)             |
 | `docs/ORGANIZATION.md`             | modify | step 6: switch Pages on (§3.2)                           |
-| `STRUCTURE.md`                     | modify | `pages.yml` in the tree                                  |
 | `docs/process/TODO.md`             | modify | §E65                                                     |
 
 **Landing repo (`~/Sites/lc-elearn.github.io`, new)**
@@ -278,7 +277,6 @@ git commit -m "ci: publish main to GitHub Pages as a preview (E65)"
 
 - Modify: `DEPLOY.md` (new section after "Demo build for the team", before "Never")
 - Modify: `docs/ORGANIZATION.md` (step 6)
-- Modify: `STRUCTURE.md` (the tree under `.github/workflows/`)
 - Modify: `docs/process/TODO.md`
 
 Re-read each file immediately before editing it (AGENTS.md: Prettier reflows markdown).
@@ -313,21 +311,19 @@ Design: [`docs/specs/2026-11-13-github-pages-previews-design.md`](docs/specs/202
   ([`DEPLOY.md` → "Preview on GitHub Pages"](../DEPLOY.md#preview-on-github-pages)).
 ```
 
-- [ ] **Step 3: `STRUCTURE.md`** — in the tree under `.github/workflows/` (line ~253), add `pages.yml` beside `ci.yml` with the comment `# preview on GitHub Pages (DEPLOY.md)`, matching the neighbouring lines' style.
-
-- [ ] **Step 4: `docs/process/TODO.md`** — under "## E. Before sharing with other developers", after the E64 entry, add:
+- [ ] **Step 3: `docs/process/TODO.md`** — under "## E. Before sharing with other developers", after the E64 entry, add:
 
 ```markdown
 - **E65 — GitHub Pages previews and an organisation landing page. IN PROGRESS.** Every course publishes `main` to `https://lc-elearn.github.io/<repo>/` (`.github/workflows/pages.yml`, debug pages on the template only, `scripts/check-no-debug-pages.ts` stops a course build that has one); a new public repo, `lc-elearn/lc-elearn.github.io`, lists every course hourly from its `course.json`. Spec `docs/specs/2026-11-13-github-pages-previews-design.md`, plan `docs/process/2026-11-13-github-pages-previews-plan.md`. **Verify:** the template's preview opens at `/lc-base-template/` with its debug pages; a course preview has none; the landing page lists the template card.
 ```
 
-- [ ] **Step 5: Format and commit**
+- [ ] **Step 4: Format and commit**
 
 Run: `bun run format`
 
 ```bash
-git add DEPLOY.md docs/ORGANIZATION.md STRUCTURE.md docs/process/TODO.md
-git commit -m "docs: GitHub Pages previews in DEPLOY, ORGANIZATION, STRUCTURE and TODO (E65)"
+git add DEPLOY.md docs/ORGANIZATION.md docs/process/TODO.md
+git commit -m "docs: GitHub Pages previews in DEPLOY, ORGANIZATION and TODO (E65)"
 ```
 
 ### Task 5: the gate and the pull request
