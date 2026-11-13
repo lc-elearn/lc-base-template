@@ -62,6 +62,9 @@ jobs:
         if: env.DEBUG == ''
         run: bun scripts/check-no-debug-pages.ts
 
+      # Exact tags, adopted 2026-11-13, each older than the two weeks this repo waits
+      # before adopting (as ci.yml): configure-pages v6.0.0 (2026-03-25),
+      # upload-pages-artifact v5.0.0 (2026-04-10), deploy-pages v5.0.1 (2026-09-01).
       - name: Configure Pages
         uses: actions/configure-pages@v6.0.0
 
