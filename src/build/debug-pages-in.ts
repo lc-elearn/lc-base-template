@@ -4,8 +4,8 @@
  *
  * The Pages workflow publishes a course build only when this finds none
  * (docs/specs/2026-11-13-github-pages-previews-design.md §3.1): the same list DEPLOY.md
- * step 6 check 3 asks a person to look for. Import-free beyond page-names.ts, so a Bun
- * script can use it (AGENTS.md, hard constraint 1).
+ * step 6 check 3 asks a person to look for. It imports only page-names.ts, so
+ * `bun scripts/check-no-debug-pages.ts` loads it without Vite or the app's path aliases.
  */
 import { DEBUG_ENTRY_FILES } from './page-names';
 
