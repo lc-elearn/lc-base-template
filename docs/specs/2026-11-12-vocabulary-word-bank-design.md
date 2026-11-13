@@ -257,3 +257,10 @@ did not give:
   or the English gloss), so focus never falls to `<body>` (WCAG 2.4.3).
 - **Letter headings still show while the course language is hidden,** so each heading
   gives away its words' first letter. The design is silent; left as is.
+- **A hidden word is not removed from the DOM** (§5 said it would be). It stays as an
+  invisible, `aria-hidden` placeholder (`visibility: hidden`) in the same grid cell as its
+  Reveal button, so the cell keeps the word's width. Removing it let the narrower Reveal
+  button shrink the column, and the other column jumped about 120px when a side was
+  hidden, against §5's "keeps its space". Screen readers still skip it and find-in-page
+  does not match it. Found by eye in the browser on 2026-11-13; a browser test now checks
+  that neither column moves (maintainer approved, 2026-11-13).
