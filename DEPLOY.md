@@ -340,6 +340,9 @@ stands; it is **not** the live course, which is still built and uploaded by step
   the workflow skips.
 - **What it shows:** the course without the Feijoa fonts (headings in Open Sans) and
   without debug pages. Only the template's own preview has the debug pages.
+- **The landing page** is its own repo, `lc-elearn/lc-elearn.github.io`. It finds courses
+  by itself every hour; to see a new one at once, press **Run workflow** on its
+  **Publish** workflow.
 - **Who can see it:** anyone with the link. Search engines are asked not to list it
   (`robots.txt` on the landing repo), but it is not private.
 

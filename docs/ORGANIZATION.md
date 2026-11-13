@@ -622,6 +622,9 @@ A sync touches code, so it needs a code owner's approval, by the path chosen und
 approves core changes": path 1, so the maintainer reviews and approves the author's PR.
 Merging it does not publish anything: the
 course goes live only when it is next built and uploaded ([`DEPLOY.md`](../DEPLOY.md)).
+The first update that brings `pages.yml` into a course is followed by switching on that
+course's preview (**Settings → Pages → Source: GitHub Actions**), with the author's
+agreement: see [`DEPLOY.md`](../DEPLOY.md#preview-on-github-pages).
 
 Then every clone updates `main`:
 
