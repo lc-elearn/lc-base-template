@@ -11,6 +11,7 @@
  */
 import { z } from 'zod';
 import { parseRichText } from '../rich-text/parse-rich-text';
+import { topicIds } from './vocabulary-views';
 
 const ONLY_VIEWS = ['topics', 'alphabetical'] as const;
 type OnlyView = (typeof ONLY_VIEWS)[number];
@@ -38,8 +39,12 @@ export const VocabularyItemSchema = z
        * the browser.
        */
       audio: z.string().min(1).optional(),
-      /** The `id` of a declared topic: the group this entry sits in, in the topic view. */
-      topic: z.string().min(1).optional(),
+      /**
+       * The `id` of a declared topic, or a non-empty list of them: the group(s) this entry
+       * sits in, in the topic view. A word taught under two topics lists both (2015 units 2
+       * and 9, maintainer 2026-11-13); the A–Z view still shows it once.
+       */
+      topic: z.union([z.string().min(1), z.array(z.string().min(1)).min(1)]).optional(),
       /** The one view this entry shows in. Absent means both. */
       only: z.custom<OnlyView>().optional(),
     },
@@ -105,26 +110,41 @@ function checkEntryTopic(
 ): void {
   const name = entryName(index, item.term);
   const path = ['items', index, 'topic'];
-  if (item.topic !== undefined && item.only === 'alphabetical') {
+  const ids = topicIds(item);
+  if (ids.length > 0 && item.only === 'alphabetical') {
     ctx.addIssue({
       code: 'custom',
       path,
       message: `${name} has a topic but "only": "alphabetical", so the topic would never show — remove one`,
     });
-  } else if (item.topic !== undefined && !(declared ?? []).includes(item.topic)) {
-    const known = declared === undefined ? 'none' : declared.join(', ');
-    ctx.addIssue({
-      code: 'custom',
-      path,
-      message: `${name}: topic "${item.topic}" is not declared in "topics" (declared: ${known})`,
-    });
-  } else if (item.topic === undefined && declared !== undefined && item.only !== 'alphabetical') {
-    ctx.addIssue({
-      code: 'custom',
-      path: ['items', index],
-      message: `${name} shows in the topic view but has no "topic" — give it one, or "only": "alphabetical"`,
-    });
+    return;
   }
+  if (ids.length === 0) {
+    if (declared !== undefined && item.only !== 'alphabetical') {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['items', index],
+        message: `${name} shows in the topic view but has no "topic" — give it one, or "only": "alphabetical"`,
+      });
+    }
+    return;
+  }
+  ids.forEach((id, at) => {
+    if (ids.indexOf(id) !== at) {
+      ctx.addIssue({
+        code: 'custom',
+        path,
+        message: `${name} lists topic "${id}" twice — list each topic once`,
+      });
+    } else if (!(declared ?? []).includes(id)) {
+      const known = declared === undefined ? 'none' : declared.join(', ');
+      ctx.addIssue({
+        code: 'custom',
+        path,
+        message: `${name}: topic "${id}" is not declared in "topics" (declared: ${known})`,
+      });
+    }
+  });
 }
 
 /** The word bank's cross-entry rules (spec §3, 1–5; rule 6 is the enum and the options). */
@@ -141,7 +161,7 @@ function checkWordBank(
         message: `topic "${id}" is declared twice`,
       });
     }
-    if (!content.items.some((item) => item.topic === id)) {
+    if (!content.items.some((item) => topicIds(item).includes(id))) {
       ctx.addIssue({
         code: 'custom',
         path: ['topics', index],

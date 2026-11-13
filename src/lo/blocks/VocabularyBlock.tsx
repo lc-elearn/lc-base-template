@@ -111,7 +111,7 @@ export function VocabularyBlock({
         test={test}
         rowClicks={!isAnyHidden(test, shownTerms)}
         labels={labels}
-        onReveal={(term) => dispatch({ type: 'reveal', term })}
+        onReveal={(term, row) => dispatch({ type: 'reveal', term, row })}
       />
     </div>
   );

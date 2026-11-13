@@ -222,3 +222,42 @@ describe('self-test', () => {
     expect(container.querySelectorAll(ROW_CLIP_ROW_SELECTOR)).toHaveLength(2);
   });
 });
+
+describe('an entry in two topics', () => {
+  const MULTI = {
+    topics: [
+      { id: 'a', heading: 'Topic a' },
+      { id: 'b', heading: 'Topic b' },
+    ],
+    items: [
+      { term: 'beta', gloss: 'second', topic: ['a', 'b'] },
+      { term: 'alpha', gloss: 'first', topic: 'b' },
+    ],
+  };
+  const mountMulti = (): HTMLElement => {
+    const container = document.createElement('div');
+    document.body.append(container);
+    root = createRoot(container);
+    act(() => root?.render(<VocabularyBlock content={MULTI} options={{ selfTest: true }} />));
+    return container;
+  };
+
+  test('shows in each topic, and the two copies are different words by number', () => {
+    const container = mountMulti();
+    expect(terms(container)).toEqual(['beta', 'beta', 'alpha']);
+    press(button(container, `Hide ${TARGET}`));
+    expect(button(container, `Reveal ${TARGET}, word 1`)).toBeDefined();
+    expect(button(container, `Reveal ${TARGET}, word 2`)).toBeDefined();
+  });
+
+  test('revealing one copy reveals the word in both places, and focuses the copy pressed', () => {
+    const container = mountMulti();
+    press(button(container, `Hide ${TARGET}`));
+    press(button(container, `Reveal ${TARGET}, word 2`));
+
+    expect(container.querySelectorAll('button[aria-label^="Reveal"]').length).toBe(1);
+    const copies = Array.from(container.querySelectorAll('dt [lang]'));
+    expect(copies.map((copy) => copy.textContent)).toEqual(['beta', 'beta']);
+    expect(document.activeElement).toBe(copies[1]);
+  });
+});

@@ -19,7 +19,8 @@ export type VocabularyView = 'topics' | 'alphabetical';
 /** What the views need from an entry: the schema's item, narrowed. */
 export interface WordBankEntry {
   readonly term: string;
-  readonly topic?: string;
+  /** One topic id, or several: the entry shows under each in the topic view. */
+  readonly topic?: string | readonly string[];
   readonly only?: VocabularyView;
 }
 
@@ -27,6 +28,12 @@ export interface WordBankEntry {
 interface WordBankTopic {
   readonly id: string;
   readonly heading?: string;
+}
+
+/** The topic ids an entry belongs to, in written order (none when it has no topic). */
+export function topicIds(item: { readonly topic?: string | readonly string[] }): readonly string[] {
+  if (item.topic === undefined) return [];
+  return typeof item.topic === 'string' ? [item.topic] : item.topic;
 }
 
 /** The entries `view` shows, in written order. */
@@ -63,7 +70,7 @@ export function topicSections<T extends WordBankEntry>(
   return topics.map((topic) => ({
     key: `topic-${topic.id}`,
     ...(topic.heading === undefined ? {} : { heading: topic.heading }),
-    items: shown.filter((item) => item.topic === topic.id),
+    items: shown.filter((item) => topicIds(item).includes(topic.id)),
   }));
 }
 

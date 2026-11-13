@@ -34,7 +34,7 @@ interface VocabularySectionsProps {
   test: SelfTestState;
   rowClicks: boolean;
   labels?: UiStringsOverride;
-  onReveal: (term: string) => void;
+  onReveal: (term: string, row: string) => void;
 }
 
 export function VocabularySections({
@@ -51,7 +51,13 @@ export function VocabularySections({
     section.items.map((item, at) => (
       // Keyed by the entry's place in the authored list, never its term (a plain list may
       // repeat one) nor its position (it moves when the view is sorted or reversed).
-      <VocabularyRow key={item.index} item={item} number={offset + at + 1} {...rowProps} />
+      <VocabularyRow
+        key={item.index}
+        item={item}
+        rowKey={`${section.key}:${item.index}`}
+        number={offset + at + 1}
+        {...rowProps}
+      />
     ));
 
   const [first] = sections;

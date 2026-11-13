@@ -17,7 +17,12 @@ const run = (...actions: SelfTestAction[]): SelfTestState =>
 
 describe('selfTestReducer', () => {
   test('starts with nothing hidden, so the prerender is unchanged', () => {
-    expect(INITIAL_SELF_TEST).toEqual({ hidden: 'none', revealed: [], lastRevealed: null });
+    expect(INITIAL_SELF_TEST).toEqual({
+      hidden: 'none',
+      revealed: [],
+      lastRevealed: null,
+      lastRow: null,
+    });
   });
 
   test('hide hides one side', () => {
@@ -39,6 +44,16 @@ describe('selfTestReducer', () => {
     expect(state.lastRevealed).toBe('брак');
   });
 
+  test('reveal remembers the row pressed, so focus goes to that copy of a word', () => {
+    const state = run(
+      { type: 'hide', side: 'target' },
+      { type: 'reveal', term: 'условия', row: 'topic-b:0' },
+    );
+    expect(state.lastRow).toBe('topic-b:0');
+    // One word: it is revealed in every place it shows.
+    expect(isHidden(state, 'условия', 'target')).toBe(false);
+  });
+
   test('reveal does nothing when nothing is hidden, or twice', () => {
     expect(run({ type: 'reveal', term: 'брак' })).toEqual(INITIAL_SELF_TEST);
     const once = run({ type: 'hide', side: 'target' }, { type: 'reveal', term: 'брак' });
@@ -51,7 +66,7 @@ describe('selfTestReducer', () => {
       { type: 'reveal', term: 'брак' },
       { type: 'switch-view' },
     );
-    expect(state).toEqual({ hidden: 'native', revealed: [], lastRevealed: null });
+    expect(state).toEqual({ hidden: 'native', revealed: [], lastRevealed: null, lastRow: null });
   });
 
   test('pressing the pressed button again releases it and shows everything', () => {

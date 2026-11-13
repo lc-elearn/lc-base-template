@@ -3,7 +3,8 @@
  * The view holds only `useReducer(selfTestReducer, INITIAL_SELF_TEST)`.
  *
  * Either/or (W7): `hidden` is one side or none, so hiding one side shows the other.
- * Words are revealed one by one, by term (terms are unique in a block, schema rule 5).
+ * Words are revealed one by one, by term (unique in a word bank, schema rule 5; a plain
+ * list that repeats a word reveals both, it is one word).
  * `lastRevealed` is the word the view moves focus to. Switching view keeps the hidden
  * side and forgets what was revealed; pressing the pressed button again shows all.
  *
@@ -26,17 +27,23 @@ export interface SelfTestState {
   readonly revealed: readonly string[];
   /** The term revealed last, which takes focus; null when there is none. */
   readonly lastRevealed: string | null;
+  /**
+   * The ROW whose Reveal was pressed, which takes focus. A word listed under two topics
+   * is one word (revealed in both places) but two rows; focus goes to the one pressed.
+   */
+  readonly lastRow: string | null;
 }
 
 export type SelfTestAction =
   | { readonly type: 'hide'; readonly side: HideSide }
-  | { readonly type: 'reveal'; readonly term: string }
+  | { readonly type: 'reveal'; readonly term: string; readonly row?: string }
   | { readonly type: 'switch-view' };
 
 export const INITIAL_SELF_TEST: SelfTestState = {
   hidden: 'none',
   revealed: [],
   lastRevealed: null,
+  lastRow: null,
 };
 
 export function selfTestReducer(state: SelfTestState, action: SelfTestAction): SelfTestState {
@@ -46,6 +53,7 @@ export function selfTestReducer(state: SelfTestState, action: SelfTestAction): S
         hidden: state.hidden === action.side ? 'none' : action.side,
         revealed: [],
         lastRevealed: null,
+        lastRow: null,
       };
     case 'reveal':
       if (state.hidden === 'none' || state.revealed.includes(action.term)) return state;
@@ -53,9 +61,10 @@ export function selfTestReducer(state: SelfTestState, action: SelfTestAction): S
         ...state,
         revealed: [...state.revealed, action.term],
         lastRevealed: action.term,
+        lastRow: action.row ?? action.term,
       };
     case 'switch-view':
-      return { ...state, revealed: [], lastRevealed: null };
+      return { ...state, revealed: [], lastRevealed: null, lastRow: null };
   }
 }
 

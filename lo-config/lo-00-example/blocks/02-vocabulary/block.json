@@ -30,7 +30,7 @@
         "term": "Another placeholder term",
         "gloss": "placeholder gloss three",
         "audio": "audio/lo-00-example/placeholder.m4a",
-        "topic": "group-two"
+        "topic": ["group-one", "group-two"]
       },
       {
         "term": "Headword placeholder",

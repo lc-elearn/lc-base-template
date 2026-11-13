@@ -49,17 +49,20 @@ function RevealedWord({ text, lang }: { text: string; lang?: string }) {
 
 interface VocabularyRowProps {
   item: IndexedItem;
+  /** This row's identity in the view: a word under two topics has two rows. */
+  rowKey: string;
   /** The entry's place in the view, from 1: how a hidden word is named ("word 3"). */
   number: number;
   test: SelfTestState;
   /** False while any word in the block is hidden, so a click never both plays and reveals (W8). */
   rowClicks: boolean;
   labels?: UiStringsOverride;
-  onReveal: (term: string) => void;
+  onReveal: (term: string, row: string) => void;
 }
 
 export function VocabularyRow({
   item,
+  rowKey,
   number,
   test,
   rowClicks,
@@ -68,7 +71,7 @@ export function VocabularyRow({
 }: VocabularyRowProps) {
   const termHidden = isHidden(test, item.term, 'target');
   const glossHidden = isHidden(test, item.term, 'native');
-  const focusSide = test.lastRevealed === item.term ? test.hidden : 'none';
+  const focusSide = test.lastRow === rowKey ? test.hidden : 'none';
   const plays = item.audio !== undefined && rowClicks;
 
   const cell = (side: HideSide, text: string, hidden: boolean) => {
@@ -87,7 +90,7 @@ export function VocabularyRow({
               language: LANGUAGE_NAMES[side],
               number,
             })}
-            onClick={() => onReveal(item.term)}
+            onClick={() => onReveal(item.term, rowKey)}
           >
             {resolveLabel('vocabularyReveal', labels)}
           </button>
