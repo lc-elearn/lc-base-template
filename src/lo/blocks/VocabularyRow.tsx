@@ -7,9 +7,10 @@
  * element. Before, because it gives every row one shared left edge to scan down and
  * click, and because a vocabulary list is heard before it is read.
  *
- * SELF-TEST (spec §5). A hidden word is REMOVED FROM THE DOM, not hidden with CSS, so
- * assistive technology cannot read it early; its cell holds a Reveal button named for
- * its slot ("Reveal Russian, word 3"). The revealed word takes focus. While the term is
+ * SELF-TEST (spec §5). A hidden word stays only as an invisible, `aria-hidden`
+ * placeholder (`visibility: hidden` also keeps it out of find-in-page), so assistive
+ * technology cannot read it early while it still holds the column's width; the Reveal
+ * button, named for its slot ("Reveal Russian, word 3"), sits in the same grid cell. The revealed word takes focus. While the term is
  * hidden its speaker is "Listen: word 3", not "Listen: брак". `lang` sits on a span
  * around the term text only, never on the `<dt>`: the speaker's name and the Reveal
  * button are English chrome, and `lang` is for target-language text only (§6).
@@ -72,18 +73,25 @@ export function VocabularyRow({
 
   const cell = (side: HideSide, text: string, hidden: boolean) => {
     if (hidden) {
+      // The word stays, invisible and aria-hidden, in the same grid cell as the Reveal
+      // button, so the cell keeps the word's width and the other column does not jump.
       return (
-        <button
-          type="button"
-          className={buttonVariants({ variant: 'outline', size: 'sm' })}
-          aria-label={fillLabel(resolveLabel('vocabularyRevealWord', labels), {
-            language: LANGUAGE_NAMES[side],
-            number,
-          })}
-          onClick={() => onReveal(item.term)}
-        >
-          {resolveLabel('vocabularyReveal', labels)}
-        </button>
+        <span className="vocabulary-hidden-word">
+          <span aria-hidden="true" className="invisible">
+            {text}
+          </span>
+          <button
+            type="button"
+            className={buttonVariants({ variant: 'outline', size: 'sm' })}
+            aria-label={fillLabel(resolveLabel('vocabularyRevealWord', labels), {
+              language: LANGUAGE_NAMES[side],
+              number,
+            })}
+            onClick={() => onReveal(item.term)}
+          >
+            {resolveLabel('vocabularyReveal', labels)}
+          </button>
+        </span>
       );
     }
     // `lang` only on the course-language side: the gloss is the page's own language.
