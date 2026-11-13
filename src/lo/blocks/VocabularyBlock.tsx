@@ -60,7 +60,7 @@ export function VocabularyBlock({
     lang: TARGET_LANG,
     letterHeadings,
   });
-  const shownTerms = sections.flatMap((section) => section.items.map((item) => item.term));
+  const shownIndexes = sections.flatMap((section) => section.items.map((item) => item.index));
   const showViews = offersBothViews(items);
 
   const choose = (pressed: 'semantic' | 'alphabetical') => {
@@ -109,9 +109,9 @@ export function VocabularyBlock({
         headingLevel={presentation === 'plain' ? 'h3' : 'h4'}
         letters={view === 'alphabetical'}
         test={test}
-        rowClicks={!isAnyHidden(test, shownTerms)}
+        rowClicks={!isAnyHidden(test, shownIndexes)}
         labels={labels}
-        onReveal={(term, row) => dispatch({ type: 'reveal', term, row })}
+        onReveal={(entry, row) => dispatch({ type: 'reveal', entry, row })}
       />
     </div>
   );

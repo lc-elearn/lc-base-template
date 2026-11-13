@@ -34,7 +34,7 @@ interface VocabularySectionsProps {
   test: SelfTestState;
   rowClicks: boolean;
   labels?: UiStringsOverride;
-  onReveal: (term: string, row: string) => void;
+  onReveal: (entry: number, row: string) => void;
 }
 
 export function VocabularySections({

@@ -57,7 +57,7 @@ interface VocabularyRowProps {
   /** False while any word in the block is hidden, so a click never both plays and reveals (W8). */
   rowClicks: boolean;
   labels?: UiStringsOverride;
-  onReveal: (term: string, row: string) => void;
+  onReveal: (entry: number, row: string) => void;
 }
 
 export function VocabularyRow({
@@ -69,8 +69,8 @@ export function VocabularyRow({
   labels,
   onReveal,
 }: VocabularyRowProps) {
-  const termHidden = isHidden(test, item.term, 'target');
-  const glossHidden = isHidden(test, item.term, 'native');
+  const termHidden = isHidden(test, item.index, 'target');
+  const glossHidden = isHidden(test, item.index, 'native');
   const focusSide = test.lastRow === rowKey ? test.hidden : 'none';
   const plays = item.audio !== undefined && rowClicks;
 
@@ -90,7 +90,7 @@ export function VocabularyRow({
               language: LANGUAGE_NAMES[side],
               number,
             })}
-            onClick={() => onReveal(item.term, rowKey)}
+            onClick={() => onReveal(item.index, rowKey)}
           >
             {resolveLabel('vocabularyReveal', labels)}
           </button>
