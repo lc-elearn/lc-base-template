@@ -325,7 +325,8 @@ second press reverses it). `lo-00-example` has one in its Vocabulary section
 - `only` keeps an entry to one view: `"topics"` (a phrase that belongs with its topic) or
   `"alphabetical"` (a headword for the A–Z list). Without it, the entry shows in both.
 - `topics` (optional) groups the Semantic view, in the order listed; each entry shown
-  there names its group with `topic`. A topic without a `heading` shows as a line
+  there names its group with `topic`; a word taught under two topics lists both
+  (`"topic": ["work", "unemployment"]`), shows under each, and shows once in A–Z. A topic without a `heading` shows as a line
   (except the first, which shows nothing above it).
 - `options.letterHeadings` puts a letter over each run of the A–Z list. Which letters
   share one (Russian ё with е, Spanish ñ on its own) is the course language's own
@@ -336,7 +337,8 @@ second press reverses it). `lo-00-example` has one in its Vocabulary section
   entry is replaced by a Reveal button. Both options are off by default.
 - The build fails, naming the entry, on: a `topic` not in `topics`; with `topics`, an
   entry in the Semantic view with no `topic`; a topic nothing uses; `topic` with
-  `"only": "alphabetical"`; the same `term` twice; an `only` value other than
+  `"only": "alphabetical"`; a topic listed twice in one entry; in a word bank (one with
+  `topics` or `only`), the same `term` twice (a plain `items` list may repeat one); an `only` value other than
   `"topics"` or `"alphabetical"`; a topic `id` declared twice; an empty `topics`; an
   unknown key in `options`, on an entry or in a topic.
 - `labels` renames the buttons for one block, e.g.

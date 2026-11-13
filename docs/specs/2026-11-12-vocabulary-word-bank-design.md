@@ -264,3 +264,14 @@ did not give:
   hidden, against §5's "keeps its space". Screen readers still skip it and find-in-page
   does not match it. Found by eye in the browser on 2026-11-13; a browser test now checks
   that neither column moves (maintainer approved, 2026-11-13).
+- **§3 rule 5 applies only to a word bank** (maintainer decision, 2026-11-13, found
+  against the Russian course's lesson 2). A block is a word bank when it declares `topics`
+  or any entry has `only`; a plain `items` list may repeat a term, as before E63, so a
+  lesson written as in 2015 still builds (W3). Rows are keyed by the entry's index in the
+  authored list, never its term.
+- **An entry may belong to several topics** (maintainer decision, 2026-11-13, found
+  against 2015 units 2 and 9: "условия" and "вредный" under work and unemployment,
+  "учёный" under science and people in education). `topic` is an id or a non-empty list
+  of distinct declared ids. The topic view shows the entry under each, in written order;
+  A–Z shows it once. It is one word: revealing either copy reveals both, and focus goes
+  to the copy whose Reveal was pressed. "word N" counts rows, so the copies differ.

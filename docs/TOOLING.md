@@ -311,11 +311,13 @@ is too low`, and the guard fails closed, so every Claude edit was blocked — an
 **This is the one place the budget is written down.** Every other doc and comment that
 needs the number points here rather than restating it.
 
-| Asset        | Budget (gzipped) | Measured 2026-11-12 | Headroom |
+| Asset        | Budget (gzipped) | Measured 2026-11-13 | Headroom |
 | ------------ | ---------------- | ------------------- | -------- |
-| `main-*.js`  | **< 140 kB**     | 137.22 kB           | 2.78 kB  |
-| `main-*.css` | **< 19 kB**      | 18.05 kB            | 0.95 kB  |
+| `main-*.js`  | **< 140 kB**     | 137.42 kB           | 2.58 kB  |
+| `main-*.css` | **< 19 kB**      | 18.08 kB            | 0.92 kB  |
 
+- **Word bank, several topics (2026-11-13, TODO §E63): JS 137.22 → 137.42 kB, CSS
+  18.05 → 18.08 kB**: an entry's `topic` may be a list, and rows carry a key and a row id.
 - **Vocabulary word bank (2026-11-12, TODO §E63): JS 134.61 → 137.22 kB, CSS 18.01 →
   18.05 kB**, against `main` built the same day: the word bank's views, letters,
   self-test reducer and the split view; the block is not lazy, so all of it is in
