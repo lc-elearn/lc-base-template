@@ -337,7 +337,7 @@ second press reverses it). `lo-00-example` has one in its Vocabulary section
   entry is replaced by a Reveal button. Both options are off by default.
 - The build fails, naming the entry, on: a `topic` not in `topics`; with `topics`, an
   entry in the Semantic view with no `topic`; a topic nothing uses; `topic` with
-  `"only": "alphabetical"`; a topic listed twice in one entry; in a word bank (one with
+  `"only": "alphabetical"`; a topic listed twice in one entry; an empty `topic` list; in a word bank (one with
   `topics` or `only`), the same `term` twice (a plain `items` list may repeat one); an `only` value other than
   `"topics"` or `"alphabetical"`; a topic `id` declared twice; an empty `topics`; an
   unknown key in `options`, on an entry or in a topic.
