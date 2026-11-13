@@ -147,3 +147,20 @@ describe('vocabulary word bank, first render', () => {
     expect(html).not.toContain('Semantic');
   });
 });
+
+// A plain list may repeat a term (the 2015 units teach some words twice); it must render
+// both rows and re-sort without duplicate React keys.
+describe('a plain list with a repeated term', () => {
+  const content = {
+    items: [
+      { term: 'условия', gloss: 'conditions' },
+      { term: 'вредный', gloss: 'harmful' },
+      { term: 'условия', gloss: 'conditions' },
+    ],
+  };
+  const dts = (html: string) => Array.from(html.matchAll(/<dt[^>]*>.*?<\/dt>/g)).length;
+
+  test('renders both rows', () => {
+    expect(dts(renderToStaticMarkup(<VocabularyBlock content={content} />))).toBe(3);
+  });
+});

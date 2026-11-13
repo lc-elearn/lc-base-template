@@ -5,7 +5,9 @@
  * A WORD BANK (E63, spec docs/specs/2026-11-12-vocabulary-word-bank-design.md §3): one
  * list, each entry written once, shown two ways. `topics` groups the topic view;
  * `only` keeps an entry to one view (a phrase to the topics, a headword to A–Z). The
- * cross-entry rules are one superRefine at the end, each message naming the entry.
+ * cross-entry rules are one superRefine at the end, each message naming the entry. A
+ * block is a word bank when it declares `topics` or any entry has `only`; a plain list
+ * may repeat a term (the 2015 units do, maintainer 2026-11-13).
  */
 import { z } from 'zod';
 import { parseRichText } from '../rich-text/parse-rich-text';
@@ -147,9 +149,13 @@ function checkWordBank(
       });
     }
   });
+  // Rule 5 is a word bank's: a plain list may repeat a term, as the 2015 units do.
+  const isWordBank =
+    declared !== undefined || content.items.some((item) => item.only !== undefined);
   const firstIndex = new Map<string, number>();
   content.items.forEach((item, index) => {
     checkEntryTopic(item, index, declared, ctx);
+    if (!isWordBank) return;
     const key = item.term.normalize('NFC');
     const first = firstIndex.get(key);
     if (first === undefined) {

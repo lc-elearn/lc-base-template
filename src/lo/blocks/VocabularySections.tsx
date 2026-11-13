@@ -23,8 +23,11 @@ const LIST = 'grid gap-x-6 gap-y-2 sm:grid-cols-[max-content_1fr]';
 const SECTIONS = 'grid gap-x-6 gap-y-4 sm:grid-cols-[max-content_1fr]';
 const HEADING = 'font-heading text-lg font-semibold text-foreground sm:col-span-2';
 
+/** An entry with its place in the authored list: its React key. */
+export type IndexedItem = VocabularyItem & { readonly index: number };
+
 interface VocabularySectionsProps {
-  sections: readonly VocabularySection<VocabularyItem>[];
+  sections: readonly VocabularySection<IndexedItem>[];
   headingLevel: 'h3' | 'h4';
   /** Letter headings: centred, a thin rule either side (vocabulary-block.css). */
   letters: boolean;
@@ -40,23 +43,20 @@ export function VocabularySections({
   letters,
   ...rowProps
 }: VocabularySectionsProps) {
-  // Each entry's place in the whole view, from 1: "Reveal Russian, word 3".
-  const numbers = new Map(
-    sections.flatMap((section) => section.items).map((item, index) => [item.term, index + 1]),
+  // Each row's place in the whole view, from 1: "Reveal Russian, word 3".
+  const offsets = sections.map((_, at) =>
+    sections.slice(0, at).reduce((sum, earlier) => sum + earlier.items.length, 0),
   );
-  const rows = (section: VocabularySection<VocabularyItem>) =>
-    section.items.map((item) => (
-      <VocabularyRow
-        key={item.term}
-        item={item}
-        number={numbers.get(item.term) ?? 0}
-        {...rowProps}
-      />
+  const rows = (section: VocabularySection<IndexedItem>, offset: number) =>
+    section.items.map((item, at) => (
+      // Keyed by the entry's place in the authored list, never its term (a plain list may
+      // repeat one) nor its position (it moves when the view is sorted or reversed).
+      <VocabularyRow key={item.index} item={item} number={offset + at + 1} {...rowProps} />
     ));
 
   const [first] = sections;
   if (sections.length === 1 && first !== undefined && first.heading === undefined) {
-    return <dl className={LIST}>{rows(first)}</dl>;
+    return <dl className={LIST}>{rows(first, 0)}</dl>;
   }
   return (
     <div className={SECTIONS}>
@@ -71,7 +71,9 @@ export function VocabularySections({
               {section.heading}
             </Heading>
           )}
-          <dl className="grid gap-y-2 sm:col-span-2 sm:grid-cols-subgrid">{rows(section)}</dl>
+          <dl className="grid gap-y-2 sm:col-span-2 sm:grid-cols-subgrid">
+            {rows(section, offsets[index] ?? 0)}
+          </dl>
         </div>
       ))}
     </div>

@@ -21,7 +21,7 @@ import { AudioClip } from '@/components/audio/AudioClip';
 import { buttonVariants } from '@/components/ui/button';
 import { fillLabel, resolveLabel, type UiStringsOverride } from '@/config/ui-strings';
 import { TARGET_LANG } from '@/lib/lang';
-import type { VocabularyItem } from './vocabulary-block-schema';
+import type { IndexedItem } from './VocabularySections';
 import {
   isHidden,
   LANGUAGE_NAMES,
@@ -48,7 +48,7 @@ function RevealedWord({ text, lang }: { text: string; lang?: string }) {
 }
 
 interface VocabularyRowProps {
-  item: VocabularyItem;
+  item: IndexedItem;
   /** The entry's place in the view, from 1: how a hidden word is named ("word 3"). */
   number: number;
   test: SelfTestState;

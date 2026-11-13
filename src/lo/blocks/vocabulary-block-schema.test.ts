@@ -115,16 +115,36 @@ describe('the build fails on', () => {
     ).toMatch(/items\[1\] "жена" has a topic but "only": "alphabetical"/);
   });
 
-  test('5. the same term twice, compared after Unicode normalisation', () => {
-    // "й" written precomposed (U+0439), then as и + combining breve (U+0438 U+0306).
+  test('5. the same term twice in a word bank, compared after Unicode normalisation', () => {
+    // A word bank is a block with `topics` or an `only`; "й" precomposed, then as и + breve.
     expect(
       errorFor({
         items: [
-          { term: 'мой', gloss: 'my' },
-          { term: 'мой', gloss: 'mine' },
+          { term: 'мой', gloss: 'my', only: 'topics' },
+          { term: 'мой', gloss: 'mine' },
         ],
       }),
     ).toMatch(/items\[1\] "мой" repeats items\[0\]/);
+    expect(
+      errorFor({
+        topics: [{ id: 'a' }],
+        items: [
+          { term: 'мой', gloss: 'my', topic: 'a' },
+          { term: 'мой', gloss: 'mine', topic: 'a' },
+        ],
+      }),
+    ).toMatch(/items\[1\] "мой" repeats items\[0\]/);
+  });
+
+  test('5. but a plain list may repeat a term, as before the word bank (2015 units)', () => {
+    expect(
+      errorFor({
+        items: [
+          { term: 'условия', gloss: 'conditions' },
+          { term: 'условия', gloss: 'conditions' },
+        ],
+      }),
+    ).toBe('');
   });
 
   test('6. an only value other than "topics" or "alphabetical"', () => {
