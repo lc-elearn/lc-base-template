@@ -56,6 +56,12 @@ function button(container: HTMLElement, name: string): HTMLButtonElement {
 }
 
 const press = (element: HTMLElement) => act(() => element.click());
+/** The text a reader or a screen reader gets: everything outside `aria-hidden` subtrees. */
+function perceived(container: HTMLElement): string {
+  const copy = container.cloneNode(true) as HTMLElement;
+  copy.querySelectorAll('[aria-hidden="true"]').forEach((node) => node.remove());
+  return copy.textContent ?? '';
+}
 const headings = (container: HTMLElement) =>
   Array.from(container.querySelectorAll('h4')).map((heading) => heading.textContent);
 const terms = (container: HTMLElement) =>
@@ -103,17 +109,33 @@ describe('self-test', () => {
     expect(button(container, `Hide ${TARGET}`).getAttribute('aria-pressed')).toBe('false');
   });
 
-  test('hiding the course language removes its words from the DOM, leaving Reveal buttons', () => {
+  test('hiding the course language hides its words from readers and screen readers, leaving Reveal buttons', () => {
     const container = mount({ selfTest: true });
     press(button(container, `Hide ${TARGET}`));
 
     expect(button(container, `Hide ${TARGET}`).getAttribute('aria-pressed')).toBe('true');
-    expect(container.textContent).not.toContain('beta');
-    expect(container.textContent).toContain('second');
+    expect(perceived(container)).not.toContain('beta');
+    expect(perceived(container)).toContain('second');
     expect(button(container, `Reveal ${TARGET}, word 1`).textContent).toBe('Reveal');
     // `lang` is only ever on the term text itself, never on the <dt> (chrome is English).
     expect(container.querySelector('dt')?.hasAttribute('lang')).toBe(false);
     expect(container.querySelector('dt [lang]')).toBeNull();
+  });
+
+  // The column must not jump when a side is hidden (spec §5, found in the browser
+  // 2026-11-13): the hidden word stays as an invisible, aria-hidden placeholder that
+  // holds the cell's width, in the same grid cell as its Reveal button.
+  test('a hidden word keeps its space: an invisible, aria-hidden placeholder under its Reveal button', () => {
+    const container = mount({ selfTest: true });
+    press(button(container, `Hide ${TARGET}`));
+
+    const reveal = button(container, `Reveal ${TARGET}, word 1`);
+    const cell = reveal.parentElement as HTMLElement;
+    expect(cell.className).toContain('vocabulary-hidden-word');
+    const placeholder = cell.querySelector('[aria-hidden="true"]') as HTMLElement;
+    expect(placeholder.textContent).toBe('beta');
+    expect(placeholder.className).toContain('invisible');
+    expect(placeholder.hasAttribute('tabindex')).toBe(false);
   });
 
   test('a hidden term’s speaker is named for its slot, not its word, and still works', () => {
@@ -140,7 +162,7 @@ describe('self-test', () => {
     const focused = document.activeElement as HTMLElement;
     expect(focused.textContent).toBe('beta');
     expect(focused.closest('[lang]')?.getAttribute('lang')).toBe(TARGET_LANG);
-    expect(container.textContent).not.toContain('alpha');
+    expect(perceived(container)).not.toContain('alpha');
   });
 
   test('Reveal English, word 1 moves focus to the gloss', () => {
@@ -160,8 +182,8 @@ describe('self-test', () => {
 
     expect(button(container, `Hide ${TARGET}`).getAttribute('aria-pressed')).toBe('false');
     expect(button(container, 'Hide English').getAttribute('aria-pressed')).toBe('true');
-    expect(container.textContent).toContain('beta');
-    expect(container.textContent).not.toContain('second');
+    expect(perceived(container)).toContain('beta');
+    expect(perceived(container)).not.toContain('second');
     expect(button(container, 'Reveal English, word 2')).toBeDefined();
   });
 

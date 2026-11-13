@@ -55,7 +55,8 @@ test('the self-test drill from the keyboard: hide, reveal, focus, switch view', 
 
   await press(page, bank, hide);
   await expect(hide).toHaveAttribute('aria-pressed', 'true');
-  await expect(bank.getByText(FIRST_TERM, { exact: true })).toHaveCount(0);
+  // Hidden, not gone: an invisible, aria-hidden placeholder keeps the column's width.
+  await expect(bank.getByText(FIRST_TERM, { exact: true })).toBeHidden();
 
   await press(page, bank, bank.getByRole('button', { name: /, word 1$/ }));
   const word = bank.getByText(FIRST_TERM, { exact: true });
@@ -68,7 +69,7 @@ test('the self-test drill from the keyboard: hide, reveal, focus, switch view', 
   await expect(alphabetical).toHaveAttribute('aria-pressed', 'true');
   // The hide setting survives the switch; what was revealed does not.
   await expect(hide).toHaveAttribute('aria-pressed', 'true');
-  await expect(bank.getByText(FIRST_TERM, { exact: true })).toHaveCount(0);
+  await expect(bank.getByText(FIRST_TERM, { exact: true })).toBeHidden();
   await expect(bank.getByRole('heading', { level: 4, name: 'A', exact: true })).toBeVisible();
   expect(problems).toEqual([]);
 });
@@ -86,6 +87,36 @@ test('hiding English: revealing a gloss moves focus to it', async ({ page }) => 
   await expect(gloss).toBeFocused();
   await expect(gloss).not.toHaveAttribute('lang', /.+/);
   expect(problems).toEqual([]);
+});
+
+// Spec §5: a hidden word keeps its space, so the other column does not jump. Found by
+// eye in the browser (2026-11-13): hiding the course language moved the glosses ~120px
+// left, because the Reveal button is narrower than the words it stands in for.
+test('hiding a side does not move the other column, in both views', async ({ page }) => {
+  const bank = await openWordBank(page);
+  const glossLeft = () =>
+    bank
+      .locator('dd')
+      .first()
+      .evaluate((dd) => Math.round(dd.getBoundingClientRect().left));
+  const termLeft = () =>
+    bank
+      .locator('dt')
+      .first()
+      .evaluate((dt) => Math.round(dt.getBoundingClientRect().right));
+
+  for (const view of ['Semantic', 'Alphabetical']) {
+    await press(page, bank, bank.getByRole('button', { name: view }));
+    const gloss = await glossLeft();
+    const term = await termLeft();
+
+    await press(page, bank, hideTarget(bank));
+    expect(await glossLeft()).toBe(gloss);
+    await press(page, bank, bank.getByRole('button', { name: 'Hide English' }));
+    expect(await termLeft()).toBe(term);
+    expect(await glossLeft()).toBe(gloss);
+    await press(page, bank, bank.getByRole('button', { name: 'Hide English' }));
+  }
 });
 
 test('no horizontal scroll at 320px with words hidden, in both views', async ({ page }) => {
