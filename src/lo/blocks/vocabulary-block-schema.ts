@@ -40,11 +40,11 @@ export const VocabularyItemSchema = z
        */
       audio: z.string().min(1).optional(),
       /**
-       * The `id` of a declared topic, or a non-empty list of them: the group(s) this entry
+       * The `id` of a declared topic, or a list of them (at least one): the group(s) this entry
        * sits in, in the topic view. A word taught under two topics lists both (2015 units 2
        * and 9, maintainer 2026-11-13); the A–Z view still shows it once.
        */
-      topic: z.union([z.string().min(1), z.array(z.string().min(1)).min(1)]).optional(),
+      topic: z.union([z.string().min(1), z.array(z.string().min(1))]).optional(),
       /** The one view this entry shows in. Absent means both. */
       only: z.custom<OnlyView>().optional(),
     },
@@ -111,6 +111,15 @@ function checkEntryTopic(
   const name = entryName(index, item.term);
   const path = ['items', index, 'topic'];
   const ids = topicIds(item);
+  if (Array.isArray(item.topic) && ids.length === 0) {
+    // Empty list: say so once, and no follow-on "no topic" for the same mistake.
+    ctx.addIssue({
+      code: 'custom',
+      path,
+      message: `${name}: "topic" is an empty list — give one id or more`,
+    });
+    return;
+  }
   if (ids.length > 0 && item.only === 'alphabetical') {
     ctx.addIssue({
       code: 'custom',

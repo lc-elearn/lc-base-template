@@ -212,7 +212,10 @@ describe('an entry in several topics (maintainer 2026-11-13, 2015 units 2 and 9)
   });
 
   test('an empty list fails', () => {
-    expect(errorFor({ topics: TOPICS, items: items([]) })).not.toBe('');
+    const message = errorFor({ topics: [{ id: 'attitudes' }], items: items([]) });
+    expect(message).toMatch(/items\[0\] "условия": "topic" is an empty list — give one id or more/);
+    // No misleading follow-ons from the same mistake.
+    expect(message).not.toMatch(/has no "topic"|no entry uses/);
   });
 
   test('a declared topic used only as a second membership counts as used', () => {
