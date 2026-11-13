@@ -39,11 +39,12 @@ export function VocabularyBlock({
   labels,
   presentation = 'card',
 }: BlockRendererProps) {
-  const { items, summary, topics } = parseBlockContent(
-    'vocabulary',
-    VocabularyBlockContentSchema,
-    content,
-  );
+  const {
+    items: authored,
+    summary,
+    topics,
+  } = parseBlockContent('vocabulary', VocabularyBlockContentSchema, content);
+  const items = authored.map((item, index) => ({ ...item, index }));
   const { selfTest, letterHeadings } = parseBlockOptions(
     'vocabulary',
     VocabularyBlockOptionsSchema,
