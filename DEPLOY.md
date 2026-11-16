@@ -335,8 +335,10 @@ Every course repo can publish its `main` as a **preview** at
 `https://lc-elearn.github.io/`. It is for the team and colleagues to try the course as it
 stands; it is **not** the live course, which is still built and uploaded by steps 1–9.
 
-- **Switch it on once:** the repo's **Settings → Pages → Source: GitHub Actions**. From
-  then on, every merge to `main` publishes (`.github/workflows/pages.yml`); before that,
+- **Switch it on once:** the organisation Owner does this, without asking the author
+  (decided 2026-11-16), once the course's first template update that brings `pages.yml`
+  is merged: the repo's **Settings → Pages → Source: GitHub Actions**. From then on,
+  every merge to `main` publishes (`.github/workflows/pages.yml`); before that,
   the workflow skips.
 - **What it shows:** the course without the Feijoa fonts (headings in Open Sans) and
   without debug pages. Only the template's own preview has the debug pages.
