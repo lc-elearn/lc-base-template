@@ -1,7 +1,7 @@
 # GitHub Pages previews: every course online, one landing page (E65)
 
 **Date:** 2026-11-13 · **Status:** template preview and landing page live 2026-11-13 (PR 122, `3371438`); course
-previews follow each course's template update · **Plan:**
+previews follow each course's template update (Spanish and Russian live 2026-11-16) · **Plan:**
 [`2026-11-13-github-pages-previews-plan.md`](../process/2026-11-13-github-pages-previews-plan.md)
 **TODO:** §E65 · **Touches:** `.github/workflows/` (new `pages.yml`),
 `src/build/debug-pages-in.ts` (+ test), `scripts/check-no-debug-pages.ts`, `DEPLOY.md`,
@@ -137,8 +137,10 @@ hour.
 `publish.yml` runs **every hour** (`cron`, at a minute past the hour other than `:00`),
 on `workflow_dispatch`, and on a push to its own `main`. Hourly instead of "when a course
 publishes": a course repo cannot start another repo's workflow without a token stored in
-every course, and an hourly run is free for a public repo. A new course appears within an
-hour of its first publish, or at once with "Run workflow".
+every course, and an hourly run is free for a public repo. A new course appears at the
+next scheduled run, or at once with "Run workflow". **In practice (2026-11-16):** GitHub
+delays scheduled runs on a quiet repo; from 14 to 16 Nov they came every 4 to 9 hours, so
+"within the hour" did not hold, and switching a course on is followed by a run by hand.
 
 ## 5. Kept out of search engines (P1)
 

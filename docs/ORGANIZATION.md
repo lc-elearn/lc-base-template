@@ -381,7 +381,8 @@ Right after creating it, in the new course repo:
 
 6. **Switch on its preview:** Settings → Pages → Source: **GitHub Actions**. The course
    then publishes to `https://lc-elearn.github.io/<repo>/` on every merge to `main` and
-   appears on `https://lc-elearn.github.io/` within the hour
+   appears on `https://lc-elearn.github.io/` at the landing page's next refresh, which can
+   take hours; run its **Publish** workflow to see it at once
    ([`DEPLOY.md` → "Preview on GitHub Pages"](../DEPLOY.md#preview-on-github-pages)).
 
 **Done 2026-11-05** (work iMac, as `pedbad`), from template `main` at `c2e6cbe` (its push
