@@ -11,7 +11,7 @@ session, on either machine.
 | [`../ROADMAP.md`](../ROADMAP.md)      | larger work beyond this queue, each with its trigger       |
 
 **Last updated:** 2026-11-16 · **HEAD:** see `git log` · **Suite:** 227 files · 2818 tests green
-(Vitest) · 174 Playwright tests (58 × 3 browsers, `bun run test:e2e`; the 9 for the `home` mode not built skip) plus 114 on a `DEBUG=1` build (38 × 3, `e2e/debug/`) · CI green · `main` protected since 2026-10-21 (job E1).
+(Vitest) · 180 Playwright tests (60 × 3 browsers, `bun run test:e2e`; the 9 for the `home` mode not built skip) plus 114 on a `DEBUG=1` build (38 × 3, `e2e/debug/`) · CI green · `main` protected since 2026-10-21 (job E1).
 
 Non-negotiable constraints for every job below live in
 [`AGENTS.md` → "Hard constraints"](../../AGENTS.md) (they grew out of
@@ -3326,3 +3326,4 @@ build, so it cannot return. Two remain:
 | 2026-11-11 | `221f364` | **a lesson's flashcards keep their own options** — the LO envelope's `options` is loose, so `srs` and a direction reach the deck; PR 100 (E58)                                                   |
 | 2026-11-11 | `40419ee` | **a typo in an exercise's options fails the build** — the load check closes each engine's `options`, naming the file and the key; PR 101 (E59)                                                   |
 | 2026-11-16 | —         | **a header link lands its section on the first click** — the `hashchange` focus on the heading now uses `preventScroll`, so it no longer cuts the smooth scroll short; `e2e/section-nav.spec.ts` |
+| 2026-11-16 | —         | **the active tab has no line beneath it in dark mode** — `TabSet` restates `dark:data-active:border-b-card`, since the `dark:` variant outranked the plain bottom colour; `e2e/tab-set.spec.ts`  |
