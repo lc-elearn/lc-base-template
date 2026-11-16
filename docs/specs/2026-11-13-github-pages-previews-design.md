@@ -183,8 +183,8 @@ Each step that changes something on GitHub waits for the maintainer's yes.
    switch Pages on for the template; check its site.
 2. **Landing repo:** create `lc-elearn.github.io` (public), push it, switch Pages on (it
    publishes through Actions too); check it. At first it lists only the template card.
-3. **Courses:** each gets `pages.yml` at its next template update, then switches Pages on
-   with its owner's agreement. Russian first.
+3. **Courses:** each gets `pages.yml` at its next template update, then the organisation Owner
+   switches Pages on, without asking the author (decided 2026-11-16). Russian first.
 
 ## 9. Not in this design
 
