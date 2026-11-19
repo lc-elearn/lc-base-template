@@ -20,6 +20,17 @@ const isCancelled = (errorText: string | undefined): boolean =>
   /aborted|cancelled/i.test(errorText ?? '');
 
 /**
+ * Firefox's own version of the same thing: when an <audio> element's data is already in
+ * its media cache, it drops the network request and reports it as failed with
+ * `NS_ERROR_PARSED_DATA_CACHED`. The file was served and plays. Seen on and off on the
+ * Russian course's dialogue audio (2026-11-19), a different file each run, never in
+ * Chromium or WebKit. Excused for media requests only: the same code on a script,
+ * stylesheet or page is still a failure.
+ */
+const isFirefoxMediaCacheHit = (resourceType: string, errorText: string | undefined): boolean =>
+  resourceType === 'media' && errorText === 'NS_ERROR_PARSED_DATA_CACHED';
+
+/**
  * Where the licensed Feijoa files exist (never in CI: they are never committed), Firefox
  * discards an unsupported `kern` table from the Bold cut, logs it as a console error, and
  * uses the font anyway. Known and harmless, so exactly those two messages are ignored.
@@ -43,7 +54,8 @@ export function watchForProblems(page: Page): string[] {
   page.on('pageerror', (error) => problems.push(`uncaught: ${error.message}`));
   page.on('requestfailed', (request) => {
     const errorText = request.failure()?.errorText;
-    if (!isCancelled(errorText)) problems.push(`request failed: ${request.url()} (${errorText})`);
+    if (isCancelled(errorText) || isFirefoxMediaCacheHit(request.resourceType(), errorText)) return;
+    problems.push(`request failed: ${request.url()} (${errorText})`);
   });
   page.on('response', (response) => {
     if (response.status() >= 400) problems.push(`HTTP ${response.status()}: ${response.url()}`);
