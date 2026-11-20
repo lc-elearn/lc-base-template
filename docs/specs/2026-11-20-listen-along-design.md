@@ -1,10 +1,26 @@
 # Listen-along list: one recording, a hidden start per row (E66)
 
-**Date:** 2026-11-20 · **Status:** designed, not built · **Plan:** to follow in `docs/process/`
+**Date:** 2026-11-20 · **Status:** built on `feat/listen-along`, not merged · **Plan:** [`2026-11-20-listen-along-plan.md`](../process/2026-11-20-listen-along-plan.md)
 **TODO:** §E66 · **Builds on:** the tabs block's `media` (`src/lo/blocks/media-schema.ts`), E62's
 row click (`src/audio/row-clip.ts`, `docs/specs/2026-11-12-row-click-audio-design.md`)
 **First user:** German Basic lesson 1 (`lc-german-basic`, `lo-01-erster-kontakt/blocks/12-tabs`,
 tab "Alphabet")
+
+> **Deviations from this spec** (decided while planning and building, 2026-11-20).
+> (D1) The browser test (`e2e/debug/listen-along.spec.ts`) checks the row click's seek and
+> `play()` call, the two columns on a wide screen and one on a phone, and axe in both
+> themes with a row lit; not the slice stop or the light following a seek (§7), because
+> Playwright's Chromium on Linux has no AAC decoder and CI playback is unreliable. Those
+> are unit-tested on a fake media element, and were checked by real playback in Chromium,
+> Firefox and WebKit on macOS before the merge. (D2) The lit row is
+> `color-mix(in oklab, var(--primary) 14%, var(--card))` with a 3px inset `--primary` bar
+> on its first cell, not a plain background token: `--accent` is solid Cambridge blue, too
+> strong behind text. (D3) On a phone the second table keeps its header row visible
+> (§5 said visually hidden): hiding a `<thead>` visually but not from screen readers takes
+> `position` or `display` changes on table parts, which some browsers answer by dropping
+> table semantics. (D4) The hook tells its own seek from the learner's by the target time,
+> not by event order: Firefox and WebKit fire `play` before `seeking` for a seek and a play
+> made together, Chromium after. Found by the real-playback check; pinned by a unit test.
 
 ## 1. Why
 
