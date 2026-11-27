@@ -27,13 +27,28 @@ import { z } from 'zod';
 import { CourseHomeSchema } from './course-home';
 import courseJson from '../../course.json';
 
+/** True when the runtime can collate `code` itself, not through a fallback locale.
+    A malformed tag makes `supportedLocalesOf` throw; that is a no too. */
+function isCollatable(code: string): boolean {
+  try {
+    return Intl.Collator.supportedLocalesOf([code]).length > 0;
+  } catch {
+    return false;
+  }
+}
+
 /** The contract: what a valid course identity MUST look like. Exported so its rules
     are tested directly, not only against today's values. */
 export const CourseConfigSchema = z.strictObject({
   /** Course display name. Accents/umlauts fine; blank rejected. */
   courseTitle: z.string().min(1),
-  /** ISO-ish language code, e.g. "es", "de". */
-  languageCode: z.string().min(2),
+  /** BCP 47 language code, e.g. "es", "de". It must be one `Intl.Collator` supports:
+      the vocabulary is sorted with it, and for an unsupported code (e.g. "grc") each
+      runtime falls back to its own default locale, so the prerender and the browser
+      sort differently and hydration fails. */
+  languageCode: z.string().min(2).refine(isCollatable, {
+    message: 'no collation data for this language code; use a supported one (e.g. "el" for Greek)',
+  }),
   /** Deploy subpath (made env-driven in a later step). Defaults to root. */
   basePath: z.string().default('/'),
   /** Hero copy for the landing page. */
