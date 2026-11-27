@@ -84,3 +84,19 @@ test('course.config schema: refuses another home, naming the field', () => {
 
   expect(() => parseCourseConfig({ ...base, home: 'single' })).toThrow(/home/);
 });
+
+// Found on the Greek course (27 Nov 2026): `grc` passed the old 2-character rule, but no
+// engine ships collation data for it, so `Intl.Collator('grc')` fell back to each
+// runtime's default locale. The Bun prerender and Chromium disagreed on that default,
+// sorted the vocabulary differently, and hydration failed (React #418). So the code must
+// be one the runtime can collate.
+test('course.config schema: languageCode must be one Intl.Collator supports', () => {
+  const base = { ...courseConfig };
+
+  expect(CourseConfigSchema.safeParse({ ...base, languageCode: 'el' }).success).toBe(true);
+  for (const code of ['grc', 'xx', 'not a tag']) {
+    const result = CourseConfigSchema.safeParse({ ...base, languageCode: code });
+    if (result.success) throw new Error(`expected "${code}" to be rejected`);
+    expect(result.error.issues[0]?.message).toMatch(/no collation data/);
+  }
+});
